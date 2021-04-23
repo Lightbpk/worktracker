@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:worktracker/services/auth_service.dart';
 
 class MainPage extends StatefulWidget{
   final String title;
@@ -26,6 +27,14 @@ class _MainPageState extends State<MainPage> {
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
+        actions: <Widget>[
+          TextButton.icon(
+              onPressed: (){
+                AuthService().logOut();
+              },
+              icon: Icon(Icons.exit_to_app , color: Colors.white,),
+              label: SizedBox.shrink())
+        ],
       ),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it

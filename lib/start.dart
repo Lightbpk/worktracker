@@ -1,14 +1,17 @@
  import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
+import 'package:worktracker/user.dart';
 
-import 'auth-page.dart';
-import 'main-page.dart';
+import 'Pages/auth-page.dart';
+import 'Pages/main-page.dart';
 
 class StartPage extends StatelessWidget{
 
   @override
 
   Widget build(BuildContext context) {
-    final bool isLoggedIn = true;
+    final UserWT userWT = Provider.of<UserWT>(context);
+    final bool isLoggedIn = userWT != null;
     return isLoggedIn ? MainPage(title:"MAIN PAGE") : AuthPage(title:'Authentication');
   }
 }
