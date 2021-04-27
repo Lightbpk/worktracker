@@ -1,10 +1,13 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:worktracker/services/auth_service.dart';
 
 class MainPage extends StatefulWidget{
   final String title;
-
+  final FirebaseApp app = FirebaseApp(name: '[DEFAULT]');
+  final DatabaseReference db = FirebaseDatabase(app: firebaseApp).reference();
   MainPage({Key key, this.title}) : super(key: key);
 
   @override
