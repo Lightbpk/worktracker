@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:worktracker/Pages/main-page.dart';
 import 'package:worktracker/services/auth_service.dart';
 import 'package:worktracker/start.dart';
 
@@ -9,7 +8,7 @@ import 'user.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();   //нужно для всех продуктов firebase
+  final FirebaseApp app = await Firebase.initializeApp();   //нужно для всех продуктов firebase
   runApp(MyApp());
 }
 

@@ -6,8 +6,6 @@ import 'package:worktracker/services/auth_service.dart';
 
 class MainPage extends StatefulWidget{
   final String title;
-  final FirebaseApp app = FirebaseApp(name: '[DEFAULT]');
-  final DatabaseReference db = FirebaseDatabase(app: firebaseApp).reference();
   MainPage({Key key, this.title}) : super(key: key);
 
   @override
@@ -17,6 +15,39 @@ class MainPage extends StatefulWidget{
 
 
 class _MainPageState extends State<MainPage> {
+  bool _initialized = false;
+  bool _error = false;
+  DatabaseReference db;
+
+  void initializeFlutterFire() async {
+    try {
+      // Wait for Firebase to initialize and set `_initialized` state to true
+      FirebaseApp app = await Firebase.initializeApp();
+      setState(() {
+        _initialized = true;
+        db = new FirebaseDatabase(app: app).reference();
+        db.child("work-process").child("contract_1").child("stages").child("check_materials")
+            .child("comment").once().then((DataSnapshot snapshot) {
+
+              print("comment val = ${snapshot.value}");
+        });
+        print('FirebaseApp Init - Ok');
+      });
+    } catch(e) {
+      // Set `_error` state to true if Firebase initialization fails
+      setState(() {
+        _error = true;
+        print('FirebaseApp Init - false');
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    initializeFlutterFire();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
