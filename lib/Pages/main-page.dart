@@ -3,6 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:worktracker/services/auth_service.dart';
+import 'package:worktracker/services/firebaseConnector.dart';
 
 class MainPage extends StatefulWidget {
   final String title;
@@ -50,7 +51,7 @@ class _MainPageState extends State<MainPage> {
 
   @override
   void initState() {
-    initializeFlutterFire();
+    //initializeFlutterFire();
     super.initState();
   }
 
@@ -76,23 +77,13 @@ class _MainPageState extends State<MainPage> {
   }
 
   Widget _buildStageList() {
-    db
-        .child("work-process")
-        .child("contract_1")
-        .child("stages")
-        .once()
-        .then((DataSnapshot snapshot) {
-      snapshot.value.forEach((key, values) {
-        stagesList.add(key);
-      });
-    });
     return ListView.builder(itemBuilder: (context, i) {
       if (i.isOdd) return Divider();
-      if (i < stagesList.length) {
+      else
+
         return ListTile(
-          title: Text(stagesList[i],),
+          title: Text("stage ..."),
         );
-      }else return null;
     });
   }
 }
