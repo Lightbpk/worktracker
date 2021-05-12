@@ -1,35 +1,44 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/widgets.dart';
-import 'package:worktracker/main.dart';
 
-class TakeFirebaseApp {
-  FirebaseApp app1 = FirebaseApp.app();
-  static TakeFirebaseApp instance;
-  DatabaseReference db;
-  List<String> stagesList;
-  
-
-
-  TakeFirebaseApp(){
+class DataBaseConnector {
+  DataBaseConnector _instance;
+  FirebaseApp myFirebaseApp;
+  _DataBaseConnector(){
 
   }
 
-  static TakeFirebaseApp getInstance(FirebaseApp app){
-    if(instance == null){
-      instance = new TakeFirebaseApp();
+
+
+  DataBaseConnector getConnection(FirebaseApp app){
+    myFirebaseApp = app;
+    if(_instance == null){
+      _instance = DataBaseConnector();
+      print('instance - null create instance');
     }
-    return instance;
+    else print('instance not null');
+    return _instance;
   }
 
-  String getDataSting(){
-    db
-        .child("work-process")
-        .child("contract_1")
-        .child("stages")
-        .once()
-        .then((DataSnapshot snapshot) {
-      return  snapshot.value ;
-    });
+  Future <List<String>> getStages() async{
+    try {
+      List<String> stagesList = [];
+      final DatabaseReference db = FirebaseDatabase(app: myFirebaseApp)
+          .reference();
+      await db
+          .child("work-process")
+          .child("contract_1")
+          .child("stages")
+          .once()
+          .then((DataSnapshot snapshot) {
+        snapshot.value.forEach((key, values) {
+          stagesList.add(key);
+        });
+      });
+      return stagesList;
+    }catch (e){
+      print(e);
+      return ['---'];
+    }
   }
 }

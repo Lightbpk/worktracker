@@ -2,12 +2,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:worktracker/main.dart';
 import 'package:worktracker/services/auth_service.dart';
 import 'package:worktracker/services/firebaseConnector.dart';
 
 class MainPage extends StatefulWidget {
   final String title;
-
   MainPage({Key key, this.title}) : super(key: key);
 
   @override
@@ -19,12 +19,17 @@ class _MainPageState extends State<MainPage> {
   bool _error = false;
   DatabaseReference db;
   List<String> stagesList;
-
-  void initializeFlutterFire() async {
+  void readStages() async{
+    stagesList = await DataBaseConnector().getStages();
+    print(stagesList);
+  }
+/*  void initializeFlutterFire() async {
     try {
       // Wait for Firebase to initialize and set `_initialized` state to true
-      WidgetsFlutterBinding.ensureInitialized();
-      FirebaseApp app = await Firebase.initializeApp();
+      //WidgetsFlutterBinding.ensureInitialized();
+      //FirebaseApp app = await Firebase.initializeApp();
+      DataBaseConnector myFirebaseApp = new DataBaseConnector();
+      final FirebaseApp app = await ;
       setState(() {
         _initialized = true;
         db = new FirebaseDatabase(app: app).reference();
@@ -47,11 +52,12 @@ class _MainPageState extends State<MainPage> {
         print('FirebaseApp Init - false');
       });
     }
-  }
+  }*/
 
   @override
   void initState() {
     //initializeFlutterFire();
+    readStages();
     super.initState();
   }
 
@@ -82,7 +88,7 @@ class _MainPageState extends State<MainPage> {
       else
 
         return ListTile(
-          title: Text("stage ..."),
+          title: Text(stagesList[1]),
         );
     });
   }
