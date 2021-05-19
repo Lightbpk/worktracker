@@ -84,12 +84,17 @@ class _MainPageState extends State<MainPage> {
 
   Widget _buildStageList() {
     return ListView.builder(itemBuilder: (context, i) {
-      if (i.isOdd) return Divider();
-      else
-
-        return ListTile(
-          title: Text(stagesList[1]),
+      if(i<stagesList.length)
+        return
+          ListTile(
+          title: Text(stagesList[i]),
         );
+      else
+        return
+            ListTile(
+              title: Text("----------"),
+            );
+
     });
   }
 }

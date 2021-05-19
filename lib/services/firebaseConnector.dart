@@ -4,9 +4,8 @@ import 'package:firebase_database/firebase_database.dart';
 class DataBaseConnector {
   DataBaseConnector _instance;
   FirebaseApp myFirebaseApp;
-  _DataBaseConnector(){
-
-  }
+  DatabaseReference db;
+  _DataBaseConnector(){}
 
 
 
@@ -19,15 +18,18 @@ class DataBaseConnector {
     else print('instance not null');
     return _instance;
   }
+  void refresh(){
+    db = FirebaseDatabase(app: myFirebaseApp)
+        .reference();
+  }
 
   Future <List<String>> getStages() async{
     try {
       List<String> stagesList = [];
-      final DatabaseReference db = FirebaseDatabase(app: myFirebaseApp)
-          .reference();
-      await db
-          .child("work-process")
-          .child("contract_1")
+      refresh();
+      DatabaseReference contract1 = db.child("work-process")
+          .child("contract_1");
+      await contract1
           .child("stages")
           .once()
           .then((DataSnapshot snapshot) {
