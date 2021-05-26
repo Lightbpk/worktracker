@@ -4,6 +4,8 @@ import 'package:worktracker/user.dart';
 
 import 'Pages/auth-page.dart';
 import 'Pages/main-page.dart';
+import 'Pages/admin-page.dart';
+
 
 class StartPage extends StatelessWidget{
 
@@ -12,6 +14,6 @@ class StartPage extends StatelessWidget{
   Widget build(BuildContext context) {
     final UserWT userWT = Provider.of<UserWT>(context);
     final bool isLoggedIn = userWT != null;
-    return isLoggedIn ? MainPage(title:"MAIN PAGE") : AuthPage(title:'Authentication');
+    return isLoggedIn ? AdminPage() : AuthPage(title:'Authentication');
   }
 }

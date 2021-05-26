@@ -24,6 +24,7 @@ class DataBaseConnector {
   }
 
   Future <List<String>> getStages() async{
+    refresh();
     try {
       List<String> stagesList = [];
       refresh();

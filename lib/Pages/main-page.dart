@@ -19,6 +19,7 @@ class _MainPageState extends State<MainPage> {
   bool _error = false;
   DatabaseReference db;
   List<String> stagesList;
+
   void readStages() async{
     stagesList = await DataBaseConnector().getStages();
     print(stagesList);
@@ -88,6 +89,9 @@ class _MainPageState extends State<MainPage> {
         return
           ListTile(
           title: Text(stagesList[i]),
+          onTap: (){
+            print('Taped ' + stagesList[i]);
+          },
         );
       else
         return
