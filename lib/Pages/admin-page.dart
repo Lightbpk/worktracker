@@ -45,9 +45,9 @@ class BasicDateTimeField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(children: <Widget>[
-      Text('Basic date & time field (${format.pattern})'),
       DateTimeField(
         format: format,
+        decoration: InputDecoration(hintText: "Deadline (${format.pattern})"),
         onShowPicker: (context, currentValue) async {
           final date = await showDatePicker(
               context: context,
