@@ -1,5 +1,6 @@
  import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:worktracker/Pages/user-page.dart';
 import 'package:worktracker/user.dart';
 
 import 'Pages/auth-page.dart';
@@ -14,6 +15,6 @@ class StartPage extends StatelessWidget{
   Widget build(BuildContext context) {
     final UserWT userWT = Provider.of<UserWT>(context);
     final bool isLoggedIn = userWT != null;
-    return isLoggedIn ? AdminPage() : AuthPage(title:'Authentication');
+    return isLoggedIn ? UserPage() : AuthPage(title:'Authentication');
   }
 }

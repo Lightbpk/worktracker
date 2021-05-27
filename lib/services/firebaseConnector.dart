@@ -33,31 +33,31 @@ class DataBaseConnector {
     return db;
   }
 
-/*  Future <List<String>> getStages() async{
+  Future <List<String>> getContracts() async{
     try {
-      List<String> stagesList = [];
+      List<String> contractsList = [];
       DatabaseReference contract1 = db.child("work-process")
           .child("contract_1");
-      await contract1
-          .child("stages")
+      await db.child("work-process")
           .once()
           .then((DataSnapshot snapshot) {
         snapshot.value.forEach((key, values) {
-          stagesList.add(key);
+          contractsList.add(key);
         });
       });
-      return stagesList;
+      return contractsList;
     }catch (e){
       print(e);
       return ['---'];
     }
-  }*/
+  }
 
   void addProject(String id, String clientName) async{
     getMainRef();
-    await db.child("work-process").set({
+    await db.child("work-process").child("contract_$id").set({
       'contractID': id,
       'name': clientName,
     });
   }
+
 }
