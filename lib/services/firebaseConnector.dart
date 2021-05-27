@@ -16,18 +16,26 @@ class DataBaseConnector {
       print('instance - null create instance');
     }
     else print('instance not null');
+    getMainRef();
+    db.child("work-process").once()
+        .then((DataSnapshot snapshot) {
+      snapshot.value.forEach((key, values) {
+        print("key - $key" );
+        print("values - $values" );
+      });});
+
     return _instance;
   }
-  void refresh(){
+
+  DatabaseReference getMainRef(){
     db = FirebaseDatabase(app: myFirebaseApp)
         .reference();
+    return db;
   }
 
-  Future <List<String>> getStages() async{
-    refresh();
+/*  Future <List<String>> getStages() async{
     try {
       List<String> stagesList = [];
-      refresh();
       DatabaseReference contract1 = db.child("work-process")
           .child("contract_1");
       await contract1
@@ -43,5 +51,13 @@ class DataBaseConnector {
       print(e);
       return ['---'];
     }
+  }*/
+
+  void addProject(String id, String clientName) async{
+    getMainRef();
+    await db.child("work-process").set({
+      'contractID': id,
+      'name': clientName,
+    });
   }
 }

@@ -8,6 +8,7 @@ import 'package:worktracker/services/firebaseConnector.dart';
 
 class MainPage extends StatefulWidget {
   final String title;
+
   MainPage({Key key, this.title}) : super(key: key);
 
   @override
@@ -18,87 +19,47 @@ class _MainPageState extends State<MainPage> {
   bool _initialized = false;
   bool _error = false;
   DatabaseReference db;
-  List<String> stagesList;
+  List<String> stagesList = ['null', 'null', 'null'];
 
-  void readStages() async{
+/*  void readStages() async {
     stagesList = await DataBaseConnector().getStages();
     print(stagesList);
-  }
-/*  void initializeFlutterFire() async {
-    try {
-      // Wait for Firebase to initialize and set `_initialized` state to true
-      //WidgetsFlutterBinding.ensureInitialized();
-      //FirebaseApp app = await Firebase.initializeApp();
-      DataBaseConnector myFirebaseApp = new DataBaseConnector();
-      final FirebaseApp app = await ;
-      setState(() {
-        _initialized = true;
-        db = new FirebaseDatabase(app: app).reference();
-        db
-            .child("work-process")
-            .child("contract_1")
-            .child("stages")
-            .once()
-            .then((DataSnapshot snapshot) {
-          snapshot.value.forEach((key, values) {
-            stagesList.add(key);
-          });
-        });
-        print('FirebaseApp Init - Ok');
-      });
-    } catch (e) {
-      // Set `_error` state to true if Firebase initialization fails
-      setState(() {
-        _error = true;
-        print('FirebaseApp Init - false');
-      });
-    }
   }*/
 
   @override
-  void initState() {
-    //initializeFlutterFire();
-    readStages();
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    //readStages();
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-        actions: <Widget>[
-          TextButton.icon(
-              onPressed: () {
-                AuthService().logOut();
-              },
-              icon: Icon(
-                Icons.exit_to_app,
-                color: Colors.white,
-              ),
-              label: SizedBox.shrink())
-        ],
-      ),
-      body: _buildStageList()
-    );//Text(''),
+        appBar: AppBar(
+          title: Text(widget.title),
+          actions: <Widget>[
+            TextButton.icon(
+                onPressed: () {
+                  AuthService().logOut();
+                },
+                icon: Icon(
+                  Icons.exit_to_app,
+                  color: Colors.white,
+                ),
+                label: SizedBox.shrink())
+          ],
+        ),
+        body: _buildStageList()); //Text(''),
   }
 
   Widget _buildStageList() {
-    return ListView.builder(itemBuilder: (context, i) {
-      if(i<stagesList.length)
-        return
-          ListTile(
-          title: Text(stagesList[i]),
-          onTap: (){
-            print('Taped ' + stagesList[i]);
-          },
-        );
-      else
-        return
-            ListTile(
-              title: Text("----------"),
-            );
-
-    });
+      return ListView.builder(itemBuilder: (context, i) {
+        if (i < stagesList.length)
+          return ListTile(
+            title: Text(stagesList[i]),
+            onTap: () {
+              print('Taped ' + stagesList[i]);
+            },
+          );
+        else
+          return ListTile(
+            title: Text("----------"),
+          );
+      });
   }
 }

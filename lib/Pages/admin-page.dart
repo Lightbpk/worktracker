@@ -2,6 +2,8 @@ import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:worktracker/services/auth_service.dart';
+import 'package:worktracker/services/firebaseConnector.dart';
 
 class AdminPage extends StatefulWidget {
 
@@ -14,12 +16,24 @@ class _AdminPageState extends State<AdminPage> {
   final _adminFormKey = GlobalKey<FormState>();
   String currentContractID;
   String currentClientName;
+  String firstStageDeadLine;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: new Text("Админ"),
+        actions: <Widget>[
+          TextButton.icon(
+              onPressed: () {
+                AuthService().logOut();
+              },
+              icon: Icon(
+                Icons.exit_to_app,
+                color: Colors.white,
+              ),
+              label: SizedBox.shrink())
+        ],
       ),
       body: Container(
         child: new Form(
@@ -59,7 +73,27 @@ class _AdminPageState extends State<AdminPage> {
               BasicDateTimeField(),
               new SizedBox(height: 10,),
               new TextButton.icon(
-                  onPressed: (){},
+                  onPressed: (){
+                    showDialog(context: context, builder: (BuildContext context){
+                      return AlertDialog(
+                        title: new Text("Внесение проэкта в БД"),
+                        content: new Text('Вы увренны что хотите внести данные по проэкту в БД?'),
+                        actions: <Widget>[
+                          FlatButton(
+                              onPressed: (){
+                                Navigator.of(context).pop();
+                              },
+                              child: new Text("отмена")),
+                          FlatButton(
+                              onPressed: (){
+                                Navigator.of(context).pop();
+                                addContract();
+                              },
+                              child: new Text("ОК"))
+                        ],
+                      );
+                    });
+                  },
                   icon: Icon(Icons.add_road),
                   label: new Text('Добавить проэкт'))
             ],
@@ -67,6 +101,9 @@ class _AdminPageState extends State<AdminPage> {
         ),
       ),
     );
+  }
+  void addContract(){
+    DataBaseConnector().addProject(currentContractID,currentClientName);
   }
 }
 class BasicDateTimeField extends StatelessWidget {
@@ -97,3 +134,4 @@ class BasicDateTimeField extends StatelessWidget {
     ]);
   }
 }
+

@@ -10,8 +10,9 @@ import 'user.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final FirebaseApp myFirebaseApp = await Firebase.initializeApp();
-  runApp(MyApp());
   DataBaseConnector().getConnection(myFirebaseApp);
+  runApp(MyApp());
+
 }
 
 class MyApp extends StatelessWidget {
