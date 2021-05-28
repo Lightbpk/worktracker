@@ -10,10 +10,14 @@ class UserPage extends StatefulWidget{
 }
 
 class _UserPageState extends State<UserPage> {
-bool isLoaded =  false;
+bool isLoaded = false;
+Widget mainWidget = CircularProgressIndicator();
+List<String> contractsList;
 
-  @override
+@override
   Widget build(BuildContext context) {
+  readContractsList();
+  if(!isLoaded) return CircularProgressIndicator();
     return Scaffold(
       appBar: AppBar(
         title: new Text("Юзер"),
@@ -29,22 +33,11 @@ bool isLoaded =  false;
               label: SizedBox.shrink())
         ],
       ),
-      body: loader(),
+      body: mainWidget,
     );
   }
 
-  Widget loader(){
-      if(isLoaded){
-             return _buildContractsList();
-      }
-       else {
-              return CircularProgressIndicator();
-      }
-  }
-
   Widget _buildContractsList() {
-    List<String> contractsList = ['-','-'];
-    readContractsList().then((value) => contractsList = value);
     return ListView.builder(itemBuilder: (context, i) {
       if (i < contractsList.length)
         return ListTile(
@@ -60,9 +53,11 @@ bool isLoaded =  false;
     });
   }
 
-  Future<List<String>> readContractsList() async {
-    List<String> contractList = await DataBaseConnector().getContracts();
-    isLoaded = true;
-    return contractList;
+  void readContractsList() async {
+    contractsList = await DataBaseConnector().getContracts();
+    setState(() {
+      mainWidget = _buildContractsList();
+      isLoaded = true;
+    });
   }
 }

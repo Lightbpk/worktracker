@@ -34,6 +34,7 @@ class DataBaseConnector {
   }
 
   Future <List<String>> getContracts() async{
+    getMainRef();
     try {
       List<String> contractsList = [];
       DatabaseReference contract1 = db.child("work-process")

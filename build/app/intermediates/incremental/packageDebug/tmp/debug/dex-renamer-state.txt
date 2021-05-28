@@ -1,0 +1,4 @@
+#Fri May 28 15:46:33 NOVT 2021
+base.0=C\:\\Users\\user\\IdeaProjects\\worktracker\\build\\app\\intermediates\\dex\\debug\\mergeDexDebug\\classes.dex
+path.0=classes.dex
+renamed.0=classes.dex
