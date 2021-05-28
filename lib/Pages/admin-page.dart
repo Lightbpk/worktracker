@@ -16,8 +16,7 @@ class _AdminPageState extends State<AdminPage> {
   final _adminFormKey = GlobalKey<FormState>();
   String currentContractID;
   String currentClientName;
-  String firstStageDeadLine;
-
+  BasicDateTimeField firstStageDeadLine;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,7 +57,7 @@ class _AdminPageState extends State<AdminPage> {
               ),
               new SizedBox(height: 10,),
               new Text("Оформление документов до..."),
-              BasicDateTimeField(),
+              firstStageDeadLine = BasicDateTimeField(),
               new SizedBox(height: 10,),
               new Text("Разработка КД и электроКД до..."),
               BasicDateTimeField(),
@@ -76,8 +75,8 @@ class _AdminPageState extends State<AdminPage> {
                   onPressed: (){
                     showDialog(context: context, builder: (BuildContext context){
                       return AlertDialog(
-                        title: new Text("Внесение проэкта в БД"),
-                        content: new Text('Вы увренны что хотите внести данные по проэкту в БД?'),
+                        title: new Text("Внесение проекта в БД"),
+                        content: new Text('Вы уверены что хотите внести данные по проекту в БД?'),
                         actions: <Widget>[
                           FlatButton(
                               onPressed: (){
@@ -87,6 +86,7 @@ class _AdminPageState extends State<AdminPage> {
                           FlatButton(
                               onPressed: (){
                                 Navigator.of(context).pop();
+                                _adminFormKey.currentState.save();
                                 addContract();
                               },
                               child: new Text("ОК"))
@@ -95,7 +95,7 @@ class _AdminPageState extends State<AdminPage> {
                     });
                   },
                   icon: Icon(Icons.add_road),
-                  label: new Text('Добавить проэкт'))
+                  label: new Text('Добавить проект'))
             ],
           ),
         ),
@@ -103,11 +103,13 @@ class _AdminPageState extends State<AdminPage> {
     );
   }
   void addContract(){
-    DataBaseConnector().addProject(currentContractID,currentClientName);
+    DataBaseConnector().addProject(currentContractID,currentClientName,firstStageDeadLine.dtf.toString());
   }
 }
 class BasicDateTimeField extends StatelessWidget {
   final format = DateFormat("yyyy-MM-dd HH:mm");
+  String currentDateAndTime;
+  DateTime dtf;
   @override
   Widget build(BuildContext context) {
     return Column(children: <Widget>[
@@ -125,6 +127,8 @@ class BasicDateTimeField extends StatelessWidget {
               context: context,
               initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
             );
+            currentDateAndTime = date.toString()+time.toString();
+            dtf = DateTimeField.combine(date, time);
             return DateTimeField.combine(date, time);
           } else {
             return currentValue;

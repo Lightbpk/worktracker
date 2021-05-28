@@ -53,11 +53,12 @@ class DataBaseConnector {
     }
   }
 
-  void addProject(String id, String clientName) async{
+  void addProject(String id, String clientName, String deadline) async{
     getMainRef();
     await db.child("work-process").child("contract_$id").set({
       'contractID': id,
       'name': clientName,
+      'deadline' : deadline,
     });
   }
 
