@@ -16,7 +16,8 @@ Widget mainWidget = CircularProgressIndicator();
 List<String> contractsList;
 List<BuildNode> nodesList;
 List<String> defStageList = ['задача 1','задача2','задача3'];
-
+String status="";
+String date="";
 
 @override
 void initState() {
@@ -83,6 +84,17 @@ void initState() {
             print('Taped ' + nodesList[i].nodeName);
           },
         );
+      else if(i == nodesList.length){
+        return ListTile(
+          title: Text("назад"),
+          onTap: (){
+            setState(() {
+              mainWidget =_buildContractsList();
+              isLoaded = true;
+            });
+          },
+        );
+      }
       else
         return ListTile(
           title: Text("-----------"),
@@ -102,6 +114,17 @@ void initState() {
             });
           },
         );
+      else if(i == defStageList.length){
+        return ListTile(
+          title: Text("Назад"),
+          onTap: (){
+            setState(() {
+              mainWidget =_buildNodesList();
+              isLoaded = true;
+            });
+          },
+        );
+      }
       else
         return ListTile(
           title: Text('---------'),
@@ -110,28 +133,47 @@ void initState() {
   }
 
   Widget _buildStage(String stageName){
-  String status="";
+    print('status = '+ status);
     return Column(children: [
       Text(stageName),
       TextButton.icon(onPressed: (){
           status = "В работе";
+          print(status);
+          DateTime dateTime = DateTime.now();
+          date = dateTime.toString();
+setState(() {
+
+});
       }, icon: Icon(Icons.play_arrow), label: Text('Начать')),
       TextButton.icon(onPressed: (){
         setState(() {
           status = 'простой';
+          DateTime dateTime = DateTime.now();
+          date = dateTime.toString();
         });
       }, icon: Icon(Icons.pause), label: Text('Пауза')),
       TextButton.icon(onPressed: (){
         setState(() {
           status = "доработка";
+          DateTime dateTime = DateTime.now();
+          date = dateTime.toString();
         });
       }, icon: Icon(Icons.edit), label: Text('Доработка')),
       TextButton.icon(onPressed: (){
         setState(() {
           status = "закончено";
+          DateTime dateTime = DateTime.now();
+          date = dateTime.toString();
         });
       }, icon: Icon(Icons.stop), label: Text('Стоп')),
       Text(status),
+      Text(date),
+      TextButton.icon(onPressed: (){
+        setState(() {
+          mainWidget =_buildStageList();
+          isLoaded = true;
+        });
+      }, icon: Icon(Icons.arrow_back), label: Text("Назад"))
     ],);
   }
 
