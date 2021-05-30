@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:worktracker/node.dart';
 import 'package:worktracker/services/auth_service.dart';
 import 'package:worktracker/services/firebaseConnector.dart';
 
@@ -13,8 +14,9 @@ class _UserPageState extends State<UserPage> {
 bool isLoaded = false;
 Widget mainWidget = CircularProgressIndicator();
 List<String> contractsList;
-List<String> nodesList;
+List<BuildNode> nodesList;
 List<String> defStageList = ['задача 1','задача2','задача3'];
+
 
 @override
 void initState() {
@@ -71,13 +73,14 @@ void initState() {
     return ListView.builder(itemBuilder: (context, i) {
       if (i < nodesList.length)
         return ListTile(
-          title: Text(nodesList[i]),
+          title: Text(nodesList[i].nodeName),
+          subtitle: Text(nodesList[i].nodeDeadline),
           onTap: () {
             setState(() {
               mainWidget =_buildStageList();
               isLoaded = true;
             });
-            print('Taped ' + nodesList[i]);
+            print('Taped ' + nodesList[i].nodeName);
           },
         );
       else

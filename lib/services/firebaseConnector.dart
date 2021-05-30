@@ -36,15 +36,18 @@ class DataBaseConnector {
     return db;
   }
 
-  Future <List<String>> getNodes(String contract) async{
+  Future <List<BuildNode>> getNodes(String contract) async{
     getMainRef();
-    List<String> nodesList = [];
+    List<BuildNode> nodesList = [];
     print('getting nodes for : '+contract);
     await db.child("work-process").child(contract).child('nodes')
         .once().then((DataSnapshot snapshot) {
       snapshot.value.forEach((key, value){
-        nodesList.add(key);
+        BuildNode node = BuildNode(key);
+        node.nodeDeadline = value;
+        nodesList.add(node);
         print('key : '+key);
+        print('value : '+value);
       });
     } );
     return nodesList;
