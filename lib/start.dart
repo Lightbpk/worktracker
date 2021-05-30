@@ -15,6 +15,10 @@ class StartPage extends StatelessWidget{
   Widget build(BuildContext context) {
     final UserWT userWT = Provider.of<UserWT>(context);
     final bool isLoggedIn = userWT != null;
-    return isLoggedIn ? AdminPage() : AuthPage(title:'Authentication');
+    if(isLoggedIn){
+      if(userWT.id == "69ki0j90NMaHVoj6T71I5Va97U43") return AdminPage();
+      else return UserPage();
+    }
+    else return AuthPage(title:'Authentication');
   }
 }
