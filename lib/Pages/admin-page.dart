@@ -80,7 +80,12 @@ class _AdminPageState extends State<AdminPage> {
             setState(() {
               loadStartWidget = false;
               currentWidget = ListView.builder(itemBuilder: (context, i){
-                if(i < nodeList.length) return ListTile(title: Text(nodeList[i].nodeName),);
+                if(i < nodeList.length) return ListTile(
+                  title: Text(nodeList[i].nodeName),
+                  onTap:(){
+                    print("tap on "+nodeList[i].nodeName);
+                    nodeList[i].field = BasicDateTimeField();
+                  });
                 else if(i == nodeList.length) return ListTile(title: Text("Назад"),
                 onTap: (){
                   setState(() {
