@@ -87,7 +87,7 @@ class DataBaseConnector {
     nodeList.forEach((node) {
       string += node.nodeName+":"+node.field.dateTimeValue.toString()+",";
     });
-    db.child("work-process").child('contract_$id').child("nodes").set({
+    db.child("work-process").child(id).child("nodes").set({
       nodeList[0].nodeName :nodeList[0].field.dateTimeValue.toString(),
       nodeList[1].nodeName :nodeList[1].field.dateTimeValue.toString(),
       nodeList[2].nodeName :nodeList[2].field.dateTimeValue.toString(),
