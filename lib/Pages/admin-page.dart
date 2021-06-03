@@ -12,7 +12,9 @@ class AdminPage extends StatefulWidget {
 }
 
 class _AdminPageState extends State<AdminPage> {
+  Widget currentWidget;
   final _adminFormKey = GlobalKey<FormState>();
+  bool loadStartWidget = true;
   String currentContractID;
   String currentClientName;
   BasicDateTimeField firstNodeDeadLine;
@@ -24,11 +26,15 @@ class _AdminPageState extends State<AdminPage> {
     new BuildNode("Тестирование оборудования"),
   ];
 
+
   @override
   Widget build(BuildContext context) {
+    if(loadStartWidget){
+      currentWidget = _startWidget();
+    }
     return Scaffold(
       appBar: AppBar(
-        title: new Text("Админ"),
+        title: new Text("Учётка Админ"),
         actions: <Widget>[
           TextButton.icon(
               onPressed: () {
@@ -41,92 +47,75 @@ class _AdminPageState extends State<AdminPage> {
               label: SizedBox.shrink())
         ],
       ),
-      body: Container(
-        child: new Form(
-          key: _adminFormKey,
-          child: new Column(
-            children: <Widget>[
-              new SizedBox(
-                height: 15,
-              ),
-              new Text("Номер договора"),
-              new TextFormField(
-                decoration: InputDecoration(hintText: "Введите номер договора"),
-                onChanged: (text) {
-                  currentContractID = text;
-                },
-              ),
-              new SizedBox(
-                height: 10,
-              ),
-              new Text("Заказчик"),
-              new TextFormField(
-                decoration:
-                    InputDecoration(hintText: "Введите наименование заказчика"),
-                onChanged: (text) {
-                  currentClientName = text;
-                },
-              ),
-              new SizedBox(
-                height: 10,
-              ),
+      body: currentWidget,
 
-              new Text(nodeList[0].nodeName),
-              nodeList[0].field = BasicDateTimeField(),
-              new SizedBox(
-                height: 10,
-              ),
-              new Text(nodeList[1].nodeName),
-              nodeList[1].field = BasicDateTimeField(),
-              new SizedBox(
-                height: 10,
-              ),
-              new Text(nodeList[2].nodeName),
-              nodeList[2].field = BasicDateTimeField(),
-              new SizedBox(
-                height: 10,
-              ),
-              new Text(nodeList[3].nodeName),
-              nodeList[3].field = BasicDateTimeField(),
-              new SizedBox(
-                height: 10,
-              ),
-              new Text(nodeList[4].nodeName),
-              nodeList[4].field = BasicDateTimeField(),
-              new SizedBox(
-                height: 10,
-              ),
-              new TextButton.icon(
-                  onPressed: () {
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: new Text("Внесение проекта в БД"),
-                            content: new Text(
-                                'Вы уверены что хотите внести данные по проекту в БД?'),
-                            actions: <Widget>[
-                              FlatButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: new Text("отмена")),
-                              FlatButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                    _adminFormKey.currentState.save();
-                                    addContract();
-                                  },
-                                  child: new Text("ОК"))
-                            ],
-                          );
-                        });
-                  },
-                  icon: Icon(Icons.add_road),
-                  label: new Text('Добавить проект'))
-            ],
+    );
+  }
+  Widget _startWidget(){
+
+    return Container(
+      child: new Column(
+        children: <Widget>[
+          new SizedBox(
+            height: 15,
           ),
-        ),
+          new Text("Номер договора"),
+          new TextFormField(
+            decoration: InputDecoration(hintText: "Введите номер договора"),
+            onChanged: (text) {
+              currentContractID = text;
+            },
+          ),
+          new SizedBox(
+            height: 10,
+          ),
+          new Text("Заказчик"),
+          new TextFormField(
+            decoration:
+            InputDecoration(hintText: "Введите наименование заказчика"),
+            onChanged: (text) {
+              currentClientName = text;
+            },
+          ),
+          new TextButton.icon(onPressed: (){
+            setState(() {
+              loadStartWidget = false;
+              currentWidget = ListView.builder(itemBuilder: (context, i){
+                if(i < nodeList.length) return ListTile(title: Text(nodeList[i].nodeName),);
+                else return ListTile(title: Text(''));
+              });
+            });
+          }, icon: Icon(Icons.timeline), label: Text("Установить дэдлайны")),
+          new TextButton.icon(
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: new Text("Внесение проекта в БД"),
+                        content: new Text(
+                            'Вы уверены что хотите внести данные по проекту в БД?'),
+                        actions: <Widget>[
+                          FlatButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: new Text("отмена")),
+                          FlatButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                _adminFormKey.currentState.save();
+                                addContract();
+                              },
+                              child: new Text("ОК"))
+                        ],
+                      );
+                    });
+              },
+              icon: Icon(Icons.add_road),
+              label: new Text('Добавить проект')),
+
+        ],
       ),
     );
   }
