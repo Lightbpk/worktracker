@@ -52,7 +52,6 @@ class _AdminPageState extends State<AdminPage> {
     );
   }
   Widget _startWidget(){
-
     return Container(
       child: new Column(
         children: <Widget>[
@@ -82,39 +81,47 @@ class _AdminPageState extends State<AdminPage> {
               loadStartWidget = false;
               currentWidget = ListView.builder(itemBuilder: (context, i){
                 if(i < nodeList.length) return ListTile(title: Text(nodeList[i].nodeName),);
-                else return ListTile(title: Text(''));
+                else if(i == nodeList.length) return ListTile(title: Text("Назад"),
+                onTap: (){
+                  setState(() {
+                    loadStartWidget = true;
+                  });
+                },);
+                else if(i == nodeList.length+1) return ListTile(trailing:           new TextButton.icon(
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: new Text("Внесение проекта в БД"),
+                              content: new Text(
+                                  'Вы уверены что хотите внести данные по проекту в БД?'),
+                              actions: <Widget>[
+                                FlatButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: new Text("отмена")),
+                                FlatButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                      _adminFormKey.currentState.save();
+                                      addContract();
+                                      setState(() {
+                                        loadStartWidget = true;
+                                      });
+                                    },
+                                    child: new Text("ОК"))
+                              ],
+                            );
+                          });
+                    },
+                    icon: Icon(Icons.add_road),
+                    label: new Text('Добавить в БД')),);
+                 else return ListTile(title: Text(''));
               });
             });
           }, icon: Icon(Icons.timeline), label: Text("Установить дэдлайны")),
-          new TextButton.icon(
-              onPressed: () {
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: new Text("Внесение проекта в БД"),
-                        content: new Text(
-                            'Вы уверены что хотите внести данные по проекту в БД?'),
-                        actions: <Widget>[
-                          FlatButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: new Text("отмена")),
-                          FlatButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                                _adminFormKey.currentState.save();
-                                addContract();
-                              },
-                              child: new Text("ОК"))
-                        ],
-                      );
-                    });
-              },
-              icon: Icon(Icons.add_road),
-              label: new Text('Добавить проект')),
-
         ],
       ),
     );
