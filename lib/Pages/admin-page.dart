@@ -79,57 +79,57 @@ class _AdminPageState extends State<AdminPage> {
           new TextButton.icon(onPressed: (){
             setState(() {
               loadStartWidget = false;
-              currentWidget = ListView.builder(itemBuilder: (context, i){
-                if(i < nodeList.length) return ListTile(
-                  title: Text(nodeList[i].nodeName),
-                  onTap:(){
-                    print("tap on "+nodeList[i].nodeName);
-                    nodeList[i].field = BasicDateTimeField();
-                  });
-                else if(i == nodeList.length) return ListTile(title: Text("Назад"),
-                onTap: (){
-                  setState(() {
-                    loadStartWidget = true;
-                  });
-                },);
-                else if(i == nodeList.length+1) return ListTile(trailing:           new TextButton.icon(
-                    onPressed: () {
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: new Text("Внесение проекта в БД"),
-                              content: new Text(
-                                  'Вы уверены что хотите внести данные по проекту в БД?'),
-                              actions: <Widget>[
-                                FlatButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: new Text("отмена")),
-                                FlatButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                      _adminFormKey.currentState.save();
-                                      addContract();
-                                      setState(() {
-                                        loadStartWidget = true;
-                                      });
-                                    },
-                                    child: new Text("ОК"))
-                              ],
-                            );
-                          });
-                    },
-                    icon: Icon(Icons.add_road),
-                    label: new Text('Добавить в БД')),);
-                 else return ListTile(title: Text(''));
-              });
+              _nodeListWidget();
             });
           }, icon: Icon(Icons.timeline), label: Text("Установить дэдлайны")),
         ],
       ),
     );
+  }
+
+  void _nodeListWidget(){
+    currentWidget = ListView.builder(itemBuilder: (context, i){
+      if(i < nodeList.length) return ListTile(
+        subtitle: nodeList[i].field = BasicDateTimeField(),
+        title: Text(nodeList[i].nodeName,));
+      else if(i == nodeList.length) return ListTile(title: Text("Назад"),
+        onTap: (){
+          setState(() {
+            loadStartWidget = true;
+          });
+        },);
+      else if(i == nodeList.length+1) return ListTile(trailing:           new TextButton.icon(
+          onPressed: () {
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: new Text("Внесение проекта в БД"),
+                    content: new Text(
+                        'Вы уверены что хотите внести данные по проекту в БД?'),
+                    actions: <Widget>[
+                      OutlineButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: new Text("отмена")),
+                      FlatButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            addContract();
+                            setState(() {
+                              loadStartWidget = true;
+                            });
+                          },
+                          child: new Text("ОК"))
+                    ],
+                  );
+                });
+          },
+          icon: Icon(Icons.add_road),
+          label: new Text('Добавить в БД')),);
+      else return ListTile(title: Text(''));
+    });
   }
 
   void addContract() {

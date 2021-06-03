@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:worktracker/contract.dart';
 import 'package:worktracker/node.dart';
 
 class DataBaseConnector {
@@ -53,29 +54,32 @@ class DataBaseConnector {
     return nodesList;
   }
 
-  Future <List<String>> getContracts() async{
+  Future <List<Contract>> getContracts() async{
     getMainRef();
     try {
-      List<String> contractsList = [];
-      DatabaseReference contract1 = db.child("work-process")
-          .child("contract_1");
+      List<Contract> contractsList = [];
       await db.child("work-process")
           .once()
           .then((DataSnapshot snapshot) {
-        snapshot.value.forEach((key, values) {
-          contractsList.add(key);
+        snapshot.value.forEach((key, value) {
+          Contract currentContract = new Contract(key);
+          contractsList.add(currentContract);
+          db.child("work-process").child(key).child("name")
+              .once().then((DataSnapshot nameSnap){
+                currentContract.name =  nameSnap.value;
+              });
         });
       });
       return contractsList;
     }catch (e){
       print(e);
-      return ['---'];
+      return null;
     }
   }
 
   void addProject(String id, String clientName, List<BuildNode> nodeList) async{
     getMainRef();
-    await db.child("work-process").child("contract_$id").set({
+    await db.child("work-process").child(id).set({
       'contractID': id,
       'name': clientName,
     });

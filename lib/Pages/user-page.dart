@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:worktracker/contract.dart';
 import 'package:worktracker/node.dart';
 import 'package:worktracker/services/auth_service.dart';
 import 'package:worktracker/services/firebaseConnector.dart';
@@ -13,7 +14,7 @@ class UserPage extends StatefulWidget{
 class _UserPageState extends State<UserPage> {
 bool isLoaded = false;
 Widget mainWidget = CircularProgressIndicator();
-List<String> contractsList;
+List<Contract> contractsList;
 List<BuildNode> nodesList;
 List<String> defStageList = ['задача 1','задача2','задача3'];
 String status="";
@@ -34,7 +35,7 @@ void initState() {
   else {
     return Scaffold(
       appBar: AppBar(
-        title: new Text("Юзер"),
+        title: new Text("Учетка Юзер"),
         actions: <Widget>[
           TextButton.icon(
               onPressed: () {
@@ -56,12 +57,13 @@ void initState() {
     return ListView.builder(itemBuilder: (context, i) {
       if (i < contractsList.length)
         return ListTile(
-          title: Text(contractsList[i]),
+          title: Text(contractsList[i].id),
+          subtitle: Text(contractsList[i].name),
           onTap: () {
-            print('Taped ' + contractsList[i]);
+            print('Taped ' + contractsList[i].id);
             //isLoaded= false;
             isLoaded = false;
-            readNodes(contractsList[i]);
+            readNodes(contractsList[i].id);
           },
         );
       else
