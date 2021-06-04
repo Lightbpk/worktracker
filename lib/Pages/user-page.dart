@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:worktracker/contract.dart';
 import 'package:worktracker/node.dart';
 import 'package:worktracker/services/auth_service.dart';
@@ -109,6 +110,7 @@ void initState() {
       if(i < defStageList.length)
         return ListTile(
           title: Text(defStageList[i].stageName),
+          subtitle: Text(defStageList[i].status+" c "+defStageList[i].lastStatusTime),
           onTap: () {
             print('Taped ' + defStageList[i].stageName);
             setState(() {
@@ -142,38 +144,44 @@ void initState() {
       TextButton.icon(onPressed: (){
           stage.status = "В работе";
           //status = "В работе";
-            setState(() {
+            this.setState(() {
               print(status);
               DateTime dateTime = DateTime.now();
               stage.lastStatusTime = dateTime.toString();
             });
+            makeToast(stage.status, Colors.green);
       },
           icon: Icon(Icons.play_arrow),
           label: Text('Начать')),
       TextButton.icon(onPressed: (){
-        setState(() {
+
+        this.setState(() {
           stage.status = 'простой';
           DateTime dateTime = DateTime.now();
           stage.lastStatusTime = dateTime.toString();
         });
+        makeToast(stage.status, Colors.red);
       },
           icon: Icon(Icons.pause),
           label: Text('Пауза')),
       TextButton.icon(onPressed: (){
-        setState(() {
+        this.setState(() {
           stage.status = "доработка";
           DateTime dateTime = DateTime.now();
           stage.lastStatusTime = dateTime.toString();
         });
+        makeToast(stage.status, Colors.yellow);
       },
           icon: Icon(Icons.edit),
           label: Text('Доработка')),
       TextButton.icon(onPressed: (){
-        setState(() {
+        this.setState(() {
+          isLoaded = true;
           stage.status = "закончено";
           DateTime dateTime = DateTime.now();
           stage.lastStatusTime = dateTime.toString();
         });
+        makeToast(stage.status, Colors.lightBlue);
       },
           icon: Icon(Icons.stop),
           label: Text('Стоп')),
@@ -204,5 +212,16 @@ void initState() {
       mainWidget = _buildContractsList();
       isLoaded = true;
     });
+  }
+
+  void makeToast(String status, Color color)
+  {
+    Fluttertoast.showToast(msg: "Установлен Статус "+status,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: color,
+        textColor: Colors.white,
+        fontSize: 16.0);
   }
 }
