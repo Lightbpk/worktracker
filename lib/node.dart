@@ -5,7 +5,7 @@ import 'Pages/admin-page.dart';
 class BuildNode {
   String nodeName;
   String nodeDeadline;
-  List<NodeStage> nodeStage;
+  List<Stage> stage;
   BasicDateTimeField field;
 
   BuildNode(String nodeName){

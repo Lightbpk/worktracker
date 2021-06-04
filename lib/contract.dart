@@ -3,6 +3,7 @@ class Contract {
   String name;
   Contract(String id){
     this.id = id;
+    name= 'название организации';
   }
 
 }

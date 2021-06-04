@@ -1,7 +1,11 @@
-class NodeStage {
+class Stage {
   String stageName;
+  String status;
+  String lastStatusTime;
 
-  NodeStage(String stageName){
+  Stage(String stageName){
     this.stageName = stageName;
+    status = 'not set';
+    lastStatusTime = "not set";
   }
 }

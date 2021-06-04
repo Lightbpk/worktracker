@@ -4,6 +4,7 @@ import 'package:worktracker/contract.dart';
 import 'package:worktracker/node.dart';
 import 'package:worktracker/services/auth_service.dart';
 import 'package:worktracker/services/firebaseConnector.dart';
+import 'package:worktracker/stage.dart';
 
 class UserPage extends StatefulWidget{
   @override
@@ -16,7 +17,7 @@ bool isLoaded = false;
 Widget mainWidget = CircularProgressIndicator();
 List<Contract> contractsList;
 List<BuildNode> nodesList;
-List<String> defStageList = ['задача 1','задача2','задача3'];
+List<Stage> defStageList = [new Stage("Задача1"),new Stage("Задача2"),new Stage("Задача3")];
 String status="";
 String date="";
 
@@ -107,9 +108,9 @@ void initState() {
     return ListView.builder(itemBuilder: (context, i){
       if(i < defStageList.length)
         return ListTile(
-          title: Text(defStageList[i]),
+          title: Text(defStageList[i].stageName),
           onTap: () {
-            print('Taped ' + defStageList[i]);
+            print('Taped ' + defStageList[i].stageName);
             setState(() {
               mainWidget =_buildStage(defStageList[i]);
               isLoaded = true;
@@ -134,48 +135,58 @@ void initState() {
     });
   }
 
-  Widget _buildStage(String stageName){
+  Widget _buildStage(Stage stage){
     print('status = '+ status);
     return Column(children: [
-      Text(stageName),
+      Text(stage.stageName),
       TextButton.icon(onPressed: (){
-          status = "В работе";
-          print(status);
-          DateTime dateTime = DateTime.now();
-          date = dateTime.toString();
-setState(() {
-
-});
-      }, icon: Icon(Icons.play_arrow), label: Text('Начать')),
-      TextButton.icon(onPressed: (){
-        setState(() {
-          status = 'простой';
-          DateTime dateTime = DateTime.now();
-          date = dateTime.toString();
-        });
-      }, icon: Icon(Icons.pause), label: Text('Пауза')),
+          stage.status = "В работе";
+          //status = "В работе";
+            setState(() {
+              print(status);
+              DateTime dateTime = DateTime.now();
+              stage.lastStatusTime = dateTime.toString();
+            });
+      },
+          icon: Icon(Icons.play_arrow),
+          label: Text('Начать')),
       TextButton.icon(onPressed: (){
         setState(() {
-          status = "доработка";
+          stage.status = 'простой';
           DateTime dateTime = DateTime.now();
-          date = dateTime.toString();
+          stage.lastStatusTime = dateTime.toString();
         });
-      }, icon: Icon(Icons.edit), label: Text('Доработка')),
+      },
+          icon: Icon(Icons.pause),
+          label: Text('Пауза')),
       TextButton.icon(onPressed: (){
         setState(() {
-          status = "закончено";
+          stage.status = "доработка";
           DateTime dateTime = DateTime.now();
-          date = dateTime.toString();
+          stage.lastStatusTime = dateTime.toString();
         });
-      }, icon: Icon(Icons.stop), label: Text('Стоп')),
-      Text(status),
-      Text(date),
+      },
+          icon: Icon(Icons.edit),
+          label: Text('Доработка')),
+      TextButton.icon(onPressed: (){
+        setState(() {
+          stage.status = "закончено";
+          DateTime dateTime = DateTime.now();
+          stage.lastStatusTime = dateTime.toString();
+        });
+      },
+          icon: Icon(Icons.stop),
+          label: Text('Стоп')),
+      Text(stage.status),
+      Text(stage.lastStatusTime),
       TextButton.icon(onPressed: (){
         setState(() {
           mainWidget =_buildStageList();
           isLoaded = true;
         });
-      }, icon: Icon(Icons.arrow_back), label: Text("Назад"))
+      },
+          icon: Icon(Icons.arrow_back),
+          label: Text("Назад"))
     ],);
   }
 
