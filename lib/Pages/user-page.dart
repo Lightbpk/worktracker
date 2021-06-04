@@ -82,7 +82,7 @@ void initState() {
           subtitle: Text(nodesList[i].nodeDeadline),
           onTap: () {
             setState(() {
-              mainWidget =_buildStageList();
+              mainWidget =_buildStageList(nodesList[i]);
               isLoaded = true;
             });
             print('Taped ' + nodesList[i].nodeName);
@@ -105,16 +105,16 @@ void initState() {
         );
     });
   }
-  Widget _buildStageList(){
+  Widget _buildStageList(BuildNode node){
     return ListView.builder(itemBuilder: (context, i){
-      if(i < defStageList.length)
+      if(i < node.stages.length)
         return ListTile(
-          title: Text(defStageList[i].stageName),
-          subtitle: Text(defStageList[i].status+" c "+defStageList[i].lastStatusTime),
+          title: Text(node.stages[i].stageName),
+          subtitle: Text(node.stages[i].status+" c "+node.stages[i].lastStatusTime),
           onTap: () {
-            print('Taped ' + defStageList[i].stageName);
+            print('Taped ' + node.stages[i].stageName);
             setState(() {
-              mainWidget =_buildStage(defStageList[i]);
+              mainWidget =_buildStage(node.stages[i],node);
               isLoaded = true;
             });
           },
@@ -137,7 +137,7 @@ void initState() {
     });
   }
 
-  Widget _buildStage(Stage stage){
+  Widget _buildStage(Stage stage,BuildNode currentNode){
     print('status = '+ status);
     return Column(children: [
       Text(stage.stageName),
@@ -189,7 +189,7 @@ void initState() {
       Text(stage.lastStatusTime),
       TextButton.icon(onPressed: (){
         setState(() {
-          mainWidget =_buildStageList();
+          mainWidget =_buildStageList(currentNode);
           isLoaded = true;
         });
       },
