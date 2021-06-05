@@ -14,7 +14,6 @@ class AdminPage extends StatefulWidget {
 
 class _AdminPageState extends State<AdminPage> {
   Widget currentWidget;
-  final _adminFormKey = GlobalKey<FormState>();
   bool loadStartWidget = true;
   String currentContractID;
   String currentClientName;
