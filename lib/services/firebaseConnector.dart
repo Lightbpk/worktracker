@@ -46,13 +46,25 @@ class DataBaseConnector {
         .once().then((DataSnapshot snapshot) {
       snapshot.value.forEach((key, value){
         BuildNode node = BuildNode(key);
-        node.nodeDeadline = value;
-        nodesList.add(node);
-        print('key : '+key);
-        print('value : '+value);
+        if(value.isString){
+
+        }
       });
     } );
     return nodesList;
+  }
+
+  Future <List<Stage>> getStages(String contract,BuildNode node) async{
+    getMainRef();
+    List<Stage> stageList = [];
+    await db.child("work-process").child(contract).child('nodes')
+        .child(node.nodeName).once().then((DataSnapshot snapshot){
+          snapshot.value.forEach((key, value){
+            if(key!='deadline'){
+              stageList.add(Stage(key));
+            }else print("deadline skip");
+          });
+    } );
   }
 
   Future <List<Contract>> getContracts() async{

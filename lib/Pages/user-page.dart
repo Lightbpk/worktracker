@@ -18,9 +18,10 @@ bool isLoaded = false;
 Widget mainWidget = CircularProgressIndicator();
 List<Contract> contractsList;
 List<BuildNode> nodesList;
-List<Stage> defStageList = [new Stage("Задача1"),new Stage("Задача2"),new Stage("Задача3")];
+List<Stage> defStageList;
 String status="";
 String date="";
+Contract currentContract;
 
 @override
 void initState() {
@@ -65,6 +66,7 @@ void initState() {
             print('Taped ' + contractsList[i].id);
             //isLoaded= false;
             isLoaded = false;
+            currentContract = contractsList[i];
             readNodes(contractsList[i].id);
           },
         );
@@ -109,6 +111,8 @@ void initState() {
   }
   Widget _buildStageList(BuildNode node){
     return ListView.builder(itemBuilder: (context, i){
+      readStages(node);
+      node.stages = defStageList;
       if(i < node.stages.length) {
         String subtitleText= node.stages[i].status + " c " + node.stages[i].lastStatusTime;
         return ListTile(
@@ -199,6 +203,10 @@ void initState() {
           icon: Icon(Icons.arrow_back),
           label: Text("Назад"))
     ],);
+  }
+
+ void readStages(BuildNode node) async{
+  defStageList = await DataBaseConnector().getStages(currentContract.id,node);
   }
 
   void readNodes(String contract) async{
