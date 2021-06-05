@@ -83,12 +83,11 @@ class DataBaseConnector {
       'contractID': id,
       'name': clientName,
     });
-    String string="";
+    //String string="nodeList[0].nodeName :nodeList[0].field.dateTimeValue.toString()";
     nodeList.forEach((node) {
-      string += node.nodeName+":"+node.field.dateTimeValue.toString()+",";
+      db.child("work-process").child(id).child("nodes")
+          .child(node.nodeName).set(node.field.dateTimeValue.toString());
     });
-    db.child("work-process").child(id).child("nodes").set({
 
-    });
   }
 }
