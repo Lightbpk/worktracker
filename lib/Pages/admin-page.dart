@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:worktracker/node.dart';
 import 'package:worktracker/services/auth_service.dart';
 import 'package:worktracker/services/firebaseConnector.dart';
+import 'package:worktracker/stage.dart';
 
 class AdminPage extends StatefulWidget {
   @override
@@ -29,6 +30,7 @@ class _AdminPageState extends State<AdminPage> {
     new BuildNode("Тестирование оборудования"),
     new BuildNode("Демонтаж, упаковка и отгрузка оборудования"),
   ];
+  List<Stage> defaultStageList = [new Stage("Задача1"),new Stage("Задача2"),new Stage("Задача3")];
 
 
   @override
@@ -145,7 +147,7 @@ class _AdminPageState extends State<AdminPage> {
 
   void addContract() {
     DataBaseConnector().addProject(
-        currentContractID, currentClientName, nodeList);
+        currentContractID, currentClientName, nodeList, defaultStageList);
   }
 }
 

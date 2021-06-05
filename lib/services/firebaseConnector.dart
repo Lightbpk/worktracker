@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:worktracker/contract.dart';
 import 'package:worktracker/node.dart';
+import 'package:worktracker/stage.dart';
 
 class DataBaseConnector {
   DataBaseConnector _instance;
@@ -77,7 +78,7 @@ class DataBaseConnector {
     }
   }
 
-  void addProject(String id, String clientName, List<BuildNode> nodeList) async{
+  void addProject(String id, String clientName, List<BuildNode> nodeList, List<Stage> stageList) async{
     getMainRef();
     await db.child("work-process").child(id).set({
       'contractID': id,
@@ -86,7 +87,13 @@ class DataBaseConnector {
     //String string="nodeList[0].nodeName :nodeList[0].field.dateTimeValue.toString()";
     nodeList.forEach((node) {
       db.child("work-process").child(id).child("nodes")
-          .child(node.nodeName).set(node.field.dateTimeValue.toString());
+          .child(node.nodeName).child("deadline").set(node.field.dateTimeValue.toString());
+      stageList.forEach((Stage stage) {
+        db.child("work-process").child(id).child("nodes")
+            .child(node.nodeName).child(stage.stageName).child("status").set(stage.status);
+        db.child("work-process").child(id).child("nodes")
+            .child(node.nodeName).child(stage.stageName).child("lastStatusTime").set(stage.lastStatusTime);
+      });
     });
 
   }
