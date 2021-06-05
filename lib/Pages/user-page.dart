@@ -77,10 +77,10 @@ void initState() {
   Widget _buildNodesList() {
     return ListView.builder(itemBuilder: (context, i) {
       if (i < nodesList.length) {
-        String subTitle = nodesList[i].nodeDeadline;
+        String subTitleText = nodesList[i].nodeDeadline;
         return ListTile(
           title: Text(nodesList[i].nodeName),
-          subtitle: Text("Deadline "+subTitle.substring(0,subTitle.length - 7)),// dateTrim без секунд
+          subtitle: Text("Deadline "+subTitleText.substring(0,subTitleText.length - 7)),// dateTrim без секунд
           onTap: () {
             setState(() {
               mainWidget = _buildStageList(nodesList[i]);
@@ -109,19 +109,20 @@ void initState() {
   }
   Widget _buildStageList(BuildNode node){
     return ListView.builder(itemBuilder: (context, i){
-      if(i < node.stages.length)
+      if(i < node.stages.length) {
+        String subtitleText= node.stages[i].status + " c " + node.stages[i].lastStatusTime;
         return ListTile(
           title: Text(node.stages[i].stageName),
-          subtitle: Text(node.stages[i].status+" c "+node.stages[i].lastStatusTime),
+          subtitle: Text(subtitleText.substring(0,subtitleText.length - 10)),
           onTap: () {
             print('Taped ' + node.stages[i].stageName);
             setState(() {
-              mainWidget =_buildStageTail(node.stages[i],node);
+              mainWidget = _buildStageTail(node.stages[i], node);
               isLoaded = true;
             });
           },
         );
-      else if(i == defStageList.length){
+      }else if(i == defStageList.length){
         return ListTile(
           title: Text("Назад"),
           onTap: (){
