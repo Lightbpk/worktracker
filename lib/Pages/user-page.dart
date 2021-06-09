@@ -7,54 +7,53 @@ import 'package:worktracker/services/auth_service.dart';
 import 'package:worktracker/services/firebaseConnector.dart';
 import 'package:worktracker/stage.dart';
 
-class UserPage extends StatefulWidget{
+class UserPage extends StatefulWidget {
   @override
   _UserPageState createState() => _UserPageState();
-
 }
 
 class _UserPageState extends State<UserPage> {
-bool isLoaded = false;
-Widget mainWidget = CircularProgressIndicator();
-List<Contract> contractsList;
-List<BuildNode> nodesList;
-List<Stage> defStageList;
-String status="";
-String date="";
-Contract currentContract;
+  bool isLoaded = false;
+  Widget mainWidget = CircularProgressIndicator();
+  List<Contract> contractsList;
+  List<BuildNode> nodesList;
+  List<Stage> defStageList;
+  String status = "status not set";
+  String date = "date not set";
+  Contract currentContract;
+  BuildNode currentNode;
 
-@override
-void initState() {
+  @override
+  void initState() {
     readContractsList();
     print('init');
     super.initState();
   }
 
-@override
+  @override
   Widget build(BuildContext context) {
-  if (!isLoaded) {
-    return CircularProgressIndicator();
+    if (!isLoaded) {
+      return CircularProgressIndicator();
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          title: new Text("Учетка Юзер"),
+          actions: <Widget>[
+            TextButton.icon(
+                onPressed: () {
+                  AuthService().logOut();
+                },
+                icon: Icon(
+                  Icons.exit_to_app,
+                  color: Colors.white,
+                ),
+                label: SizedBox.shrink())
+          ],
+        ),
+        body: mainWidget,
+      );
+    }
   }
-  else {
-    return Scaffold(
-      appBar: AppBar(
-        title: new Text("Учетка Юзер"),
-        actions: <Widget>[
-          TextButton.icon(
-              onPressed: () {
-                AuthService().logOut();
-              },
-              icon: Icon(
-                Icons.exit_to_app,
-                color: Colors.white,
-              ),
-              label: SizedBox.shrink())
-        ],
-      ),
-      body: mainWidget,
-    );
-  }
-}
 
   Widget _buildContractsList() {
     return ListView.builder(itemBuilder: (context, i) {
@@ -67,7 +66,7 @@ void initState() {
             //isLoaded= false;
             isLoaded = false;
             currentContract = contractsList[i];
-            readNodes(contractsList[i].id);
+            readNodes(currentContract.id);
           },
         );
       else
@@ -76,48 +75,56 @@ void initState() {
         );
     });
   }
+
   Widget _buildNodesList() {
     return ListView.builder(itemBuilder: (context, i) {
       if (i < nodesList.length) {
         String subTitleText = nodesList[i].nodeDeadline;
+        if(subTitleText=='null'){
+          subTitleText = ' not set deadline';
+        }
+        print("subTitle +"+subTitleText);
         return ListTile(
           title: Text(nodesList[i].nodeName),
-          subtitle: Text("Deadline "+subTitleText.substring(0,subTitleText.length - 7)),// dateTrim без секунд
+          subtitle: Text(
+              "Deadline " + subTitleText.substring(0, subTitleText.length - 7)),
+          // dateTrim без секунд
           onTap: () {
+            currentNode = nodesList[i];
             setState(() {
-              mainWidget = _buildStageList(nodesList[i]);
+              mainWidget = _buildStageList(currentNode);
               isLoaded = true;
             });
             print('Taped ' + nodesList[i].nodeName);
           },
         );
-      }
-      else if(i == nodesList.length){
+      } else if (i == nodesList.length) {
         return ListTile(
           title: Text("назад"),
-          onTap: (){
+          onTap: () {
             setState(() {
-              mainWidget =_buildContractsList();
+              mainWidget = _buildContractsList();
               isLoaded = true;
             });
           },
         );
-      }
-      else
+      } else
         return ListTile(
           title: Text("-----------"),
         );
     });
   }
-  Widget _buildStageList(BuildNode node){
-    return ListView.builder(itemBuilder: (context, i){
+
+  Widget _buildStageList(BuildNode node) {
+    return ListView.builder(itemBuilder: (context, i) {
       readStages(node);
       node.stages = defStageList;
-      if(i < node.stages.length) {
-        String subtitleText= node.stages[i].status + " c " + node.stages[i].lastStatusTime;
+      if (i < node.stages.length) {
+        String subtitleText =
+            node.stages[i].status + " c " + node.stages[i].lastStatusTime;
         return ListTile(
           title: Text(node.stages[i].stageName),
-          subtitle: Text(subtitleText.substring(0,subtitleText.length - 10)),
+          subtitle: Text(subtitleText.substring(0, subtitleText.length - 10)),
           onTap: () {
             print('Taped ' + node.stages[i].stageName);
             setState(() {
@@ -126,95 +133,88 @@ void initState() {
             });
           },
         );
-      }else if(i == defStageList.length){
+      } else if (i == defStageList.length) {
         return ListTile(
           title: Text("Назад"),
-          onTap: (){
+          onTap: () {
             setState(() {
-              mainWidget =_buildNodesList();
+              mainWidget = _buildNodesList();
               isLoaded = true;
             });
           },
         );
-      }
-      else
+      } else
         return ListTile(
           title: Text('---------'),
         );
     });
   }
 
-  Widget _buildStageTail(Stage stage,BuildNode currentNode){
-    print('status = '+ status);
-    return Column(children: [
-      Text(stage.stageName),
-      TextButton.icon(onPressed: (){
-          stage.status = "В работе";
-          //status = "В работе";
-            this.setState(() {
-              print(status);
-              DateTime dateTime = DateTime.now();
-              stage.lastStatusTime = dateTime.toString();
-            });
-            makeToast(stage.status, Colors.green);
-      },
-          icon: Icon(Icons.play_arrow),
-          label: Text('Начать')),
-      TextButton.icon(onPressed: (){
-
-        this.setState(() {
-          stage.status = 'простой';
-          DateTime dateTime = DateTime.now();
-          stage.lastStatusTime = dateTime.toString();
-        });
-        makeToast(stage.status, Colors.red);
-      },
-          icon: Icon(Icons.pause),
-          label: Text('Пауза')),
-      TextButton.icon(onPressed: (){
-        this.setState(() {
-          stage.status = "доработка";
-          DateTime dateTime = DateTime.now();
-          stage.lastStatusTime = dateTime.toString();
-        });
-        makeToast(stage.status, Colors.yellow);
-      },
-          icon: Icon(Icons.edit),
-          label: Text('Доработка')),
-      TextButton.icon(onPressed: (){
-        this.setState(() {
-          isLoaded = true;
-          stage.status = "закончено";
-          DateTime dateTime = DateTime.now();
-          stage.lastStatusTime = dateTime.toString();
-        });
-        makeToast(stage.status, Colors.lightBlue);
-      },
-          icon: Icon(Icons.stop),
-          label: Text('Стоп')),
-      Text(stage.status),
-      Text(stage.lastStatusTime),
-      TextButton.icon(onPressed: (){
-        setState(() {
-          mainWidget =_buildStageList(currentNode);
-          isLoaded = true;
-        });
-      },
-          icon: Icon(Icons.arrow_back),
-          label: Text("Назад"))
-    ],);
-  }
-
- void readStages(BuildNode node) async{
-  defStageList = await DataBaseConnector().getStages(currentContract.id,node);
-  }
-
-  void readNodes(String contract) async{
-    nodesList = await DataBaseConnector().getNodes(contract);
-    setState(() {
-      mainWidget =_buildNodesList();
-      isLoaded = true;
-    });
+  Widget _buildStageTail(Stage stage, BuildNode currentNode) {
+    print('status = ' + status);
+    return Column(
+      children: [
+        Text(stage.stageName),
+        TextButton.icon(
+            onPressed: () {
+              stage.status = "В работе";
+              //status = "В работе";
+              this.setState(() {
+                print(status);
+                DateTime dateTime = DateTime.now();
+                stage.lastStatusTime = dateTime.toString();
+              });
+              makeToast(stage.status, Colors.green);
+            },
+            icon: Icon(Icons.play_arrow),
+            label: Text('Начать')),
+        TextButton.icon(
+            onPressed: () {
+              this.setState(() {
+                stage.status = 'простой';
+                DateTime dateTime = DateTime.now();
+                stage.lastStatusTime = dateTime.toString();
+              });
+              makeToast(stage.status, Colors.red);
+            },
+            icon: Icon(Icons.pause),
+            label: Text('Пауза')),
+        TextButton.icon(
+            onPressed: () {
+              this.setState(() {
+                stage.status = "доработка";
+                DateTime dateTime = DateTime.now();
+                stage.lastStatusTime = dateTime.toString();
+              });
+              makeToast(stage.status, Colors.yellow);
+            },
+            icon: Icon(Icons.edit),
+            label: Text('Доработка')),
+        TextButton.icon(
+            onPressed: () {
+              this.setState(() {
+                isLoaded = true;
+                stage.status = "закончено";
+                DateTime dateTime = DateTime.now();
+                stage.lastStatusTime = dateTime.toString();
+              });
+              makeToast(stage.status, Colors.lightBlue);
+            },
+            icon: Icon(Icons.stop),
+            label: Text('Стоп')),
+        Text(stage.status),
+        Text(stage.lastStatusTime),
+        TextButton.icon(
+            onPressed: () {
+              setState(() {
+                mainWidget = _buildStageList(currentNode);
+                isLoaded = true;
+              });
+            },
+            icon: Icon(Icons.arrow_back),
+            label: Text("Назад"))
+      ],
+    );
   }
 
   void readContractsList() async {
@@ -225,9 +225,22 @@ void initState() {
     });
   }
 
-  void makeToast(String status, Color color)
-  {
-    Fluttertoast.showToast(msg: "Установлен Статус "+status,
+  void readNodes(String contract) async {
+    nodesList = await DataBaseConnector().getNodes(contract);
+    setState(() {
+      mainWidget = _buildNodesList();
+      isLoaded = true;
+    });
+  }
+
+  void readStages(BuildNode node) async {
+    defStageList =
+        await DataBaseConnector().getStages(currentContract.id, node);
+  }
+
+  void makeToast(String status, Color color) {
+    Fluttertoast.showToast(
+        msg: "Установлен Статус " + status,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
         timeInSecForIosWeb: 1,

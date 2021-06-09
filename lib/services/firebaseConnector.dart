@@ -18,9 +18,9 @@ class DataBaseConnector {
     myFirebaseApp = app;
     if(_instance == null){
       _instance = DataBaseConnector();
-      print('instance - null create instance');
+      print('create new instance');
     }
-    else print('instance not null');
+    else print('getting exist instance');
     getMainRef();
     db.child("work-process").once()
         .then((DataSnapshot snapshot) {
@@ -46,9 +46,10 @@ class DataBaseConnector {
         .once().then((DataSnapshot snapshot) {
       snapshot.value.forEach((key, value){
         BuildNode node = BuildNode(key);
-        if(value.isString){
-
-        }
+        Map<dynamic,dynamic> mapValue = Map<dynamic,dynamic>.from(value);
+        print("value "+mapValue.toString());
+        node.nodeDeadline = mapValue["deadline"];
+        nodesList.add(node);
       });
     } );
     return nodesList;
