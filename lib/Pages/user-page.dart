@@ -5,7 +5,7 @@ import 'package:worktracker/contract.dart';
 import 'package:worktracker/node.dart';
 import 'package:worktracker/services/auth_service.dart';
 import 'package:worktracker/services/firebaseConnector.dart';
-import 'package:worktracker/stage.dart';
+import 'package:worktracker/task.dart';
 
 class UserPage extends StatefulWidget {
   @override
@@ -17,7 +17,7 @@ class _UserPageState extends State<UserPage> {
   Widget mainWidget = CircularProgressIndicator();
   List<Contract> contractsList;
   List<BuildNode> nodesList;
-  List<Stage> defStageList;
+  List<Task> defTasksList;
   String status = "status not set";
   String date = "date not set";
   Contract currentContract;
@@ -92,7 +92,7 @@ class _UserPageState extends State<UserPage> {
           onTap: () {
             currentNode = nodesList[i];
             setState(() {
-              mainWidget = _buildStageList(currentNode);
+             // mainWidget = _buildTasksList(currentNode);
               isLoaded = true;
             });
             print('Taped ' + nodesList[i].nodeName);
@@ -115,25 +115,25 @@ class _UserPageState extends State<UserPage> {
     });
   }
 
-  Widget _buildStageList(BuildNode node) {
+/*
+  Widget _buildTasksList(BuildNode node) {
     return ListView.builder(itemBuilder: (context, i) {
-      readStages(node);
-      node.stages = defStageList;
+      readTasks(node);
       if (i < node.stages.length) {
         String subtitleText =
             node.stages[i].status + " c " + node.stages[i].lastStatusTime;
         return ListTile(
-          title: Text(node.stages[i].stageName),
+          title: Text(node.stages[i].taskName),
           subtitle: Text(subtitleText.substring(0, subtitleText.length - 10)),
           onTap: () {
-            print('Taped ' + node.stages[i].stageName);
+            print('Taped ' + node.stages[i].taskName);
             setState(() {
               mainWidget = _buildStageTail(node.stages[i], node);
               isLoaded = true;
             });
           },
         );
-      } else if (i == defStageList.length) {
+      } else if (i == defTasksList.length) {
         return ListTile(
           title: Text("Назад"),
           onTap: () {
@@ -149,12 +149,13 @@ class _UserPageState extends State<UserPage> {
         );
     });
   }
+*/
 
-  Widget _buildStageTail(Stage stage, BuildNode currentNode) {
+  Widget _buildStageTail(Task stage, BuildNode currentNode) {
     print('status = ' + status);
     return Column(
       children: [
-        Text(stage.stageName),
+        Text(stage.taskName),
         TextButton.icon(
             onPressed: () {
               stage.status = "В работе";
@@ -207,7 +208,7 @@ class _UserPageState extends State<UserPage> {
         TextButton.icon(
             onPressed: () {
               setState(() {
-                mainWidget = _buildStageList(currentNode);
+               // mainWidget = _buildTasksList(currentNode);
                 isLoaded = true;
               });
             },
@@ -233,9 +234,9 @@ class _UserPageState extends State<UserPage> {
     });
   }
 
-  void readStages(BuildNode node) async {
-    defStageList =
-        await DataBaseConnector().getStages(currentContract.id, node);
+  void readTasks(BuildNode node) async {
+    defTasksList =
+        await DataBaseConnector().getTasks(currentContract.id, node);
   }
 
   void makeToast(String status, Color color) {

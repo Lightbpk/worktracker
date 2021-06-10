@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:worktracker/node.dart';
 import 'package:worktracker/services/auth_service.dart';
 import 'package:worktracker/services/firebaseConnector.dart';
-import 'package:worktracker/stage.dart';
+import 'package:worktracker/task.dart';
 
 class AdminPage extends StatefulWidget {
   @override
@@ -20,18 +20,16 @@ class _AdminPageState extends State<AdminPage> {
   String currentClientName;
   BasicDateTimeField firstNodeDeadLine;
   List<BuildNode> nodeList = [
-    new BuildNode("Оформление документов"),
-    new BuildNode("Разработка КД и электроКД "),
-    new BuildNode("Снабжение комплектующими"),
-    new BuildNode("Заготовительно изготовительные Операции"),
-    new BuildNode("Сборка оборудования согласно ТК"),
-    new BuildNode("Сборка Шкафа обвязка Электрикой"),
-    new BuildNode("Наладка оборудования"),
-    new BuildNode("Тестирование оборудования"),
-    new BuildNode("Демонтаж, упаковка и отгрузка оборудования"),
+    new BuildNode("Оформление документов","01"),
+    new BuildNode("Разработка КД и электроКД","02"),
+    new BuildNode("Снабжение комплектующими","03"),
+    new BuildNode("Заготовительно изготовительные Операции","04"),
+    new BuildNode("Сборка оборудования согласно ТК","05"),
+    new BuildNode("Сборка Шкафа обвязка Электрикой","06"),
+    new BuildNode("Наладка оборудования","07"),
+    new BuildNode("Тестирование оборудования","08"),
+    new BuildNode("Демонтаж, упаковка и отгрузка оборудования","09"),
   ];
-  List<Stage> defaultStageList = [new Stage("Задача1"),new Stage("Задача2"),new Stage("Задача3")];
-
 
   @override
   Widget build(BuildContext context) {
@@ -146,8 +144,20 @@ class _AdminPageState extends State<AdminPage> {
   }
 
   void addContract() {
+    List<Task> defTaskList =  makeDefaultTaskList(nodeList);
     DataBaseConnector().addProject(
-        currentContractID, currentClientName, nodeList, defaultStageList);
+        currentContractID, currentClientName, nodeList, defTaskList);
+  }
+
+  List<Task> makeDefaultTaskList(List<BuildNode> nodeList)
+  {
+    List<Task> defaultTasksList= [];
+    nodeList.forEach((node) {
+      defaultTasksList.add(new Task("Задача1_"+node.nodePosition,node.nodeName));
+      defaultTasksList.add(new Task("Задача2_"+node.nodePosition,node.nodeName));
+      defaultTasksList.add(new Task("Задача3_"+node.nodePosition,node.nodeName));
+    });
+    return defaultTasksList;
   }
 }
 
@@ -186,3 +196,4 @@ class BasicDateTimeField extends StatelessWidget {
     ]);
   }
 }
+
