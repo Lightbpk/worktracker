@@ -38,8 +38,11 @@ class DataBaseConnector {
     await db.child("work-process").child(contract).child('nodes')
         .once().then((DataSnapshot snapshot) {
       snapshot.value.forEach((key, value){
-
-      /*  BuildNode node = BuildNode(key,1);//!!!!!!!!!!!!!!!  1 временно
+        Map<dynamic,dynamic> mapValue = Map<dynamic,dynamic>.from(value);
+        BuildNode node = BuildNode(mapValue["nodeName"],key);
+        node.nodeDeadline = mapValue["deadline"];
+        nodesList.add(node);
+        /*
         Map<dynamic,dynamic> mapValue = Map<dynamic,dynamic>.from(value);
         print("value "+mapValue.toString());
         node.nodeDeadline = mapValue["deadline"];
@@ -52,13 +55,16 @@ class DataBaseConnector {
   Future <List<Task>> getTasks(String contract,BuildNode node) async{
     getMainRef();
     List<Task> tasksList = [];
-    await db.child("work-process").child(contract).child('nodes')
-        .child(node.nodeName).once().then((DataSnapshot snapshot){
+    await db.child("work-process").child(contract).child('tasks')
+        .once().then((DataSnapshot snapshot){
           snapshot.value.forEach((key, value){
-            print("key "+key);
-            print("value "+Map<dynamic,dynamic>.from(value).toString());
+            Map<dynamic,dynamic> mapValue = Map<dynamic,dynamic>.from(value);
+            if(mapValue["parentNodeName"]==node.nodeName){
+              tasksList.add(new Task(key, node.nodeName));
+            }
           });
     } );
+    return tasksList;
   }
 
   Future <List<Contract>> getContracts() async{

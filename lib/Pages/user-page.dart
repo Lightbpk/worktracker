@@ -17,11 +17,12 @@ class _UserPageState extends State<UserPage> {
   Widget mainWidget = CircularProgressIndicator();
   List<Contract> contractsList;
   List<BuildNode> nodesList;
-  List<Task> defTasksList;
+  List<Task> tasksList=[];
   String status = "status not set";
   String date = "date not set";
   Contract currentContract;
   BuildNode currentNode;
+
 
   @override
   void initState() {
@@ -89,10 +90,11 @@ class _UserPageState extends State<UserPage> {
           subtitle: Text(
               "Deadline " + subTitleText.substring(0, subTitleText.length - 7)),
           // dateTrim без секунд
-          onTap: () {
+          onTap: () async{
             currentNode = nodesList[i];
+            tasksList = await readTasks(currentNode);
             setState(() {
-             // mainWidget = _buildTasksList(currentNode);
+              mainWidget = _buildTasksList(currentNode);
               isLoaded = true;
             });
             print('Taped ' + nodesList[i].nodeName);
@@ -115,25 +117,24 @@ class _UserPageState extends State<UserPage> {
     });
   }
 
-/*
+
   Widget _buildTasksList(BuildNode node) {
     return ListView.builder(itemBuilder: (context, i) {
-      readTasks(node);
-      if (i < node.stages.length) {
+      if (i < tasksList.length) {
         String subtitleText =
-            node.stages[i].status + " c " + node.stages[i].lastStatusTime;
+            tasksList[i].status + " c " + tasksList[i].lastStatusTime;
         return ListTile(
-          title: Text(node.stages[i].taskName),
+          title: Text(tasksList[i].taskName),
           subtitle: Text(subtitleText.substring(0, subtitleText.length - 10)),
           onTap: () {
-            print('Taped ' + node.stages[i].taskName);
+            print('Taped ' + tasksList[i].taskName);
             setState(() {
-              mainWidget = _buildStageTail(node.stages[i], node);
+              mainWidget = _buildTaskTail(tasksList[i], node);
               isLoaded = true;
             });
           },
         );
-      } else if (i == defTasksList.length) {
+      } else if (i == tasksList.length) {
         return ListTile(
           title: Text("Назад"),
           onTap: () {
@@ -149,9 +150,9 @@ class _UserPageState extends State<UserPage> {
         );
     });
   }
-*/
 
-  Widget _buildStageTail(Task stage, BuildNode currentNode) {
+
+  Widget _buildTaskTail(Task stage, BuildNode currentNode) {
     print('status = ' + status);
     return Column(
       children: [
@@ -208,7 +209,7 @@ class _UserPageState extends State<UserPage> {
         TextButton.icon(
             onPressed: () {
               setState(() {
-               // mainWidget = _buildTasksList(currentNode);
+                mainWidget = _buildTasksList(currentNode);
                 isLoaded = true;
               });
             },
@@ -234,8 +235,8 @@ class _UserPageState extends State<UserPage> {
     });
   }
 
-  void readTasks(BuildNode node) async {
-    defTasksList =
+  Future<List<Task>> readTasks(BuildNode node) async {
+    return
         await DataBaseConnector().getTasks(currentContract.id, node);
   }
 
