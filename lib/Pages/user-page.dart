@@ -152,43 +152,45 @@ class _UserPageState extends State<UserPage> {
   }
 
 
-  Widget _buildTaskTail(Task stage, BuildNode currentNode) {
+  Widget _buildTaskTail(Task task, BuildNode currentNode) {
     print('status = ' + status);
     return Column(
       children: [
-        Text(stage.taskName),
+        Text(task.taskName),
         TextButton.icon(
             onPressed: () {
-              stage.status = "В работе";
-              //status = "В работе";
+              task.status = "В работе";
               this.setState(() {
                 print(status);
                 DateTime dateTime = DateTime.now();
-                stage.lastStatusTime = dateTime.toString();
+                task.lastStatusTime = dateTime.toString();
+                DataBaseConnector().changeTaskStatus(task, currentNode, currentContract);
               });
-              makeToast(stage.status, Colors.green);
+              makeToast(task.status, Colors.green);
             },
             icon: Icon(Icons.play_arrow),
             label: Text('Начать')),
         TextButton.icon(
             onPressed: () {
               this.setState(() {
-                stage.status = 'простой';
+                task.status = 'простой';
                 DateTime dateTime = DateTime.now();
-                stage.lastStatusTime = dateTime.toString();
+                task.lastStatusTime = dateTime.toString();
+                DataBaseConnector().changeTaskStatus(task, currentNode, currentContract);
               });
-              makeToast(stage.status, Colors.red);
+              makeToast(task.status, Colors.red);
             },
             icon: Icon(Icons.pause),
             label: Text('Пауза')),
         TextButton.icon(
             onPressed: () {
               this.setState(() {
-                stage.status = "доработка";
+                task.status = "доработка";
                 DateTime dateTime = DateTime.now();
-                stage.lastStatusTime = dateTime.toString();
+                task.lastStatusTime = dateTime.toString();
+                DataBaseConnector().changeTaskStatus(task, currentNode, currentContract);
               });
-              makeToast(stage.status, Colors.yellow);
+              makeToast(task.status, Colors.yellow);
             },
             icon: Icon(Icons.edit),
             label: Text('Доработка')),
@@ -196,18 +198,20 @@ class _UserPageState extends State<UserPage> {
             onPressed: () {
               this.setState(() {
                 isLoaded = true;
-                stage.status = "закончено";
+                task.status = "закончено";
                 DateTime dateTime = DateTime.now();
-                stage.lastStatusTime = dateTime.toString();
+                task.lastStatusTime = dateTime.toString();
+                DataBaseConnector().changeTaskStatus(task, currentNode, currentContract);
               });
-              makeToast(stage.status, Colors.lightBlue);
+              makeToast(task.status, Colors.lightBlue);
             },
             icon: Icon(Icons.stop),
             label: Text('Стоп')),
-        Text(stage.status),
-        Text(stage.lastStatusTime),
+        Text(task.status),
+        Text(task.lastStatusTime),
         TextButton.icon(
-            onPressed: () {
+            onPressed: () async{
+              tasksList = await readTasks(currentNode);
               setState(() {
                 mainWidget = _buildTasksList(currentNode);
                 isLoaded = true;

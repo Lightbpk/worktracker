@@ -60,7 +60,12 @@ class DataBaseConnector {
           snapshot.value.forEach((key, value){
             Map<dynamic,dynamic> mapValue = Map<dynamic,dynamic>.from(value);
             if(mapValue["parentNodeName"]==node.nodeName){
-              tasksList.add(new Task(key, node.nodeName));
+              Task task = new Task(key, node.nodeName);
+              task.status = mapValue["status"];
+              task.lastStatusTime = mapValue["lastStatusTime"];
+              tasksList.add(task);
+              print("taskName = "+key);
+              print("nodeName = "+node.nodeName);
             }
           });
     } );
@@ -111,5 +116,12 @@ class DataBaseConnector {
       db.child("work-process").child(id).child("tasks")
           .child(task.taskName).child("parentNodeName").set(task.parentNodeName);
     });
+  }
+  void changeTaskStatus(Task task, BuildNode node, Contract contract) async{
+    getMainRef();
+    await db.child("work-process").child(contract.id).child("tasks")
+        .child(task.taskName).child("status").set(task.status);
+    await db.child("work-process").child(contract.id).child("tasks")
+        .child(task.taskName).child("lastStatusTime").set(task.lastStatusTime);
   }
 }
