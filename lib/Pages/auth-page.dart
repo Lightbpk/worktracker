@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:worktracker/services/auth_service.dart';
+import 'package:worktracker/services/firebaseConnector.dart';
 
 import '../user.dart';
 
@@ -81,8 +82,9 @@ class _AuthPageState extends State<AuthPage> {
   void _loginButtonAction() async {
     AuthService _authService = AuthService();
     if(emailPassValidator()) {
-      UserWT userWT =
+      WTUser userWT =
       await _authService.signInEmailPassword(email.trim(), password.trim());
+      DataBaseConnector().addUID(userWT.id);
       if (userWT == null) {
         sendErrToast("Пользователь не найден");
       }
@@ -93,7 +95,7 @@ class _AuthPageState extends State<AuthPage> {
   void _registerButtonAction() async {
     AuthService _authService = AuthService();
     if(emailPassValidator()) {
-      UserWT userWT =
+      WTUser userWT =
       await _authService.registerEmailPassword(email.trim(), password.trim());
       if (userWT == null) {
         sendErrToast("Ошибка Регистрации");

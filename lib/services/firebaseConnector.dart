@@ -30,6 +30,10 @@ class DataBaseConnector {
         .reference();
     return db;
   }
+  
+  void addUID(String id){
+    getMainRef().child("userIDs").child(id).child("role").set("not set");
+  }
 
   Future <List<BuildNode>> getNodes(String contract) async{
     getMainRef();
@@ -124,4 +128,5 @@ class DataBaseConnector {
     await db.child("work-process").child(contract.id).child("tasks")
         .child(task.taskName).child("lastStatusTime").set(task.lastStatusTime);
   }
+  
 }

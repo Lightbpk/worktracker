@@ -5,21 +5,22 @@ import '../user.dart';
 class AuthService{
     final FirebaseAuth _fAuth = FirebaseAuth.instance;
 
-    Future<UserWT> signInEmailPassword(String email, String password) async{
+    Future<WTUser> signInEmailPassword(String email, String password) async{
         try{
             UserCredential result = await _fAuth.signInWithEmailAndPassword(email: email, password: password);
             User user  = result.user;
-            return UserWT.fromFirebase(user);
+
+            return WTUser.fromFirebase(user);
         }catch(e){
             print(e);
             return null;
         }
     }
-    Future<UserWT> registerEmailPassword(String email, String password) async{
+    Future<WTUser> registerEmailPassword(String email, String password) async{
         try{
             UserCredential result = await _fAuth.createUserWithEmailAndPassword(email: email, password: password);
             User user  = result.user;
-            return UserWT.fromFirebase(user);
+            return WTUser.fromFirebase(user);
         }catch(e){
             print(e);
             return null;
@@ -28,8 +29,8 @@ class AuthService{
     Future logOut() async{
         await _fAuth.signOut();
     }
-    Stream<UserWT> get currentUser{
+    Stream<WTUser> get currentUser{
         return _fAuth.authStateChanges()
-            .map((User user) => user != null ? UserWT.fromFirebase(user): null); // мапится только  юзер
+            .map((User user) => user != null ? WTUser.fromFirebase(user): null); // мапится только  юзер
     }
 }

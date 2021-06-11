@@ -13,7 +13,7 @@ class StartPage extends StatelessWidget{
   @override
 
   Widget build(BuildContext context) {
-    final UserWT userWT = Provider.of<UserWT>(context);
+    final WTUser userWT = Provider.of<WTUser>(context);
     final bool isLoggedIn = userWT != null;
     if(isLoggedIn){
       if(userWT.id == "69ki0j90NMaHVoj6T71I5Va97U43") return AdminPage();

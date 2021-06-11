@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return StreamProvider<UserWT>.value(    //регистреция на прослушку стима
+    return StreamProvider<WTUser>.value(    //регистреция на прослушку стима
         value: AuthService().currentUser,
         child: MaterialApp(
           title: 'Work Tracker',

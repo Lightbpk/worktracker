@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
-class UserWT{
+class WTUser{
   String id;
 
-  UserWT.fromFirebase(User user){
+  WTUser.fromFirebase(User user){
     id = user.uid;
   }
 }
