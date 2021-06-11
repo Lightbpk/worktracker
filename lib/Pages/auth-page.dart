@@ -100,7 +100,7 @@ class _AuthPageState extends State<AuthPage> {
       ),
       body: Container(
         child: new Form(
-          key: _authFormKey,
+          key: _regFormKey,
           child: Column(
             children: <Widget>[
               new SizedBox(
