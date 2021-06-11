@@ -19,11 +19,81 @@ class _AuthPageState extends State<AuthPage> {
   String currentEmail;
   String currentPassword;
   final _authFormKey = GlobalKey<FormState>();
+  final _regFormKey = GlobalKey<FormState>();
   String email = "",
-      password = "";
+      password = "",
+      userSurname = "",
+      userName = "",
+      userFatherName = "";
+  bool isLoginPage = true;
 
   @override
   Widget build(BuildContext context) {
+    if (isLoginPage) {
+      return Scaffold(
+        appBar: AppBar(
+          title: new Text(widget.title),
+        ),
+        body: Container(
+          child: new Form(
+            key: _authFormKey,
+            child: Column(
+              children: <Widget>[
+                new SizedBox(
+                  height: 50.0,
+                ),
+                new TextFormField(
+                  decoration: InputDecoration(hintText: "Email"),
+                  onChanged: (text) {
+                    email = text;
+                    //print("Current email: $text");
+                  },
+                ),
+                new SizedBox(
+                  height: 20.0,
+                ),
+                new TextFormField(
+                  decoration: InputDecoration(
+                    hintText: "Password",
+                  ),
+                  onChanged: (text) {
+                    password = text;
+                    //print("Current password :$text");
+                  },
+                  obscureText: true,
+                ),
+                new SizedBox(
+                  height: 10.0,
+                ),
+                new SizedBox(
+                  height: 10.0,
+                ),
+                new TextButton.icon(
+                    onPressed: () {
+                    _loginButtonAction();
+                    },
+                    label: new Text("Погнали!"),
+                    icon: Icon(Icons.arrow_circle_up)),
+                new TextButton.icon(
+                    onPressed: () {
+                      setState(() {
+                        isLoginPage = false;
+                      });
+//                      _registerButtonAction();
+                    },
+                    label: new Text("Регистрация"),
+                    icon: Icon(Icons.app_registration)),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+    else
+      return registerWidget();
+  }
+
+  Widget registerWidget() {
     return Scaffold(
       appBar: AppBar(
         title: new Text(widget.title),
@@ -56,15 +126,38 @@ class _AuthPageState extends State<AuthPage> {
                 },
                 obscureText: true,
               ),
-              new SizedBox(
-                height: 20.0,
-              ),
-              new TextButton.icon(
-                onPressed: () {
-                  _loginButtonAction();
+              new TextFormField(
+                decoration: InputDecoration(
+                  hintText: "Фамилия",
+                ),
+                onChanged: (text) {
+                  userSurname = text;
+                  //print("Current password :$text");
                 },
-                label: new Text('Погнали!'),
-                icon: Icon(Icons.arrow_circle_up),
+              ),
+              new SizedBox(
+                height: 10.0,
+              ),
+              new TextFormField(
+                decoration: InputDecoration(
+                  hintText: "Имя",
+                ),
+                onChanged: (text) {
+                  userName = text;
+                  //print("Current password :$text");
+                },
+              ),
+              new TextFormField(
+                decoration: InputDecoration(
+                  hintText: "Отчество",
+                ),
+                onChanged: (text) {
+                  userFatherName = text;
+                  //print("Current password :$text");
+                },
+              ),
+              new SizedBox(
+                height: 10.0,
               ),
               new TextButton.icon(
                   onPressed: () {
@@ -81,10 +174,9 @@ class _AuthPageState extends State<AuthPage> {
 
   void _loginButtonAction() async {
     AuthService _authService = AuthService();
-    if(emailPassValidator()) {
+    if (emailPassValidator()) {
       WTUser userWT =
       await _authService.signInEmailPassword(email.trim(), password.trim());
-      DataBaseConnector().addUID(userWT.id);
       if (userWT == null) {
         sendErrToast("Пользователь не найден");
       }
@@ -94,9 +186,10 @@ class _AuthPageState extends State<AuthPage> {
 
   void _registerButtonAction() async {
     AuthService _authService = AuthService();
-    if(emailPassValidator()) {
+    if (emailPassValidator()) {
       WTUser userWT =
       await _authService.registerEmailPassword(email.trim(), password.trim());
+      DataBaseConnector().addUID(userWT.id,userSurname,userName,userFatherName);
       if (userWT == null) {
         sendErrToast("Ошибка Регистрации");
       }
@@ -113,23 +206,24 @@ class _AuthPageState extends State<AuthPage> {
         textColor: Colors.white,
         fontSize: 16.0);
   }
-  bool emailPassValidator(){
-    if(email.isEmpty){
+
+  bool emailPassValidator() {
+    if (email.isEmpty) {
       sendErrToast("Пустрой Email");
       return false;
     }
-    if(password.isEmpty){
+    if (password.isEmpty) {
       sendErrToast("Пустрой пароль");
       return false;
     }
     String p =
         "[a-zA-Z0-9+.\_\%-+]{1,256}@[a-zA-Z0-9][a-zA-Z0-9-]{0,64}(.[a-zA-Z0-9][a-zA-Z0-9-]{0,25})+";
     RegExp regExp = new RegExp(p);
-    if (!regExp.hasMatch(email)){
+    if (!regExp.hasMatch(email)) {
       sendErrToast(" Не корректный  Email");
       return false;
     }
-    if(password.length < 6){
+    if (password.length < 6) {
       sendErrToast("Пароль не менее 6 символов");
       return false;
     }

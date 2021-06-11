@@ -31,8 +31,11 @@ class DataBaseConnector {
     return db;
   }
   
-  void addUID(String id){
+  void addUID(String id,String surName, String name, String fatherName){
     getMainRef().child("userIDs").child(id).child("role").set("not set");
+    getMainRef().child("userIDs").child(id).child("surName").set(surName);
+    getMainRef().child("userIDs").child(id).child("name").set(name);
+    getMainRef().child("userIDs").child(id).child("fatherName").set(fatherName);
   }
 
   Future <List<BuildNode>> getNodes(String contract) async{
