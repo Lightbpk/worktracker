@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_web_client_id" translatable="false">427621440578-laklr3jplnehojqf5vige8hhukjhq7d3.apps.googleusercontent.com</string>
+    <string name="gcm_defaultSenderId" translatable="false">427621440578</string>
+    <string name="google_api_key" translatable="false">AIzaSyC3FGzA7IOJR7dAPQxz5MrazuFB3VHh79w</string>
+    <string name="google_app_id" translatable="false">1:427621440578:android:0f99fb0e9828a1c89721db</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyC3FGzA7IOJR7dAPQxz5MrazuFB3VHh79w</string>
+    <string name="google_storage_bucket" translatable="false">worktracker-dev.appspot.com</string>
+    <string name="project_id" translatable="false">worktracker-dev</string>
+</resources>

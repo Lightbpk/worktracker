@@ -1,4 +1,5 @@
  import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:worktracker/Pages/user-page.dart';
@@ -9,30 +10,50 @@ import 'Pages/auth-page.dart';
 import 'Pages/main-page.dart';
 import 'Pages/admin-page.dart';
 
+ class StartPage extends StatefulWidget {
+   @override
+   _StartPageState createState() => _StartPageState();
+ }
 
-class StartPage extends StatelessWidget{
+
+class _StartPageState extends State<StartPage> {
+  String currentRole='not set';
+  WTUser userWT;
+  bool isLoggedIn = false;
+  bool roleReading = true;
 
   @override
-
   Widget build(BuildContext context) {
-    final WTUser userWT = Provider.of<WTUser>(context);
-    final bool isLoggedIn = userWT != null;
+    userWT = Provider.of<WTUser>(context);
+    bool isLoggedIn = userWT != null;
+    readUserRole();
     if(isLoggedIn){
-      String currentRole='not set';
-       DataBaseConnector().getMainRef().child("userIDs")
-          .child(userWT.id).child('role').once().then((DataSnapshot snapshot) {
-            if(snapshot.key == 'role'){
-              currentRole = snapshot.value.toString();
-              print(currentRole);
-            }
-       });
-         if(currentRole == 'admin'){
-           return AdminPage();
-         } else {
-         print(currentRole);
-         return UserPage();
-         }
-            }
+      print('user not null');
+      if(roleReading){
+        return CircularProgressIndicator();
+      }else{
+        if(currentRole == 'admin'){
+          print('admin logged');
+          return AdminPage();
+        } else {
+          print("current role = " +currentRole);
+          print("hash role = " +currentRole.hashCode.toString());
+          print("hash admin = " + "admin".hashCode.toString());
+          return UserPage();
+        }
+      }
+    }
     else return AuthPage(title:'Authentication');
+  }
+  void readUserRole()async{
+    await DataBaseConnector().getMainRef().child("userIDs")
+        .child(userWT.id).child('role').once().then((DataSnapshot snapshot) {
+      if(snapshot.key == 'role'){
+        setState(() {
+          currentRole = snapshot.value.toString();
+          roleReading = false;
+        });
+      }
+    });
   }
 }
