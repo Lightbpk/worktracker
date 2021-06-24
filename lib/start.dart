@@ -2,12 +2,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:worktracker/Pages/dir-page.dart';
 import 'package:worktracker/Pages/user-page.dart';
 import 'package:worktracker/services/firebaseConnector.dart';
 import 'package:worktracker/user.dart';
 
 import 'Pages/auth-page.dart';
-import 'Pages/main-page.dart';
 import 'Pages/admin-page.dart';
 
  class StartPage extends StatefulWidget {
@@ -35,7 +35,10 @@ class _StartPageState extends State<StartPage> {
         if(currentRole == 'admin'){
           print('admin logged');
           return AdminPage();
-        } else {
+        }else if(currentRole == 'dir'){
+          return DirectorPage();
+        }
+        else {
           print("current role = " +currentRole);
           print("hash role = " +currentRole.hashCode.toString());
           print("hash admin = " + "admin".hashCode.toString());

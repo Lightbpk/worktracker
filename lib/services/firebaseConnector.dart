@@ -5,6 +5,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:worktracker/contract.dart';
 import 'package:worktracker/node.dart';
 import 'package:worktracker/task.dart';
+import 'package:worktracker/user.dart';
 
 class DataBaseConnector {
   DataBaseConnector _instance;
@@ -36,6 +37,22 @@ class DataBaseConnector {
     getMainRef().child("userIDs").child(id).child("surName").set(surName);
     getMainRef().child("userIDs").child(id).child("name").set(name);
     getMainRef().child("userIDs").child(id).child("fatherName").set(fatherName);
+  }
+  Future <List<WTUser>> getAllUsers() async{
+    getMainRef();
+    List<WTUser> userList = [];
+    await  db.child("userIDs").once().then((DataSnapshot snapshot){
+      snapshot.value.forEach((key, value){
+        WTUser wtUser = new WTUser(key);
+        Map<dynamic,dynamic> mapValue = Map<dynamic,dynamic>.from(value);
+        wtUser.name = mapValue['name'];
+        wtUser.surName = mapValue['surName'];
+        wtUser.fatherName = mapValue['fatherName'];
+        wtUser.role = mapValue['role'];
+        userList.add(wtUser);
+      });
+    });
+    return userList;
   }
 
   Future <List<BuildNode>> getNodes(String contract) async{
