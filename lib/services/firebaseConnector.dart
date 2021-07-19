@@ -38,6 +38,7 @@ class DataBaseConnector {
     getMainRef().child("userIDs").child(id).child("name").set(name);
     getMainRef().child("userIDs").child(id).child("fatherName").set(fatherName);
   }
+
   Future <List<WTUser>> getAllUsers() async{
     getMainRef();
     List<WTUser> userList = [];
@@ -50,6 +51,10 @@ class DataBaseConnector {
         wtUser.fatherName = mapValue['fatherName'];
         wtUser.role = mapValue['role'];
         userList.add(wtUser);
+        print("Getting user "+ wtUser.id);
+        print("name user "+ wtUser.name);
+        print("surname user "+ wtUser.surName);
+        print("fathername user "+ wtUser.fatherName);
       });
     });
     return userList;

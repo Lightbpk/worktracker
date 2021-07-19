@@ -28,7 +28,7 @@ class _StartPageState extends State<StartPage> {
     bool isLoggedIn = userWT != null;
     readUserRole();
     if(isLoggedIn){
-      print('user not null');
+      //print('user not null');
       if(roleReading){
         return CircularProgressIndicator();
       }else{
