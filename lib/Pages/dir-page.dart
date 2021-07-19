@@ -26,12 +26,20 @@ class _DirectorPageState extends State<DirectorPage> {
   String date = "date not set";
   Contract currentContract;
   BuildNode currentNode;
+  String dropdownValue= 'Petya';
 
   @override
   void initState() {
     readContractsList();
+    readUsers();
     print('init');
     super.initState();
+  }
+
+  void refresh() {
+    setState(() {
+      print('setState');
+    });
   }
 
   @override
@@ -165,6 +173,12 @@ class _DirectorPageState extends State<DirectorPage> {
           Text(task.lastStatusTime),
           taskWidget,
           TextButton.icon(
+              onPressed: (){
+                refresh();
+                },
+              icon: Icon(Icons.refresh),
+              label: Text("Обновить")),
+          TextButton.icon(
               onPressed: () async {
                 tasksList = await readTasks(currentNode);
                 setState(() {
@@ -180,10 +194,28 @@ class _DirectorPageState extends State<DirectorPage> {
   }
 
   Widget usersDropList(){
-    return new DropdownButton(items: usersList.map((WTUser wtUser) {
+    /*return new DropdownButton(items: usersList.map((WTUser wtUser) {
       return new DropdownMenuItem(
           child: new Text(wtUser.surName));
-    } ),);
+    } ),);*/
+
+    if(dropdownValue == null){
+      print('dropdownvalue =null');
+      dropdownValue = 'Petya';
+    }
+    return new DropdownButton(
+      value: dropdownValue,
+      onChanged: (newValue){setState(() {
+        dropdownValue = newValue;
+        taskWidget = usersDropList();
+      });
+      },
+      items: <String>['Petya', 'Vasya', 'Ignat'].map<DropdownMenuItem<String>>((String valuee){
+        return DropdownMenuItem<String>(
+            value: valuee,
+            child: Text(valuee));
+      }).toList(),
+        );
   }
 
   void readUsers() async{

@@ -30,12 +30,15 @@ class _StartPageState extends State<StartPage> {
     if(isLoggedIn){
       //print('user not null');
       if(roleReading){
+        print('reading Roles...');
         return CircularProgressIndicator();
       }else{
         if(currentRole == 'admin'){
           print('admin logged');
           return AdminPage();
+          //Navigator.push(context, MaterialPageRoute(builder: (context)=> AdminPage()));
         }else if(currentRole == 'dir'){
+          //Navigator.push(context, MaterialPageRoute(builder: (context)=> DirectorPage()));
           return DirectorPage();
         }
         else {
@@ -43,6 +46,7 @@ class _StartPageState extends State<StartPage> {
           print("hash role = " +currentRole.hashCode.toString());
           print("hash admin = " + "admin".hashCode.toString());
           return UserPage();
+          //Navigator.push(context, MaterialPageRoute(builder: (context)=> UserPage()));
         }
       }
     }
