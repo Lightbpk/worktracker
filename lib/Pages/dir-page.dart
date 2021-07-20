@@ -17,7 +17,7 @@ class _DirectorPageState extends State<DirectorPage> {
   bool isLoaded = false;
   bool isLoadedUserList = false;
   Widget mainWidget = CircularProgressIndicator();
-  Widget taskWidget = CircularProgressIndicator();
+  //Widget taskWidget = CircularProgressIndicator();
   List<Contract> contractsList;
   List<BuildNode> nodesList;
   List<Task> tasksList = [];
@@ -27,7 +27,7 @@ class _DirectorPageState extends State<DirectorPage> {
   Contract currentContract;
   BuildNode currentNode;
   String dropdownValue= 'Petya';
-
+  int inc = 1;
   @override
   void initState() {
     readContractsList();
@@ -38,12 +38,16 @@ class _DirectorPageState extends State<DirectorPage> {
 
   void refresh() {
     setState(() {
+      inc++;
       print('setState');
     });
   }
 
+
+
   @override
   Widget build(BuildContext context) {
+    print('MAINWIDGET = '+ mainWidget.toString());
     if (!isLoaded) {
       return CircularProgressIndicator();
     } else {
@@ -59,7 +63,8 @@ class _DirectorPageState extends State<DirectorPage> {
                   Icons.exit_to_app,
                   color: Colors.white,
                 ),
-                label: SizedBox.shrink())
+                label: SizedBox.shrink()),
+            Text('$inc'),
           ],
         ),
         body: mainWidget,
@@ -163,17 +168,19 @@ class _DirectorPageState extends State<DirectorPage> {
   }
 
   Widget _buildTaskTail(Task task, BuildNode currentNode) {
-      readUsers();
+      //readUsers();
       print('status = ' + status);
       return Column(
         children: [
           Text(task.taskName),
-          Text('Ответственный ' + task.assignedUser),
+          Text('Ответственный ' + dropdownValue),
           Text(task.status),
           Text(task.lastStatusTime),
-          taskWidget,
+          Text('$inc'),
+          usersDropList(task,currentNode),
           TextButton.icon(
               onPressed: (){
+                mainWidget =  _buildTaskTail(task,currentNode);
                 refresh();
                 },
               icon: Icon(Icons.refresh),
@@ -193,7 +200,7 @@ class _DirectorPageState extends State<DirectorPage> {
 
   }
 
-  Widget usersDropList(){
+  Widget usersDropList(Task task,BuildNode node){
     /*return new DropdownButton(items: usersList.map((WTUser wtUser) {
       return new DropdownMenuItem(
           child: new Text(wtUser.surName));
@@ -205,10 +212,11 @@ class _DirectorPageState extends State<DirectorPage> {
     }
     return new DropdownButton(
       value: dropdownValue,
-      onChanged: (newValue){setState(() {
-        dropdownValue = newValue;
-        taskWidget = usersDropList();
-      });
+      onChanged: (newValue){
+        setState(() {
+          dropdownValue = newValue;
+          mainWidget = _buildTaskTail(task, node);
+        });
       },
       items: <String>['Petya', 'Vasya', 'Ignat'].map<DropdownMenuItem<String>>((String valuee){
         return DropdownMenuItem<String>(
@@ -221,7 +229,7 @@ class _DirectorPageState extends State<DirectorPage> {
   void readUsers() async{
     usersList = await DataBaseConnector().getAllUsers();
     setState(() {
-      taskWidget = usersDropList();
+      //taskWidget = usersDropList();
       //print(taskWidget.key);
     });
   }
