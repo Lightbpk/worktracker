@@ -17,37 +17,29 @@ class _DirectorPageState extends State<DirectorPage> {
   bool isLoaded = false;
   bool isLoadedUserList = false;
   Widget mainWidget = CircularProgressIndicator();
-  //Widget taskWidget = CircularProgressIndicator();
   List<Contract> contractsList;
   List<BuildNode> nodesList;
   List<Task> tasksList = [];
   List<WTUser> usersList = [];
+  List<String> usersFIOList = [];
   String status = "status not set";
   String date = "date not set";
   Contract currentContract;
   BuildNode currentNode;
-  String dropdownValue= 'Petya';
+  String dropdownValue;
   int inc = 1;
+
   @override
   void initState() {
+    super.initState();
     readContractsList();
     readUsers();
     print('init');
-    super.initState();
   }
-
-  void refresh() {
-    setState(() {
-      inc++;
-      print('setState');
-    });
-  }
-
-
 
   @override
   Widget build(BuildContext context) {
-    print('MAINWIDGET = '+ mainWidget.toString());
+    //print('MAINWIDGET = '+ mainWidget.toString());
     if (!isLoaded) {
       return CircularProgressIndicator();
     } else {
@@ -176,15 +168,7 @@ class _DirectorPageState extends State<DirectorPage> {
           Text('Ответственный ' + dropdownValue),
           Text(task.status),
           Text(task.lastStatusTime),
-          Text('$inc'),
           usersDropList(task,currentNode),
-          TextButton.icon(
-              onPressed: (){
-                mainWidget =  _buildTaskTail(task,currentNode);
-                refresh();
-                },
-              icon: Icon(Icons.refresh),
-              label: Text("Обновить")),
           TextButton.icon(
               onPressed: () async {
                 tasksList = await readTasks(currentNode);
@@ -197,7 +181,6 @@ class _DirectorPageState extends State<DirectorPage> {
               label: Text("Назад"))
         ],
       );
-
   }
 
   Widget usersDropList(Task task,BuildNode node){
@@ -206,19 +189,22 @@ class _DirectorPageState extends State<DirectorPage> {
           child: new Text(wtUser.surName));
     } ),);*/
 
-    if(dropdownValue == null){
-      print('dropdownvalue =null');
-      dropdownValue = 'Petya';
-    }
     return new DropdownButton(
       value: dropdownValue,
       onChanged: (newValue){
+
+        print('newValue = '+ newValue);
+        print('newValue hash = '+ newValue.hashCode.toString());
         setState(() {
           dropdownValue = newValue;
           mainWidget = _buildTaskTail(task, node);
+
         });
+
+          print('newValue = '+ newValue);
+          print('newValue hash = '+ newValue.hashCode.toString());
       },
-      items: <String>['Petya', 'Vasya', 'Ignat'].map<DropdownMenuItem<String>>((String valuee){
+      items: usersFIOList.map<DropdownMenuItem<String>>((String valuee){
         return DropdownMenuItem<String>(
             value: valuee,
             child: Text(valuee));
@@ -228,10 +214,13 @@ class _DirectorPageState extends State<DirectorPage> {
 
   void readUsers() async{
     usersList = await DataBaseConnector().getAllUsers();
-    setState(() {
-      //taskWidget = usersDropList();
-      //print(taskWidget.key);
+    usersList.forEach((WTUser user) {
+     usersFIOList.add(user.surName);
+     print('surname = '+ user.surName);
+     print('surname has = '+ user.surName.hashCode.toString());
     });
+    dropdownValue = usersFIOList[0];
+    print('reading Users done');
   }
 
   void readContractsList() async {
