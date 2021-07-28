@@ -26,7 +26,7 @@ class _DirectorPageState extends State<DirectorPage> {
   String date = "date not set";
   Contract currentContract;
   BuildNode currentNode;
-  String dropdownValue;
+  String dropdownValue = 'Иванов';
   int inc = 1;
 
   @override
@@ -184,27 +184,27 @@ class _DirectorPageState extends State<DirectorPage> {
   }
 
   Widget usersDropList(Task task,BuildNode node){
-    /*return new DropdownButton(items: usersList.map((WTUser wtUser) {
-      return new DropdownMenuItem(
-          child: new Text(wtUser.surName));
-    } ),);*/
 
     return new DropdownButton(
       value: dropdownValue,
-      onChanged: (newValue){
+      onChanged: (String newValue){
+        print('selected newValue = '+ newValue);
+        print('selected newValue hash = '+ newValue.hashCode.toString());
+        try {
+          setState(() {
+            dropdownValue = newValue;
+            mainWidget = _buildTaskTail(task, node);
+            print('dropdownValue = ' + dropdownValue);
+            print('dropdownValue hash = ' + dropdownValue.hashCode.toString());
+          });
+        }catch (e){
+          print(e);
+          print('dropdownValue = ' + dropdownValue);
+          print('dropdownValue hash = ' + dropdownValue.hashCode.toString());
+        }
 
-        print('newValue = '+ newValue);
-        print('newValue hash = '+ newValue.hashCode.toString());
-        setState(() {
-          dropdownValue = newValue;
-          mainWidget = _buildTaskTail(task, node);
-
-        });
-
-          print('newValue = '+ newValue);
-          print('newValue hash = '+ newValue.hashCode.toString());
       },
-      items: usersFIOList.map<DropdownMenuItem<String>>((String valuee){
+      items: <String>['Иванов','Петров','Сидоров'].map<DropdownMenuItem<String>>((String valuee){
         return DropdownMenuItem<String>(
             value: valuee,
             child: Text(valuee));
@@ -219,7 +219,9 @@ class _DirectorPageState extends State<DirectorPage> {
      print('surname = '+ user.surName);
      print('surname has = '+ user.surName.hashCode.toString());
     });
-    dropdownValue = usersFIOList[0];
+    //dropdownValue = usersFIOList[0];
+    print('dropdownvalue '+dropdownValue);
+    print('dropdownvalue hash '+dropdownValue.hashCode.toString());
     print('reading Users done');
   }
 
