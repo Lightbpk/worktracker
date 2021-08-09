@@ -138,7 +138,6 @@ class _DirectorPageState extends State<DirectorPage> {
             print('Taped ' + tasksList[i].taskName);
             setState(() {
               mainWidget = _buildTaskTail(tasksList[i], node);
-              readUsers();
               isLoaded = true;
             });
           },
@@ -208,13 +207,11 @@ class _DirectorPageState extends State<DirectorPage> {
     usersList = await DataBaseConnector().getAllUsers();
     usersList.forEach((WTUser user) {
      usersFIOList.add(user.surName);
-     print('surname = '+ user.surName);
-     print('surname has = '+ user.surName.hashCode.toString());
     });
-    //dropdownValue = usersFIOList[0];
-    print('dropdownvalue '+dropdownValue);
-    print('dropdownvalue hash '+dropdownValue.hashCode.toString());
+    dropdownMenuUsers = usersFIOList;
+    print(usersFIOList);
     print('reading Users done');
+
   }
 
   void readContractsList() async {
