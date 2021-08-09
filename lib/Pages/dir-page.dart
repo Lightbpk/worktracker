@@ -26,6 +26,7 @@ class _DirectorPageState extends State<DirectorPage> {
   String date = "date not set";
   Contract currentContract;
   BuildNode currentNode;
+  List<String> dropdownMenuUsers = ['Иванов','Петров','Сидиоров','Работягов','Леньтяйко'];
   String dropdownValue = 'Иванов';
   int inc = 1;
 
@@ -184,32 +185,23 @@ class _DirectorPageState extends State<DirectorPage> {
   }
 
   Widget usersDropList(Task task,BuildNode node){
-
-    return new DropdownButton(
+    return DropdownButton(
       value: dropdownValue,
-      onChanged: (String newValue){
-        print('selected newValue = '+ newValue);
-        print('selected newValue hash = '+ newValue.hashCode.toString());
-        try {
-          setState(() {
-            dropdownValue = newValue;
-            mainWidget = _buildTaskTail(task, node);
-            print('dropdownValue = ' + dropdownValue);
-            print('dropdownValue hash = ' + dropdownValue.hashCode.toString());
-          });
-        }catch (e){
-          print(e);
-          print('dropdownValue = ' + dropdownValue);
-          print('dropdownValue hash = ' + dropdownValue.hashCode.toString());
-        }
-
+      onChanged: (newValue){
+        setState(() {
+          dropdownValue= newValue;
+          mainWidget = _buildTaskTail(task, currentNode);
+        });
       },
-      items: <String>['Иванов','Петров','Сидоров'].map<DropdownMenuItem<String>>((String valuee){
-        return DropdownMenuItem<String>(
-            value: valuee,
-            child: Text(valuee));
-      }).toList(),
-        );
+      items: dropdownMenuUsers.map(
+        (String selectedUser){
+          return DropdownMenuItem(
+              child: new Text(selectedUser),
+              value: selectedUser,
+          );
+        }
+    ).toList(),
+    );
   }
 
   void readUsers() async{
