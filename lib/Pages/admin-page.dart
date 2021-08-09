@@ -1,10 +1,9 @@
-import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:intl/intl.dart';
 import 'package:worktracker/node.dart';
 import 'package:worktracker/services/auth_service.dart';
+import 'package:worktracker/services/data-time-field.dart';
 import 'package:worktracker/services/firebaseConnector.dart';
 import 'package:worktracker/task.dart';
 
@@ -94,7 +93,7 @@ class _AdminPageState extends State<AdminPage> {
   void _nodeListWidget(){
     currentWidget = ListView.builder(itemBuilder: (context, i){
       if(i < nodeList.length) return ListTile(
-        subtitle: nodeList[i].field = BasicDateTimeField(),
+        subtitle: nodeList[i].field = BasicDateTimeField('Введите дату Дэдлайна'),
         title: Text(nodeList[i].nodeName,));
       else if(i == nodeList.length) return ListTile(title: Text("Назад"),
         onTap: (){
@@ -160,40 +159,3 @@ class _AdminPageState extends State<AdminPage> {
     return defaultTasksList;
   }
 }
-
-class BasicDateTimeField extends StatelessWidget {
-  final format = DateFormat("yyyy-MM-dd HH:mm");
-  String currentDateAndTime;
-  DateTime dateTimeValue;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(children: <Widget>[
-      DateTimeField(
-        format: format,
-        decoration: InputDecoration(
-            hintText: "Введите дату Deadline (${format.pattern})"),
-        onShowPicker: (context, currentValue) async {
-          final date = await showDatePicker(
-              context: context,
-              firstDate: DateTime(1900),
-              initialDate: currentValue ?? DateTime.now(),
-              lastDate: DateTime(2100));
-          if (date != null) {
-            final time = await showTimePicker(
-              context: context,
-              initialTime:
-                  TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
-            );
-            currentDateAndTime = date.toString() + time.toString();
-            dateTimeValue = DateTimeField.combine(date, time);
-            return DateTimeField.combine(date, time);
-          } else {
-            return currentValue;
-          }
-        },
-      ),
-    ]);
-  }
-}
-

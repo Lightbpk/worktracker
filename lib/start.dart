@@ -34,7 +34,7 @@ class _StartPageState extends State<StartPage> {
         return CircularProgressIndicator();
       }else{
         if(currentRole == 'admin'){
-          print('admin logged');
+          //print('admin logged');
           return AdminPage();
           //Navigator.push(context, MaterialPageRoute(builder: (context)=> AdminPage()));
         }else if(currentRole == 'dir'){
@@ -42,9 +42,6 @@ class _StartPageState extends State<StartPage> {
           return DirectorPage();
         }
         else {
-          print("current role = " +currentRole);
-          print("hash role = " +currentRole.hashCode.toString());
-          print("hash admin = " + "admin".hashCode.toString());
           return UserPage();
           //Navigator.push(context, MaterialPageRoute(builder: (context)=> UserPage()));
         }

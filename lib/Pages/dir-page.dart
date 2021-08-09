@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:worktracker/contract.dart';
 import 'package:worktracker/node.dart';
 import 'package:worktracker/services/auth_service.dart';
+import 'package:worktracker/services/data-time-field.dart';
 import 'package:worktracker/services/firebaseConnector.dart';
 import 'package:worktracker/task.dart';
 import 'package:worktracker/user.dart';
@@ -29,6 +30,8 @@ class _DirectorPageState extends State<DirectorPage> {
   List<String> dropdownMenuUsers = ['Иванов','Петров','Сидиоров','Работягов','Леньтяйко'];
   String dropdownValue = 'Иванов';
   int inc = 1;
+  BasicDateTimeField startTaskTime;
+  BasicDateTimeField endTaskTime;
 
   @override
   void initState() {
@@ -128,10 +131,10 @@ class _DirectorPageState extends State<DirectorPage> {
     return ListView.builder(itemBuilder: (context, i) {
       if (i < tasksList.length) {
         String subtitleText =
-            tasksList[i].status + " c " + tasksList[i].lastStatusTime;
+            tasksList[i].status + " " + tasksList[i].assignedUser;
         return ListTile(
           title: Text(tasksList[i].taskName),
-          subtitle: Text(subtitleText.substring(0, subtitleText.length - 10)),
+          subtitle: Text(subtitleText),
           onTap: () {
             print('Taped ' + tasksList[i].taskName);
             setState(() {
@@ -158,7 +161,6 @@ class _DirectorPageState extends State<DirectorPage> {
   }
 
   Widget _buildTaskTail(Task task, BuildNode currentNode) {
-      //readUsers();
       print('status = ' + status);
       return Column(
         children: [
@@ -167,8 +169,12 @@ class _DirectorPageState extends State<DirectorPage> {
           Text('Статус: '+task.status),
           Text(task.lastStatusTime),
           usersDropList(task,currentNode),
+          startTaskTime = BasicDateTimeField('Введите начальное время'),
+          endTaskTime = BasicDateTimeField('Введите конечное время'),
           TextButton.icon(
               onPressed: () async {
+                task.startTaskTime = startTaskTime.dateTimeValue.toString();
+                DataBaseConnector().changeStartTaskTime(task, currentNode, currentContract);
                 tasksList = await readTasks(currentNode);
                 setState(() {
                   mainWidget = _buildTasksList(currentNode);

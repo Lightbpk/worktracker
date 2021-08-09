@@ -161,4 +161,9 @@ class DataBaseConnector {
     await db.child("work-process").child(contract.id).child("tasks")
         .child(task.taskName).child("assignedUser").set(task.assignedUser);
   }
+  void changeStartTaskTime(Task task, BuildNode node, Contract contract) async{
+    getMainRef();
+    await db.child("work-process").child(contract.id).child("tasks")
+        .child(task.taskName).child("startTaskTime").set(task.startTaskTime);
+  }
 }
