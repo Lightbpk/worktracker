@@ -165,7 +165,7 @@ class _DirectorPageState extends State<DirectorPage> {
       return Column(
         children: [
           Text(task.taskName),
-          Text('Ответственный ' + dropdownValue),
+          Text('Ответственный ' + task.assignedUser),
           Text(task.status),
           Text(task.lastStatusTime),
           usersDropList(task,currentNode),
@@ -189,6 +189,8 @@ class _DirectorPageState extends State<DirectorPage> {
       onChanged: (newValue){
         setState(() {
           dropdownValue= newValue;
+          task.assignedUser = newValue;
+          DataBaseConnector().changeTaskAssignedUser(task, node, currentContract);
           mainWidget = _buildTaskTail(task, currentNode);
         });
       },

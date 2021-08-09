@@ -92,6 +92,7 @@ class DataBaseConnector {
               Task task = new Task(key, node.nodeName);
               task.status = mapValue["status"];
               task.lastStatusTime = mapValue["lastStatusTime"];
+              task.assignedUser = mapValue["assignedUser"];
               tasksList.add(task);
               print("taskName = "+key);
               print("nodeName = "+node.nodeName);
@@ -153,5 +154,9 @@ class DataBaseConnector {
     await db.child("work-process").child(contract.id).child("tasks")
         .child(task.taskName).child("lastStatusTime").set(task.lastStatusTime);
   }
-  
+  void changeTaskAssignedUser(Task task, BuildNode node, Contract contract) async{
+    getMainRef();
+    await db.child("work-process").child(contract.id).child("tasks")
+        .child(task.taskName).child("assignedUser").set(task.assignedUser);
+  }
 }
