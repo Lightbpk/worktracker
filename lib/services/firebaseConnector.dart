@@ -144,6 +144,8 @@ class DataBaseConnector {
       db.child("work-process").child(id).child("tasks")
           .child(task.taskName).child("lastStatusTime").set(task.lastStatusTime);
       db.child("work-process").child(id).child("tasks")
+          .child(task.taskName).child("assignedUser").set(task.assignedUser);
+      db.child("work-process").child(id).child("tasks")
           .child(task.taskName).child("parentNodeName").set(task.parentNodeName);
     });
   }

@@ -40,7 +40,6 @@ class _DirectorPageState extends State<DirectorPage> {
 
   @override
   Widget build(BuildContext context) {
-    //print('MAINWIDGET = '+ mainWidget.toString());
     if (!isLoaded) {
       return CircularProgressIndicator();
     } else {
@@ -73,7 +72,6 @@ class _DirectorPageState extends State<DirectorPage> {
           subtitle: Text(contractsList[i].name),
           onTap: () {
             print('Taped ' + contractsList[i].id);
-            //isLoaded= false;
             isLoaded = false;
             currentContract = contractsList[i];
             readNodes(currentContract.id);
@@ -164,9 +162,9 @@ class _DirectorPageState extends State<DirectorPage> {
       print('status = ' + status);
       return Column(
         children: [
-          Text(task.taskName),
-          Text('Ответственный ' + task.assignedUser),
-          Text(task.status),
+          Text('Задача: '+task.taskName),
+          Text('Ответственный: ' + task.assignedUser),
+          Text('Статус: '+task.status),
           Text(task.lastStatusTime),
           usersDropList(task,currentNode),
           TextButton.icon(
