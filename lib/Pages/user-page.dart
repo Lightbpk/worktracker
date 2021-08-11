@@ -164,7 +164,7 @@ class _UserPageState extends State<UserPage> {
                 print(status);
                 DateTime dateTime = DateTime.now();
                 task.lastStatusTime = dateTime.toString();
-                DataBaseConnector().changeTaskStatus(task, currentNode, currentContract);
+                DataBaseConnector().setTaskStatus(task, currentNode, currentContract);
               });
               makeToast(task.status, Colors.green);
             },
@@ -176,7 +176,7 @@ class _UserPageState extends State<UserPage> {
                 task.status = 'простой';
                 DateTime dateTime = DateTime.now();
                 task.lastStatusTime = dateTime.toString();
-                DataBaseConnector().changeTaskStatus(task, currentNode, currentContract);
+                DataBaseConnector().setTaskStatus(task, currentNode, currentContract);
               });
               makeToast(task.status, Colors.red);
             },
@@ -188,7 +188,7 @@ class _UserPageState extends State<UserPage> {
                 task.status = "доработка";
                 DateTime dateTime = DateTime.now();
                 task.lastStatusTime = dateTime.toString();
-                DataBaseConnector().changeTaskStatus(task, currentNode, currentContract);
+                DataBaseConnector().setTaskStatus(task, currentNode, currentContract);
               });
               makeToast(task.status, Colors.yellow);
             },
@@ -201,7 +201,7 @@ class _UserPageState extends State<UserPage> {
                 task.status = "закончено";
                 DateTime dateTime = DateTime.now();
                 task.lastStatusTime = dateTime.toString();
-                DataBaseConnector().changeTaskStatus(task, currentNode, currentContract);
+                DataBaseConnector().setTaskStatus(task, currentNode, currentContract);
               });
               makeToast(task.status, Colors.lightBlue);
             },

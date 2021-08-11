@@ -30,7 +30,7 @@ class _DirectorPageState extends State<DirectorPage> {
   List<String> dropdownMenuUsers = ['Иванов','Петров','Сидиоров','Работягов','Леньтяйко'];
   String dropdownValue = 'Иванов';
   int inc = 1;
-  BasicDateTimeField startTaskTime;
+  BasicDateTimeField startTimeTaskPlan;
   BasicDateTimeField endTaskTime;
 
   @override
@@ -168,14 +168,25 @@ class _DirectorPageState extends State<DirectorPage> {
           Text('Ответственный: ' + task.assignedUser),
           Text('Статус: '+task.status),
           Text('Изменение статуса: '+task.lastStatusTime),
+          Text('startTaskTimePlan: '+DateTime.fromMicrosecondsSinceEpoch(task.startTimeTaskPlan).toString()),
           usersDropList(task,currentNode),
-          startTaskTime = BasicDateTimeField('Введите начальное время'),
+          startTimeTaskPlan = BasicDateTimeField('Введите начальное время'),
           endTaskTime = BasicDateTimeField('Введите конечное время'),
           TextButton.icon(
+              onPressed: (){
+                task.startTimeTaskPlan = startTimeTaskPlan.getDateTime().microsecondsSinceEpoch;
+                //print("DateTime "+startTaskTime.getDateTime().microsecondsSinceEpoch.toString());
+                DataBaseConnector().setStartTaskTime(task, currentNode, currentContract);
+                setState(() {
+                  mainWidget = _buildTaskTail(task, currentNode);
+                  isLoaded = true;
+                });
+              },
+              icon: Icon(Icons.refresh),
+              label: Text('установить')),
+          TextButton.icon(
               onPressed: () async {
-                task.startTaskTime = startTaskTime.dateTimeValue.toString();
-                print("DateTime "+startTaskTime.getDateTime().microsecondsSinceEpoch.toString());
-                DataBaseConnector().changeStartTaskTime(task, currentNode, currentContract);
+
                 tasksList = await readTasks(currentNode);
                 setState(() {
                   mainWidget = _buildTasksList(currentNode);
@@ -195,7 +206,7 @@ class _DirectorPageState extends State<DirectorPage> {
         setState(() {
           dropdownValue= newValue;
           task.assignedUser = newValue;
-          DataBaseConnector().changeTaskAssignedUser(task, node, currentContract);
+          DataBaseConnector().setTaskAssignedUser(task, node, currentContract);
           mainWidget = _buildTaskTail(task, currentNode);
         });
       },

@@ -93,6 +93,7 @@ class DataBaseConnector {
               task.status = mapValue["status"];
               task.lastStatusTime = mapValue["lastStatusTime"];
               task.assignedUser = mapValue["assignedUser"];
+              task.startTimeTaskPlan = mapValue["startTimeTaskPlan"];
               tasksList.add(task);
               print("taskName = "+key);
               print("nodeName = "+node.nodeName);
@@ -147,23 +148,25 @@ class DataBaseConnector {
           .child(task.taskName).child("assignedUser").set(task.assignedUser);
       db.child("work-process").child(id).child("tasks")
           .child(task.taskName).child("parentNodeName").set(task.parentNodeName);
+      db.child("work-process").child(id).child("tasks")
+          .child(task.taskName).child("startTimeTaskPlan").set(task.startTimeTaskPlan);
     });
   }
-  void changeTaskStatus(Task task, BuildNode node, Contract contract) async{
+  void setTaskStatus(Task task, BuildNode node, Contract contract) async{
     getMainRef();
     await db.child("work-process").child(contract.id).child("tasks")
         .child(task.taskName).child("status").set(task.status);
     await db.child("work-process").child(contract.id).child("tasks")
         .child(task.taskName).child("lastStatusTime").set(task.lastStatusTime);
   }
-  void changeTaskAssignedUser(Task task, BuildNode node, Contract contract) async{
+  void setTaskAssignedUser(Task task, BuildNode node, Contract contract) async{
     getMainRef();
     await db.child("work-process").child(contract.id).child("tasks")
         .child(task.taskName).child("assignedUser").set(task.assignedUser);
   }
-  void changeStartTaskTime(Task task, BuildNode node, Contract contract) async{
+  void setStartTaskTime(Task task, BuildNode node, Contract contract) async{
     getMainRef();
     await db.child("work-process").child(contract.id).child("tasks")
-        .child(task.taskName).child("startTaskTime").set(task.startTaskTime);
+        .child(task.taskName).child("startTimeTaskPlan").set(task.startTimeTaskPlan);
   }
 }
