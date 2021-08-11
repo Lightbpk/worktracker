@@ -122,7 +122,7 @@ class _UserPageState extends State<UserPage> {
     return ListView.builder(itemBuilder: (context, i) {
       if (i < tasksList.length) {
         String subtitleText =
-            tasksList[i].status + " c " + tasksList[i].lastStatusTime;
+            tasksList[i].status + " c " + tasksList[i].getLastStatusTimeText();
         return ListTile(
           title: Text(tasksList[i].taskName),
           subtitle: Text(subtitleText.substring(0, subtitleText.length - 10)),
@@ -163,7 +163,7 @@ class _UserPageState extends State<UserPage> {
               this.setState(() {
                 print(status);
                 DateTime dateTime = DateTime.now();
-                task.lastStatusTime = dateTime.toString();
+                task.lastStatusTime = dateTime.microsecondsSinceEpoch;
                 DataBaseConnector().setTaskStatus(task, currentNode, currentContract);
               });
               makeToast(task.status, Colors.green);
@@ -175,7 +175,7 @@ class _UserPageState extends State<UserPage> {
               this.setState(() {
                 task.status = 'простой';
                 DateTime dateTime = DateTime.now();
-                task.lastStatusTime = dateTime.toString();
+                task.lastStatusTime = dateTime.microsecondsSinceEpoch;
                 DataBaseConnector().setTaskStatus(task, currentNode, currentContract);
               });
               makeToast(task.status, Colors.red);
@@ -187,7 +187,7 @@ class _UserPageState extends State<UserPage> {
               this.setState(() {
                 task.status = "доработка";
                 DateTime dateTime = DateTime.now();
-                task.lastStatusTime = dateTime.toString();
+                task.lastStatusTime = dateTime.microsecondsSinceEpoch;
                 DataBaseConnector().setTaskStatus(task, currentNode, currentContract);
               });
               makeToast(task.status, Colors.yellow);
@@ -200,7 +200,7 @@ class _UserPageState extends State<UserPage> {
                 isLoaded = true;
                 task.status = "закончено";
                 DateTime dateTime = DateTime.now();
-                task.lastStatusTime = dateTime.toString();
+                task.lastStatusTime = dateTime.microsecondsSinceEpoch;
                 DataBaseConnector().setTaskStatus(task, currentNode, currentContract);
               });
               makeToast(task.status, Colors.lightBlue);
@@ -208,7 +208,7 @@ class _UserPageState extends State<UserPage> {
             icon: Icon(Icons.stop),
             label: Text('Стоп')),
         Text(task.status),
-        Text(task.lastStatusTime),
+        Text(task.getLastStatusTimeText()),
         TextButton.icon(
             onPressed: () async{
               tasksList = await readTasks(currentNode);

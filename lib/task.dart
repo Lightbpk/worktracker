@@ -1,7 +1,7 @@
 class Task {
   String taskName;
   String status;
-  String lastStatusTime;
+  int lastStatusTime;
   String parentNodeName;
   String assignedUser;
   int startTimeTaskPlan;
@@ -11,17 +11,27 @@ class Task {
     this.taskName = taskName;
     this.parentNodeName = parentNodeName;
     status = 'not set';
-    lastStatusTime = "not set";
+    lastStatusTime = 0;
     assignedUser = "not set";
     startTimeTaskPlan = 0;
     endTimeTaskPlan = 0;
   }
 
+  String getLastStatusTimeText(){
+    if(lastStatusTime != 0) return DateTime.fromMicrosecondsSinceEpoch(lastStatusTime)
+        .toString().substring(0,19);
+    else return "Не заданно";
+  }
+
   String getStartTimeText(){
-    return DateTime.fromMicrosecondsSinceEpoch(startTimeTaskPlan).toString();
+    String startTime = DateTime.fromMicrosecondsSinceEpoch(startTimeTaskPlan).toString();
+    if(startTimeTaskPlan != 0) return startTime.substring(0,19);
+    else return "Не задано";
   }
   String getEndTimeText(){
-    return DateTime.fromMicrosecondsSinceEpoch(endTimeTaskPlan).toString();
+    String endTime = DateTime.fromMicrosecondsSinceEpoch(endTimeTaskPlan).toString();
+    if(endTimeTaskPlan != 0) return endTime.substring(0,19);
+    else return "Не задано";
   }
 
 }

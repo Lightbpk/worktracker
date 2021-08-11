@@ -167,22 +167,29 @@ class _DirectorPageState extends State<DirectorPage> {
           Text('Задача: '+task.taskName),
           Text('Ответственный: ' + task.assignedUser),
           Text('Статус: '+task.status),
-          Text('Изменение статуса: '+task.lastStatusTime),
-          Text('startTaskTimePlan: '+task.getStartTimeText()),
-          Text('endTaskTimePlan: '+task.getEndTimeText()),
+          Text('Изменение статуса: '+task.getLastStatusTimeText()),
+          Text('Начало по плану: '+task.getStartTimeText()),
+          Text('Завершение по плану: '+task.getEndTimeText()),
           usersDropList(task,currentNode),
           fieldStartTimeTaskPlan = BasicDateTimeField('Время начала задания'),
           fieldEndTaskTimePlan = BasicDateTimeField('Запланированое время завершения'),
           TextButton.icon(
               onPressed: (){
-                task.startTimeTaskPlan = fieldStartTimeTaskPlan.getDateTime();
-                task.endTimeTaskPlan = fieldEndTaskTimePlan.getDateTime();
-                DataBaseConnector().setStartTaskTime(task, currentNode, currentContract);
-                DataBaseConnector().setEndTaskTime(task, currentNode, currentContract);
-                setState(() {
-                  mainWidget = _buildTaskTail(task, currentNode);
-                  isLoaded = true;
-                });
+                if(fieldStartTimeTaskPlan != null && fieldEndTaskTimePlan.dateTimeValue != null) {
+                  task.startTimeTaskPlan = fieldStartTimeTaskPlan.getDateTime();
+                  task.endTimeTaskPlan = fieldEndTaskTimePlan.getDateTime();
+                  DataBaseConnector().setStartTaskTime(
+                      task, currentNode, currentContract);
+                  DataBaseConnector().setEndTaskTime(
+                      task, currentNode, currentContract);
+                  setState(() {
+                    mainWidget = _buildTaskTail(task, currentNode);
+                    isLoaded = true;
+                  });
+                }
+                else{
+                  makeToast('Укажите обе даты', Colors.red);
+                }
               },
               icon: Icon(Icons.refresh),
               label: Text('установить')),
@@ -257,7 +264,7 @@ class _DirectorPageState extends State<DirectorPage> {
 
   void makeToast(String status, Color color) {
     Fluttertoast.showToast(
-        msg: "Установлен Статус " + status,
+        msg: status,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
         timeInSecForIosWeb: 1,
