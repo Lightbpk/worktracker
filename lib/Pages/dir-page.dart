@@ -167,13 +167,14 @@ class _DirectorPageState extends State<DirectorPage> {
           Text('Задача: '+task.taskName),
           Text('Ответственный: ' + task.assignedUser),
           Text('Статус: '+task.status),
-          Text(task.lastStatusTime),
+          Text('Изменение статуса: '+task.lastStatusTime),
           usersDropList(task,currentNode),
           startTaskTime = BasicDateTimeField('Введите начальное время'),
           endTaskTime = BasicDateTimeField('Введите конечное время'),
           TextButton.icon(
               onPressed: () async {
                 task.startTaskTime = startTaskTime.dateTimeValue.toString();
+                print("DateTime "+startTaskTime.getDateTime().microsecondsSinceEpoch.toString());
                 DataBaseConnector().changeStartTaskTime(task, currentNode, currentContract);
                 tasksList = await readTasks(currentNode);
                 setState(() {

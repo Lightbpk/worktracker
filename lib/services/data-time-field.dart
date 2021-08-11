@@ -10,8 +10,12 @@ class BasicDateTimeField extends StatelessWidget {
   DateTime dateTimeValue;
   String hintText = 'Введите дату';
 
-  BasicDateTimeField(String newHintTaxt){
-    hintText =newHintTaxt;
+  BasicDateTimeField(String newHintText){
+    hintText = newHintText;
+  }
+
+  DateTime getDateTime(){
+    return dateTimeValue;
   }
 
   @override
