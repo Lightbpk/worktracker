@@ -5,6 +5,7 @@ class Task {
   String parentNodeName;
   String assignedUser;
   int startTimeTaskPlan;
+  int endTimeTaskPlan;
 
   Task(String taskName,String parentNodeName){
     this.taskName = taskName;
@@ -13,5 +14,14 @@ class Task {
     lastStatusTime = "not set";
     assignedUser = "not set";
     startTimeTaskPlan = 0;
+    endTimeTaskPlan = 0;
   }
+
+  String getStartTimeText(){
+    return DateTime.fromMicrosecondsSinceEpoch(startTimeTaskPlan).toString();
+  }
+  String getEndTimeText(){
+    return DateTime.fromMicrosecondsSinceEpoch(endTimeTaskPlan).toString();
+  }
+
 }

@@ -14,8 +14,8 @@ class BasicDateTimeField extends StatelessWidget {
     hintText = newHintText;
   }
 
-  DateTime getDateTime(){
-    return dateTimeValue;
+  int getDateTime(){
+    return dateTimeValue.microsecondsSinceEpoch;
   }
 
   @override

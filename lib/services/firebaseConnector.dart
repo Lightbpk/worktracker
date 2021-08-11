@@ -60,6 +60,29 @@ class DataBaseConnector {
     return userList;
   }
 
+  Future <List<Contract>> getContracts() async{
+    getMainRef();
+    try {
+      List<Contract> contractsList = [];
+      await db.child("work-process")
+          .once()
+          .then((DataSnapshot snapshot) {
+        snapshot.value.forEach((key, value) {
+          Contract currentContract = new Contract(key);
+          contractsList.add(currentContract);
+          db.child("work-process").child(key).child("name")
+              .once().then((DataSnapshot nameSnap){
+            currentContract.name =  nameSnap.value;
+          });
+        });
+      });
+      return contractsList;
+    }catch (e){
+      print(e);
+      return null;
+    }
+  }
+
   Future <List<BuildNode>> getNodes(String contract) async{
     getMainRef();
     List<BuildNode> nodesList = [];
@@ -94,6 +117,7 @@ class DataBaseConnector {
               task.lastStatusTime = mapValue["lastStatusTime"];
               task.assignedUser = mapValue["assignedUser"];
               task.startTimeTaskPlan = mapValue["startTimeTaskPlan"];
+              task.endTimeTaskPlan = mapValue["endTimeTaskPlan"];
               tasksList.add(task);
               print("taskName = "+key);
               print("nodeName = "+node.nodeName);
@@ -101,29 +125,6 @@ class DataBaseConnector {
           });
     } );
     return tasksList;
-  }
-
-  Future <List<Contract>> getContracts() async{
-    getMainRef();
-    try {
-      List<Contract> contractsList = [];
-      await db.child("work-process")
-          .once()
-          .then((DataSnapshot snapshot) {
-        snapshot.value.forEach((key, value) {
-          Contract currentContract = new Contract(key);
-          contractsList.add(currentContract);
-          db.child("work-process").child(key).child("name")
-              .once().then((DataSnapshot nameSnap){
-                currentContract.name =  nameSnap.value;
-              });
-        });
-      });
-      return contractsList;
-    }catch (e){
-      print(e);
-      return null;
-    }
   }
 
   void addProject(String id, String clientName, List<BuildNode> nodeList, List<Task> tasksList) async{
@@ -136,8 +137,15 @@ class DataBaseConnector {
     nodeList.forEach((node) {
       db.child("work-process").child(id).child("nodes")
           .child(node.nodePosition).child("nodeName").set(node.nodeName);
-      db.child("work-process").child(id).child("nodes")
-          .child(node.nodePosition).child("deadline").set(node.field.dateTimeValue.toString());
+      if(node.field.dateTimeValue != null) {
+        db.child("work-process").child(id).child("nodes")
+            .child(node.nodePosition).child("deadline").set(
+            node.field.dateTimeValue.microsecondsSinceEpoch);
+      }else{
+        db.child("work-process").child(id).child("nodes")
+            .child(node.nodePosition).child("deadline").set(
+            0);
+      }
     });
     tasksList.forEach((task) {
       db.child("work-process").child(id).child("tasks")
@@ -150,6 +158,8 @@ class DataBaseConnector {
           .child(task.taskName).child("parentNodeName").set(task.parentNodeName);
       db.child("work-process").child(id).child("tasks")
           .child(task.taskName).child("startTimeTaskPlan").set(task.startTimeTaskPlan);
+      db.child("work-process").child(id).child("tasks")
+          .child(task.taskName).child("endTimeTaskPlan").set(task.endTimeTaskPlan);
     });
   }
   void setTaskStatus(Task task, BuildNode node, Contract contract) async{
@@ -168,5 +178,10 @@ class DataBaseConnector {
     getMainRef();
     await db.child("work-process").child(contract.id).child("tasks")
         .child(task.taskName).child("startTimeTaskPlan").set(task.startTimeTaskPlan);
+  }
+  void setEndTaskTime(Task task, BuildNode node, Contract contract) async{
+    getMainRef();
+    await db.child("work-process").child(contract.id).child("tasks")
+        .child(task.taskName).child("endTimeTaskPlan").set(task.endTimeTaskPlan);
   }
 }

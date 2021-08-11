@@ -30,8 +30,8 @@ class _DirectorPageState extends State<DirectorPage> {
   List<String> dropdownMenuUsers = ['Иванов','Петров','Сидиоров','Работягов','Леньтяйко'];
   String dropdownValue = 'Иванов';
   int inc = 1;
-  BasicDateTimeField startTimeTaskPlan;
-  BasicDateTimeField endTaskTime;
+  BasicDateTimeField fieldStartTimeTaskPlan;
+  BasicDateTimeField fieldEndTaskTimePlan;
 
   @override
   void initState() {
@@ -90,7 +90,7 @@ class _DirectorPageState extends State<DirectorPage> {
   Widget _buildNodesList() {
     return ListView.builder(itemBuilder: (context, i) {
       if (i < nodesList.length) {
-        String subTitleText = nodesList[i].nodeDeadline;
+        String subTitleText = nodesList[i].getDeadlineText();
         if (subTitleText == 'null') {
           subTitleText = ' not set deadline';
         }
@@ -168,15 +168,17 @@ class _DirectorPageState extends State<DirectorPage> {
           Text('Ответственный: ' + task.assignedUser),
           Text('Статус: '+task.status),
           Text('Изменение статуса: '+task.lastStatusTime),
-          Text('startTaskTimePlan: '+DateTime.fromMicrosecondsSinceEpoch(task.startTimeTaskPlan).toString()),
+          Text('startTaskTimePlan: '+task.getStartTimeText()),
+          Text('endTaskTimePlan: '+task.getEndTimeText()),
           usersDropList(task,currentNode),
-          startTimeTaskPlan = BasicDateTimeField('Введите начальное время'),
-          endTaskTime = BasicDateTimeField('Введите конечное время'),
+          fieldStartTimeTaskPlan = BasicDateTimeField('Время начала задания'),
+          fieldEndTaskTimePlan = BasicDateTimeField('Запланированое время завершения'),
           TextButton.icon(
               onPressed: (){
-                task.startTimeTaskPlan = startTimeTaskPlan.getDateTime().microsecondsSinceEpoch;
-                //print("DateTime "+startTaskTime.getDateTime().microsecondsSinceEpoch.toString());
+                task.startTimeTaskPlan = fieldStartTimeTaskPlan.getDateTime();
+                task.endTimeTaskPlan = fieldEndTaskTimePlan.getDateTime();
                 DataBaseConnector().setStartTaskTime(task, currentNode, currentContract);
+                DataBaseConnector().setEndTaskTime(task, currentNode, currentContract);
                 setState(() {
                   mainWidget = _buildTaskTail(task, currentNode);
                   isLoaded = true;

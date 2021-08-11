@@ -80,7 +80,7 @@ class _UserPageState extends State<UserPage> {
   Widget _buildNodesList() {
     return ListView.builder(itemBuilder: (context, i) {
       if (i < nodesList.length) {
-        String subTitleText = nodesList[i].nodeDeadline;
+        String subTitleText = nodesList[i].getDeadlineText();
         if(subTitleText=='null'){
           subTitleText = ' not set deadline';
         }
