@@ -26,22 +26,35 @@ class WorkTimer
     return timePoint - timeNow;
   }
 
-  String ddHHmmssLeft(){
+  String hhMMssLeft(){
     String strLeft= "";
     int micSecNow = DateTime.now().microsecondsSinceEpoch;
     int micSecLeft = timePoint - micSecNow;
-    double secLeft = (micSecLeft / 1000000);
-    double minLeft = (secLeft / 60);
-    double hoursLeft = (minLeft / 60);
-    double daysLeft = (hoursLeft / 24);
-    if(daysLeft >= 1) strLeft = strLeft + 'Дней '+ daysLeft.round().toString();
-    if((hoursLeft/daysLeft) >= 1)
-      strLeft = strLeft + ' Часов '+(hoursLeft % daysLeft).toString();
-    if(minLeft / hoursLeft >= 1 )
-      strLeft = strLeft + ' Минут '+(minLeft % hoursLeft).toString();
-    if(secLeft / hoursLeft >= 1 )
-      strLeft = strLeft + ' Секунд '+(secLeft % minLeft).toString();
+    DateTime leftTime = DateTime.fromMicrosecondsSinceEpoch(micSecLeft);
+    DateTime nullTime = DateTime.fromMicrosecondsSinceEpoch(0);
+    print("leftTime");
+    print(leftTime);
+    Duration difTime = leftTime.difference(nullTime);
+    print("difTime");
+    List<String> difList = difTime.toString().split(':');
+    if(difList.length == 3) strLeft = difList[0] + " часов " + difList[1] + ' минут '+ difList[2]+ 'сек';
+    else if (difList.length == 2) strLeft = difList[0] + ' минут '+ difList[1]+ 'сек';
+    else if (difList.length == 1) strLeft = difList[0] + ' сек ';
+    else strLeft = 'error difList Length';
     return strLeft;
   }
-  Duration d;
+  String hhMMssPassed(){
+    String strPassed= "";
+    int micSecNow = DateTime.now().microsecondsSinceEpoch;
+    int micSecPassed = timePoint - micSecNow;
+    DateTime passedTime = DateTime.fromMicrosecondsSinceEpoch(micSecPassed);
+    DateTime nullTime = DateTime.fromMicrosecondsSinceEpoch(0);
+    Duration difTime = nullTime.difference(passedTime);
+    List<String> difList = difTime.toString().split(':');
+    if(difList.length == 3) strPassed = difList[0] + " часов " + difList[1] + ' минут '+ difList[2]+ 'сек';
+    else if (difList.length == 2) strPassed = difList[0] + ' минут '+ difList[1]+ 'сек';
+    else if (difList.length == 1) strPassed = difList[0] + ' сек ';
+    else strPassed = 'error difList Length';
+    return strPassed;
+  }
 }

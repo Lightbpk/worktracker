@@ -32,7 +32,7 @@ class _DirectorPageState extends State<DirectorPage> {
   String dropdownValue = 'Иванов';
   int inc = 1;
   String timeLeft = '';
-  int timePassed = 0;
+  String timePassed = '';
   BasicDateTimeField fieldStartTimeTaskPlan;
   BasicDateTimeField fieldEndTaskTimePlan;
 
@@ -188,8 +188,8 @@ class _DirectorPageState extends State<DirectorPage> {
                   DataBaseConnector().setEndTaskTime(
                       task, currentNode, currentContract);
                   setState(() {
-                    timePassed = WorkTimer(task.lastStatusTime).timePassed();
-                    timeLeft = WorkTimer(task.endTimeTaskPlan).ddHHmmssLeft();
+                    timePassed = WorkTimer(task.lastStatusTime).hhMMssPassed();
+                    timeLeft = WorkTimer(task.endTimeTaskPlan).hhMMssLeft();
                     mainWidget = _buildTaskTail(task, currentNode);
                     isLoaded = true;
                   });
