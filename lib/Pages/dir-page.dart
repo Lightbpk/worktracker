@@ -6,6 +6,7 @@ import 'package:worktracker/node.dart';
 import 'package:worktracker/services/auth_service.dart';
 import 'package:worktracker/services/data-time-field.dart';
 import 'package:worktracker/services/firebaseConnector.dart';
+import 'package:worktracker/services/timer.dart';
 import 'package:worktracker/task.dart';
 import 'package:worktracker/user.dart';
 
@@ -30,6 +31,8 @@ class _DirectorPageState extends State<DirectorPage> {
   List<String> dropdownMenuUsers = ['Иванов','Петров','Сидиоров','Работягов','Леньтяйко'];
   String dropdownValue = 'Иванов';
   int inc = 1;
+  String timeLeft = '';
+  int timePassed = 0;
   BasicDateTimeField fieldStartTimeTaskPlan;
   BasicDateTimeField fieldEndTaskTimePlan;
 
@@ -173,6 +176,8 @@ class _DirectorPageState extends State<DirectorPage> {
           usersDropList(task,currentNode),
           fieldStartTimeTaskPlan = BasicDateTimeField('Время начала задания'),
           fieldEndTaskTimePlan = BasicDateTimeField('Запланированое время завершения'),
+          Text('Пошло после Изменение статуса $timePassed'),
+          Text('Осталось $timeLeft'),
           TextButton.icon(
               onPressed: (){
                 if(fieldStartTimeTaskPlan != null && fieldEndTaskTimePlan.dateTimeValue != null) {
@@ -183,6 +188,8 @@ class _DirectorPageState extends State<DirectorPage> {
                   DataBaseConnector().setEndTaskTime(
                       task, currentNode, currentContract);
                   setState(() {
+                    timePassed = WorkTimer(task.lastStatusTime).timePassed();
+                    timeLeft = WorkTimer(task.endTimeTaskPlan).ddHHmmssLeft();
                     mainWidget = _buildTaskTail(task, currentNode);
                     isLoaded = true;
                   });
