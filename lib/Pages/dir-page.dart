@@ -22,14 +22,15 @@ class _DirectorPageState extends State<DirectorPage> {
   List<Contract> contractsList;
   List<BuildNode> nodesList;
   List<Task> tasksList = [];
-  List<WTUser> usersList = [];
-  List<String> usersFIOList = [];
+  List<WTUser> usersList;
+  List<String> usersIDList = [];
+  List<DropdownMenuItem> userDropMenuItems;
   String status = "status not set";
   String date = "date not set";
   Contract currentContract;
   BuildNode currentNode;
-  List<String> dropdownMenuUsers = ['Иванов','Петров','Сидиоров','Работягов','Леньтяйко'];
-  String dropdownValue = 'Иванов';
+  List<String> dropdownMenuUsers = ['0'];
+  String dropdownValue;
   int inc = 1;
   String timeLeft = '';
   String timePassed = '';
@@ -41,6 +42,7 @@ class _DirectorPageState extends State<DirectorPage> {
     super.initState();
     readContractsList();
     readUsers();
+    userDropMenuItems = buildUsersDropMenuItems();
     print('init');
   }
 
@@ -168,7 +170,7 @@ class _DirectorPageState extends State<DirectorPage> {
       return Column(
         children: [
           Text('Задача: '+task.taskName),
-          Text('Ответственный: ' + task.assignedUser),
+          Text('Ответственный: ' + ),
           Text('Статус: '+task.status),
           Text('Изменение статуса: '+task.getLastStatusTimeText()),
           Text('Начало по плану: '+task.getStartTimeText()),
@@ -215,7 +217,11 @@ class _DirectorPageState extends State<DirectorPage> {
       );
   }
 
+
   Widget usersDropList(Task task,BuildNode node){
+    userDropMenuItems  = buildUsersDropMenuItems();
+    print("-userDropMenuItems-");
+    print(userDropMenuItems);
     return DropdownButton(
       value: dropdownValue,
       onChanged: (newValue){
@@ -226,14 +232,7 @@ class _DirectorPageState extends State<DirectorPage> {
           mainWidget = _buildTaskTail(task, currentNode);
         });
       },
-      items: dropdownMenuUsers.map(
-        (String selectedUser){
-          return DropdownMenuItem(
-              child: new Text(selectedUser),
-              value: selectedUser,
-          );
-        }
-    ).toList(),
+      items: userDropMenuItems,
     );
   }
 
@@ -241,15 +240,14 @@ class _DirectorPageState extends State<DirectorPage> {
 
     usersList = await DataBaseConnector().getAllUsers();
     usersList.forEach((WTUser user) {
-
-
+        usersIDList.add(user.id);
     /* usersFIOList.add(user.surName+" "+user.name.substring(0,1)+
          '.'+user.fatherName.substring(0,1)+'.');*/
     });
-    dropdownMenuUsers = usersFIOList;
-    print(usersFIOList);
+    dropdownMenuUsers = usersIDList;
+    print(usersIDList);
     print('reading Users done');
-    dropdownValue= usersFIOList.first;
+    dropdownValue= usersIDList.first;
   }
 
   void readContractsList() async {
@@ -281,5 +279,38 @@ class _DirectorPageState extends State<DirectorPage> {
         backgroundColor: color,
         textColor: Colors.white,
         fontSize: 16.0);
+  }
+
+  List<DropdownMenuItem> buildUsersDropMenuItems() {
+    List<DropdownMenuItem> items = List();
+    if(usersList!=null) {
+      usersList.forEach((user) {
+        DropdownMenuItem item = new DropdownMenuItem(
+          child: Text(user.getFamalyIO()),
+          value: user.id,);
+        if(!items.contains(item))items.add(item);
+      });
+      if(dropdownValue == null )dropdownValue = usersList.first.id;
+      print('---User List---');
+      usersList.forEach((element) {
+        print(element.getFamalyIO());
+      });
+      print('--items--');
+      items.forEach((element) {
+        print(element.child);
+        print(element.value);
+      });
+    }else {
+      items.add(
+          DropdownMenuItem(
+            child: Text('Загрузка пользоватлей...'),
+            value: '0',
+          )
+      );
+      dropdownValue = '0';
+      print("-items-");
+      print(items);
+    }
+    return items;
   }
 }
