@@ -238,10 +238,13 @@ class _DirectorPageState extends State<DirectorPage> {
   }
 
   void readUsers() async{
+
     usersList = await DataBaseConnector().getAllUsers();
     usersList.forEach((WTUser user) {
-     usersFIOList.add(user.surName+" "+user.name.substring(0,1)+'.'+user.fatherName.substring(0,1)+'.');
-     // usersFIOList.add(user.surName);
+
+
+    /* usersFIOList.add(user.surName+" "+user.name.substring(0,1)+
+         '.'+user.fatherName.substring(0,1)+'.');*/
     });
     dropdownMenuUsers = usersFIOList;
     print(usersFIOList);

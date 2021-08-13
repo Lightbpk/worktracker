@@ -14,4 +14,10 @@ class WTUser{
   WTUser.fromFirebase(User user){
     id = user.uid;
   }
+
+  String getFamalyIO(){
+    return ""+this.surName+" "+this.name.substring(0,1)+
+        '.'+this.fatherName.substring(0,1)+'.';
+  }
+
 }
