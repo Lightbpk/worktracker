@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 import 'package:worktracker/contract.dart';
 import 'package:worktracker/node.dart';
 import 'package:worktracker/services/auth_service.dart';
 import 'package:worktracker/services/firebaseConnector.dart';
 import 'package:worktracker/task.dart';
+import 'package:worktracker/user.dart';
 
 class UserPage extends StatefulWidget {
   @override
@@ -20,8 +22,10 @@ class _UserPageState extends State<UserPage> {
   List<Task> tasksList=[];
   String status = "status not set";
   String date = "date not set";
+  WTUser currentUser;
   Contract currentContract;
   BuildNode currentNode;
+
 
 
   @override
@@ -38,7 +42,7 @@ class _UserPageState extends State<UserPage> {
     } else {
       return Scaffold(
         appBar: AppBar(
-          title: new Text("Учетка Юзер"),
+          title: new Text("Пользователь: "+currentUser.surName),
           actions: <Widget>[
             TextButton.icon(
                 onPressed: () {
@@ -92,7 +96,7 @@ class _UserPageState extends State<UserPage> {
           // dateTrim без секунд
           onTap: () async{
             currentNode = nodesList[i];
-            tasksList = await readTasks(currentNode);
+            tasksList = await readUserTasks(currentNode,currentUser.id);
             setState(() {
               mainWidget = _buildTasksList(currentNode);
               isLoaded = true;
@@ -211,7 +215,7 @@ class _UserPageState extends State<UserPage> {
         Text(task.getLastStatusTimeText()),
         TextButton.icon(
             onPressed: () async{
-              tasksList = await readTasks(currentNode);
+              tasksList = await readUserTasks(currentNode, currentUser.id);
               setState(() {
                 mainWidget = _buildTasksList(currentNode);
                 isLoaded = true;
@@ -239,10 +243,17 @@ class _UserPageState extends State<UserPage> {
     });
   }
 
+
   Future<List<Task>> readTasks(BuildNode node) async {
     return
         await DataBaseConnector().getTasks(currentContract.id, node);
   }
+  Future<List<Task>> readUserTasks(BuildNode node, userID) async {
+    return
+        await DataBaseConnector().getUserTasks(currentContract.id, node, userID);
+  }
+
+
 
   void makeToast(String status, Color color) {
     Fluttertoast.showToast(

@@ -39,6 +39,26 @@ class DataBaseConnector {
     getMainRef().child("userIDs").child(id).child("fatherName").set(fatherName);
   }
 
+  Future <WTUser> getUserByID(String id) async{
+    print('getting user for id '+id);
+    getMainRef();
+    WTUser user;
+    await db.child("userIDs").once().then((DataSnapshot snapshot){
+      snapshot.value.forEach((key, value){
+        if(key == id){
+          user =new WTUser(id);
+          Map<dynamic,dynamic> mapValue = Map<dynamic,dynamic>.from(value);
+          user.name = mapValue['name'];
+          user.surName = mapValue['surName'];
+          user.fatherName = mapValue['fatherName'];
+          user.role = mapValue['role'];
+        }
+      });
+    });
+
+    return user;
+  }
+
   Future <List<WTUser>> getAllUsers() async{
     getMainRef();
     List<WTUser> userList = [];
@@ -50,11 +70,11 @@ class DataBaseConnector {
         wtUser.surName = mapValue['surName'];
         wtUser.fatherName = mapValue['fatherName'];
         wtUser.role = mapValue['role'];
-        userList.add(wtUser);/*
+        userList.add(wtUser);
         print("Getting user "+ wtUser.id);
         print("name user "+ wtUser.name);
         print("surname user "+ wtUser.surName);
-        print("fathername user "+ wtUser.fatherName);*/
+        print("fathername user "+ wtUser.fatherName);
       });
     });
     return userList;
@@ -127,7 +147,28 @@ class DataBaseConnector {
     return tasksList;
   }
 
-  void addProject(String id, String clientName, List<BuildNode> nodeList, List<Task> tasksList) async{
+  Future <List<Task>> getUserTasks(String contract, BuildNode node, String userID) async{
+    getMainRef();
+    List<Task> tasksList = [];
+    await db.child("work-process").child(contract).child('tasks')
+        .once().then((DataSnapshot snapshot) {
+          snapshot.value.forEach((key, value){
+            Map<dynamic,dynamic> mapValue = Map<dynamic,dynamic>.from(value);
+            if(mapValue['assignedUser'] == userID){
+              Task task = new Task(key, node.nodeName);
+              task.status = mapValue["status"];
+              task.lastStatusTime = mapValue["lastStatusTime"];
+              task.assignedUser = mapValue["assignedUser"];
+              task.startTimeTaskPlan = mapValue["startTimeTaskPlan"];
+              task.endTimeTaskPlan = mapValue["endTimeTaskPlan"];
+              tasksList.add(task);
+            }
+          });
+    });
+    return tasksList;
+  }
+
+   void addProject(String id, String clientName, List<BuildNode> nodeList, List<Task> tasksList) async{
     getMainRef();
     await db.child("work-process").child(id).set({
       'contractID': id,
