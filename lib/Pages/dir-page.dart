@@ -11,6 +11,12 @@ import 'package:worktracker/task.dart';
 import 'package:worktracker/user.dart';
 
 class DirectorPage extends StatefulWidget {
+  WTUser userDir;
+
+  DirectorPage(WTUser userDir){
+    this.userDir = userDir;
+  }
+
   @override
   _DirectorPageState createState() => _DirectorPageState();
 }
@@ -56,7 +62,8 @@ class _DirectorPageState extends State<DirectorPage> {
     } else {
       return Scaffold(
         appBar: AppBar(
-          title: new Text("Учетка Директора"),
+          title: new Text("Директор: "+widget.userDir.getFamalyIO()
+          ),
           actions: <Widget>[
             TextButton.icon(
                 onPressed: () {

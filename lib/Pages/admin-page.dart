@@ -7,7 +7,13 @@ import 'package:worktracker/services/data-time-field.dart';
 import 'package:worktracker/services/firebaseConnector.dart';
 import 'package:worktracker/task.dart';
 
+import '../user.dart';
+
 class AdminPage extends StatefulWidget {
+  WTUser userAdmin;
+  AdminPage(WTUser userAdmin){
+    this.userAdmin = userAdmin;
+  }
   @override
   _AdminPageState createState() => _AdminPageState();
 }
@@ -37,7 +43,7 @@ class _AdminPageState extends State<AdminPage> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: new Text("Учётка Админ"),
+        title: new Text("Админ:"+widget.userAdmin.getFamalyIO()),
         actions: <Widget>[
           TextButton.icon(
               onPressed: () {

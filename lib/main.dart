@@ -38,10 +38,6 @@ class MyApp extends StatelessWidget {
             primarySwatch: Colors.green,
           ),
           home: StartPage(),
-          routes: {
-            '/a' : (BuildContext context) => AuthPage(),
-            '/d': (BuildContext context) => DirectorPage(),
-          },
         ));
   }
 }

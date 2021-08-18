@@ -18,14 +18,15 @@ import 'Pages/admin-page.dart';
 
 class _StartPageState extends State<StartPage> {
   String currentRole='not set';
-  WTUser userWT;
+  WTUser loggedUserOnlyID, loggedUserMeta;
   bool isLoggedIn = false;
   bool roleReading = true;
 
+
   @override
   Widget build(BuildContext context) {
-    userWT = Provider.of<WTUser>(context);
-    bool isLoggedIn = userWT != null;
+    loggedUserOnlyID = Provider.of<WTUser>(context);
+    bool isLoggedIn = loggedUserOnlyID != null;
     readUserRole();
     if(isLoggedIn){
       //print('user not null');
@@ -35,14 +36,14 @@ class _StartPageState extends State<StartPage> {
       }else{
         if(currentRole == 'admin'){
           //print('admin logged');
-          return AdminPage();
+          return AdminPage(loggedUserMeta);
           //Navigator.push(context, MaterialPageRoute(builder: (context)=> AdminPage()));
         }else if(currentRole == 'dir'){
           //Navigator.push(context, MaterialPageRoute(builder: (context)=> DirectorPage()));
-          return DirectorPage();
+          return DirectorPage(loggedUserMeta);
         }
         else {
-          return UserPage();
+          return UserPage(loggedUserMeta);
           //Navigator.push(context, MaterialPageRoute(builder: (context)=> UserPage()));
         }
       }
@@ -50,14 +51,12 @@ class _StartPageState extends State<StartPage> {
     else return AuthPage(title:'Authentication');
   }
   void readUserRole()async{
-    await DataBaseConnector().getMainRef().child("userIDs")
-        .child(userWT.id).child('role').once().then((DataSnapshot snapshot) {
-      if(snapshot.key == 'role'){
+    loggedUserMeta = await DataBaseConnector().getUserByID(loggedUserOnlyID.id);
+    print("tempuser "+loggedUserMeta.surName);
         setState(() {
-          currentRole = snapshot.value.toString();
+          loggedUserOnlyID = loggedUserMeta;
+          currentRole = loggedUserMeta.role;
           roleReading = false;
         });
       }
-    });
-  }
 }

@@ -10,6 +10,12 @@ import 'package:worktracker/task.dart';
 import 'package:worktracker/user.dart';
 
 class UserPage extends StatefulWidget {
+  WTUser currentUser;
+
+  UserPage(WTUser user){
+    currentUser = user;
+    //print('constructed UserPage for User '+user.surName);
+  }
   @override
   _UserPageState createState() => _UserPageState();
 }
@@ -22,7 +28,6 @@ class _UserPageState extends State<UserPage> {
   List<Task> tasksList=[];
   String status = "status not set";
   String date = "date not set";
-  WTUser currentUser;
   Contract currentContract;
   BuildNode currentNode;
 
@@ -42,7 +47,7 @@ class _UserPageState extends State<UserPage> {
     } else {
       return Scaffold(
         appBar: AppBar(
-          title: new Text("Пользователь: "+currentUser.surName),
+          title: new Text("Юзер: "+widget.currentUser.getFamalyIO()),
           actions: <Widget>[
             TextButton.icon(
                 onPressed: () {
@@ -96,7 +101,7 @@ class _UserPageState extends State<UserPage> {
           // dateTrim без секунд
           onTap: () async{
             currentNode = nodesList[i];
-            tasksList = await readUserTasks(currentNode,currentUser.id);
+            tasksList = await readUserTasks(currentNode,widget.currentUser.id);
             setState(() {
               mainWidget = _buildTasksList(currentNode);
               isLoaded = true;
@@ -215,7 +220,7 @@ class _UserPageState extends State<UserPage> {
         Text(task.getLastStatusTimeText()),
         TextButton.icon(
             onPressed: () async{
-              tasksList = await readUserTasks(currentNode, currentUser.id);
+              tasksList = await readUserTasks(currentNode, widget.currentUser.id);
               setState(() {
                 mainWidget = _buildTasksList(currentNode);
                 isLoaded = true;

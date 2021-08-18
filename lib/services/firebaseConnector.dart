@@ -40,7 +40,7 @@ class DataBaseConnector {
   }
 
   Future <WTUser> getUserByID(String id) async{
-    print('getting user for id '+id);
+    //print('getting user for id '+id);
     getMainRef();
     WTUser user;
     await db.child("userIDs").once().then((DataSnapshot snapshot){
