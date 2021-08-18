@@ -147,7 +147,7 @@ class DataBaseConnector {
     return tasksList;
   }
 
-  Future <List<Task>> getUserTasks(String contract, BuildNode node, String userID) async{
+  Future <List<Task>> getUserTasks(String contract,  String userID) async{
     getMainRef();
     List<Task> tasksList = [];
     await db.child("work-process").child(contract).child('tasks')
@@ -155,7 +155,7 @@ class DataBaseConnector {
           snapshot.value.forEach((key, value){
             Map<dynamic,dynamic> mapValue = Map<dynamic,dynamic>.from(value);
             if(mapValue['assignedUser'] == userID){
-              Task task = new Task(key, node.nodeName);
+              Task task = new Task(key, mapValue["parentNodeName"]);
               task.status = mapValue["status"];
               task.lastStatusTime = mapValue["lastStatusTime"];
               task.assignedUser = mapValue["assignedUser"];
@@ -203,7 +203,7 @@ class DataBaseConnector {
           .child(task.taskName).child("endTimeTaskPlan").set(task.endTimeTaskPlan);
     });
   }
-  void setTaskStatus(Task task, BuildNode node, Contract contract) async{
+  void setTaskStatus(Task task, Contract contract) async{
     getMainRef();
     await db.child("work-process").child(contract.id).child("tasks")
         .child(task.taskName).child("status").set(task.status);

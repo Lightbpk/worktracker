@@ -52,7 +52,7 @@ class _StartPageState extends State<StartPage> {
   }
   void readUserRole()async{
     loggedUserMeta = await DataBaseConnector().getUserByID(loggedUserOnlyID.id);
-    print("tempuser "+loggedUserMeta.surName);
+    //print("tempuser "+loggedUserMeta.surName);
         setState(() {
           loggedUserOnlyID = loggedUserMeta;
           currentRole = loggedUserMeta.role;

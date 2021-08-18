@@ -71,12 +71,17 @@ class _UserPageState extends State<UserPage> {
         return ListTile(
           title: Text(contractsList[i].id),
           subtitle: Text(contractsList[i].name),
-          onTap: () {
+          onTap: () async{
             print('Taped ' + contractsList[i].id);
             //isLoaded= false;
             isLoaded = false;
             currentContract = contractsList[i];
-            readNodes(currentContract.id);
+            tasksList = await readUserTasks(widget.currentUser.id);
+            setState(() {
+              mainWidget = _buildTasksList();
+              isLoaded = true;
+            });
+            //readNodes(currentContract.id);
           },
         );
       else
@@ -86,7 +91,7 @@ class _UserPageState extends State<UserPage> {
     });
   }
 
-  Widget _buildNodesList() {
+/*  Widget _buildNodesList() {
     return ListView.builder(itemBuilder: (context, i) {
       if (i < nodesList.length) {
         String subTitleText = nodesList[i].getDeadlineText();
@@ -101,7 +106,7 @@ class _UserPageState extends State<UserPage> {
           // dateTrim без секунд
           onTap: () async{
             currentNode = nodesList[i];
-            tasksList = await readUserTasks(currentNode,widget.currentUser.id);
+            tasksList = await readUserTasks(widget.currentUser.id);
             setState(() {
               mainWidget = _buildTasksList(currentNode);
               isLoaded = true;
@@ -124,10 +129,10 @@ class _UserPageState extends State<UserPage> {
           title: Text("-----------"),
         );
     });
-  }
+  }*/
 
 
-  Widget _buildTasksList(BuildNode node) {
+  Widget _buildTasksList() {
     return ListView.builder(itemBuilder: (context, i) {
       if (i < tasksList.length) {
         String subtitleText =
@@ -138,7 +143,7 @@ class _UserPageState extends State<UserPage> {
           onTap: () {
             print('Taped ' + tasksList[i].taskName);
             setState(() {
-              mainWidget = _buildTaskTail(tasksList[i], node);
+              mainWidget = _buildTaskTail(tasksList[i]);
               isLoaded = true;
             });
           },
@@ -148,7 +153,7 @@ class _UserPageState extends State<UserPage> {
           title: Text("Назад"),
           onTap: () {
             setState(() {
-              mainWidget = _buildNodesList();
+              mainWidget = _buildContractsList();
               isLoaded = true;
             });
           },
@@ -161,7 +166,7 @@ class _UserPageState extends State<UserPage> {
   }
 
 
-  Widget _buildTaskTail(Task task, BuildNode currentNode) {
+  Widget _buildTaskTail(Task task) {
     print('status = ' + status);
     return Column(
       children: [
@@ -173,7 +178,7 @@ class _UserPageState extends State<UserPage> {
                 print(status);
                 DateTime dateTime = DateTime.now();
                 task.lastStatusTime = dateTime.microsecondsSinceEpoch;
-                DataBaseConnector().setTaskStatus(task, currentNode, currentContract);
+                DataBaseConnector().setTaskStatus(task,  currentContract);
               });
               makeToast(task.status, Colors.green);
             },
@@ -185,7 +190,7 @@ class _UserPageState extends State<UserPage> {
                 task.status = 'простой';
                 DateTime dateTime = DateTime.now();
                 task.lastStatusTime = dateTime.microsecondsSinceEpoch;
-                DataBaseConnector().setTaskStatus(task, currentNode, currentContract);
+                DataBaseConnector().setTaskStatus(task, currentContract);
               });
               makeToast(task.status, Colors.red);
             },
@@ -197,7 +202,7 @@ class _UserPageState extends State<UserPage> {
                 task.status = "доработка";
                 DateTime dateTime = DateTime.now();
                 task.lastStatusTime = dateTime.microsecondsSinceEpoch;
-                DataBaseConnector().setTaskStatus(task, currentNode, currentContract);
+                DataBaseConnector().setTaskStatus(task, currentContract);
               });
               makeToast(task.status, Colors.yellow);
             },
@@ -210,7 +215,7 @@ class _UserPageState extends State<UserPage> {
                 task.status = "закончено";
                 DateTime dateTime = DateTime.now();
                 task.lastStatusTime = dateTime.microsecondsSinceEpoch;
-                DataBaseConnector().setTaskStatus(task, currentNode, currentContract);
+                DataBaseConnector().setTaskStatus(task, currentContract);
               });
               makeToast(task.status, Colors.lightBlue);
             },
@@ -220,9 +225,9 @@ class _UserPageState extends State<UserPage> {
         Text(task.getLastStatusTimeText()),
         TextButton.icon(
             onPressed: () async{
-              tasksList = await readUserTasks(currentNode, widget.currentUser.id);
+              tasksList = await readUserTasks(widget.currentUser.id);
               setState(() {
-                mainWidget = _buildTasksList(currentNode);
+                mainWidget = _buildTasksList();
                 isLoaded = true;
               });
             },
@@ -240,22 +245,23 @@ class _UserPageState extends State<UserPage> {
     });
   }
 
-  void readNodes(String contract) async {
+/*  void readNodes(String contract) async {
     nodesList = await DataBaseConnector().getNodes(contract);
     setState(() {
       mainWidget = _buildNodesList();
       isLoaded = true;
     });
-  }
+  }*/
 
 
   Future<List<Task>> readTasks(BuildNode node) async {
     return
         await DataBaseConnector().getTasks(currentContract.id, node);
   }
-  Future<List<Task>> readUserTasks(BuildNode node, userID) async {
+  Future<List<Task>> readUserTasks(String userID) async {
+    print("reading tasks for "+userID );
     return
-        await DataBaseConnector().getUserTasks(currentContract.id, node, userID);
+        await DataBaseConnector().getUserTasks(currentContract.id, userID);
   }
 
 
