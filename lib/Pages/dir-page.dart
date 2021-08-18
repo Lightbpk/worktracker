@@ -37,6 +37,7 @@ class _DirectorPageState extends State<DirectorPage> {
   BasicDateTimeField fieldStartTimeTaskPlan;
   BasicDateTimeField fieldEndTaskTimePlan;
 
+
   @override
   void initState() {
     super.initState();
@@ -45,6 +46,8 @@ class _DirectorPageState extends State<DirectorPage> {
     userDropMenuItems = buildUsersDropMenuItems();
     print('init');
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -136,7 +139,7 @@ class _DirectorPageState extends State<DirectorPage> {
     return ListView.builder(itemBuilder: (context, i) {
       if (i < tasksList.length) {
         String subtitleText =
-            tasksList[i].status + " " + tasksList[i].assignedUser;
+            tasksList[i].status + " " + getUserFioByID(tasksList[i].assignedUser);
         return ListTile(
           title: Text(tasksList[i].taskName),
           subtitle: Text(subtitleText),
@@ -167,10 +170,13 @@ class _DirectorPageState extends State<DirectorPage> {
 
   Widget _buildTaskTail(Task task, BuildNode currentNode) {
       print('status = ' + status);
+      String str = getUserFioByID(task.assignedUser);
+      print('assigned = '+task.assignedUser);
+      print('str = $str');
       return Column(
         children: [
           Text('Задача: '+task.taskName),
-          Text('Ответственный: ' + ),
+          Text('Ответственный: $str'),
           Text('Статус: '+task.status),
           Text('Изменение статуса: '+task.getLastStatusTimeText()),
           Text('Начало по плану: '+task.getStartTimeText()),
@@ -237,7 +243,6 @@ class _DirectorPageState extends State<DirectorPage> {
   }
 
   void readUsers() async{
-
     usersList = await DataBaseConnector().getAllUsers();
     usersList.forEach((WTUser user) {
         usersIDList.add(user.id);
@@ -312,5 +317,16 @@ class _DirectorPageState extends State<DirectorPage> {
       print(items);
     }
     return items;
+  }
+  String getUserFioByID(String id){
+    String userFio='Не назначен';
+    usersList.forEach((user) {
+      print("user id "+user.id);
+      if(user.id == id){
+        print ("get famalyio  " +user.getFamalyIO());
+        userFio = user.getFamalyIO();
+      }
+    });
+    return userFio;
   }
 }

@@ -16,8 +16,11 @@ class WTUser{
   }
 
   String getFamalyIO(){
-    return ""+this.surName+" "+this.name.substring(0,1)+
-        '.'+this.fatherName.substring(0,1)+'.';
+    if(this != null){
+      return ""+this.surName+" "+this.name.substring(0,1)+
+          '.'+this.fatherName.substring(0,1)+'.';
+    }
+    else return "FIO not found";
   }
 
 }
