@@ -91,45 +91,6 @@ class _UserPageState extends State<UserPage> {
     });
   }
 
-/*  Widget _buildNodesList() {
-    return ListView.builder(itemBuilder: (context, i) {
-      if (i < nodesList.length) {
-        String subTitleText = nodesList[i].getDeadlineText();
-        if(subTitleText=='null'){
-          subTitleText = ' not set deadline';
-        }
-        print("subTitle +"+subTitleText);
-        return ListTile(
-          title: Text(nodesList[i].nodeName),
-          subtitle: Text(
-              "Deadline " + subTitleText.substring(0, subTitleText.length - 7)),
-          // dateTrim без секунд
-          onTap: () async{
-            currentNode = nodesList[i];
-            tasksList = await readUserTasks(widget.currentUser.id);
-            setState(() {
-              mainWidget = _buildTasksList(currentNode);
-              isLoaded = true;
-            });
-            print('Taped ' + nodesList[i].nodeName);
-          },
-        );
-      } else if (i == nodesList.length) {
-        return ListTile(
-          title: Text("назад"),
-          onTap: () {
-            setState(() {
-              mainWidget = _buildContractsList();
-              isLoaded = true;
-            });
-          },
-        );
-      } else
-        return ListTile(
-          title: Text("-----------"),
-        );
-    });
-  }*/
 
 
   Widget _buildTasksList() {
@@ -245,19 +206,6 @@ class _UserPageState extends State<UserPage> {
     });
   }
 
-/*  void readNodes(String contract) async {
-    nodesList = await DataBaseConnector().getNodes(contract);
-    setState(() {
-      mainWidget = _buildNodesList();
-      isLoaded = true;
-    });
-  }*/
-
-
-  Future<List<Task>> readTasks(BuildNode node) async {
-    return
-        await DataBaseConnector().getTasks(currentContract.id, node);
-  }
   Future<List<Task>> readUserTasks(String userID) async {
     print("reading tasks for "+userID );
     return
