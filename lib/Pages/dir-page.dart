@@ -191,8 +191,6 @@ class _DirectorPageState extends State<DirectorPage> {
           usersDropList(task,currentNode),
           fieldStartTimeTaskPlan = BasicDateTimeField('Время начала задания'),
           fieldEndTaskTimePlan = BasicDateTimeField('Запланированое время завершения'),
-          Text('Пошло после Изменение статуса $timePassed'),
-          Text('Осталось $timeLeft'),
           TextButton.icon(
               onPressed: (){
                 if(fieldStartTimeTaskPlan != null && fieldEndTaskTimePlan.dateTimeValue != null) {
@@ -213,8 +211,21 @@ class _DirectorPageState extends State<DirectorPage> {
                   makeToast('Укажите обе даты', Colors.red);
                 }
               },
-              icon: Icon(Icons.refresh),
+              icon: Icon(Icons.set_meal),
               label: Text('установить')),
+          Text('Пошло после Изменение статуса $timePassed'),
+          Text('Осталось $timeLeft'),
+          TextButton.icon(
+              onPressed: () async {
+                setState(() {
+                    timePassed = WorkTimer(task.lastStatusTime).hhMMssPassed();
+                    timeLeft = WorkTimer(task.endTimeTaskPlan).hhMMssLeft();
+                    mainWidget = _buildTaskTail(task, currentNode);
+                    isLoaded = true;
+                });
+              },
+              icon: Icon(Icons.refresh),
+              label: Text("Обновить")),
           TextButton.icon(
               onPressed: () async {
 
@@ -233,8 +244,8 @@ class _DirectorPageState extends State<DirectorPage> {
 
   Widget usersDropList(Task task,BuildNode node){
     userDropMenuItems  = buildUsersDropMenuItems();
-    print("-userDropMenuItems-");
-    print(userDropMenuItems);
+    //print("-userDropMenuItems-");
+    //print(userDropMenuItems);
     return DropdownButton(
       value: dropdownValue,
       onChanged: (newValue){

@@ -1,10 +1,8 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:worktracker/main.dart';
 import 'package:worktracker/services/auth_service.dart';
-import 'package:worktracker/services/firebaseConnector.dart';
+
 
 class MainPage extends StatefulWidget {
   final String title;

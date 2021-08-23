@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:provider/provider.dart';
 import 'package:worktracker/contract.dart';
 import 'package:worktracker/node.dart';
 import 'package:worktracker/services/auth_service.dart';
@@ -100,7 +99,7 @@ class _UserPageState extends State<UserPage> {
             tasksList[i].status + " c " + tasksList[i].getLastStatusTimeText();
         return ListTile(
           title: Text(tasksList[i].taskName),
-          subtitle: Text(subtitleText.substring(0, subtitleText.length - 10)),
+          subtitle: Text(subtitleText),
           onTap: () {
             print('Taped ' + tasksList[i].taskName);
             setState(() {
