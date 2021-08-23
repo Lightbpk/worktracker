@@ -146,7 +146,7 @@ class _DirectorPageState extends State<DirectorPage> {
     return ListView.builder(itemBuilder: (context, i) {
       if (i < tasksList.length) {
         String subtitleText =
-            tasksList[i].status + " " + getUserFioByID(tasksList[i].assignedUser);
+            tasksList[i].status + " " + getUserFioByID(tasksList[i].assignedUserID);
         return ListTile(
           title: Text(tasksList[i].taskName),
           subtitle: Text(subtitleText),
@@ -177,8 +177,8 @@ class _DirectorPageState extends State<DirectorPage> {
 
   Widget _buildTaskTail(Task task, BuildNode currentNode) {
       print('status = ' + status);
-      String str = getUserFioByID(task.assignedUser);
-      print('assigned = '+task.assignedUser);
+      String str = getUserFioByID(task.assignedUserID);
+      print('assigned = '+task.assignedUserID);
       print('str = $str');
       return Column(
         children: [
@@ -189,8 +189,10 @@ class _DirectorPageState extends State<DirectorPage> {
           Text('Начало по плану: '+task.getStartTimeText()),
           Text('Завершение по плану: '+task.getEndTimeText()),
           usersDropList(task,currentNode),
-          fieldStartTimeTaskPlan = BasicDateTimeField('Время начала задания'),
-          fieldEndTaskTimePlan = BasicDateTimeField('Запланированое время завершения'),
+          fieldStartTimeTaskPlan = BasicDateTimeField.dd('Время начала задания',
+              DateTime.fromMicrosecondsSinceEpoch(currentNode.nodeDeadline)),
+          fieldEndTaskTimePlan = BasicDateTimeField.dd('Запланированое время завершения',
+              DateTime.fromMicrosecondsSinceEpoch(currentNode.nodeDeadline)),
           TextButton.icon(
               onPressed: (){
                 if(fieldStartTimeTaskPlan != null && fieldEndTaskTimePlan.dateTimeValue != null) {
@@ -251,7 +253,7 @@ class _DirectorPageState extends State<DirectorPage> {
       onChanged: (newValue){
         setState(() {
           dropdownValue= newValue;
-          task.assignedUser = newValue;
+          task.assignedUserID = newValue;
           DataBaseConnector().setTaskAssignedUser(task, node, currentContract);
           mainWidget = _buildTaskTail(task, currentNode);
         });

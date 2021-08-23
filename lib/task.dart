@@ -3,7 +3,7 @@ class Task {
   String status;
   int lastStatusTime;
   String parentNodeName;
-  String assignedUser;
+  String assignedUserID;
   int startTimeTaskPlan;
   int endTimeTaskPlan;
 
@@ -12,7 +12,7 @@ class Task {
     this.parentNodeName = parentNodeName;
     status = 'not set';
     lastStatusTime = 0;
-    assignedUser = "not set";
+    assignedUserID = "not set";
     startTimeTaskPlan = 0;
     endTimeTaskPlan = 0;
   }

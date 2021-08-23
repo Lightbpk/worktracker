@@ -135,7 +135,7 @@ class DataBaseConnector {
               Task task = new Task(key, node.nodeName);
               task.status = mapValue["status"];
               task.lastStatusTime = mapValue["lastStatusTime"];
-              task.assignedUser = mapValue["assignedUser"];
+              task.assignedUserID = mapValue["assignedUser"];
               task.startTimeTaskPlan = mapValue["startTimeTaskPlan"];
               task.endTimeTaskPlan = mapValue["endTimeTaskPlan"];
               tasksList.add(task);
@@ -158,7 +158,7 @@ class DataBaseConnector {
               Task task = new Task(key, mapValue["parentNodeName"]);
               task.status = mapValue["status"];
               task.lastStatusTime = mapValue["lastStatusTime"];
-              task.assignedUser = mapValue["assignedUser"];
+              task.assignedUserID = mapValue["assignedUser"];
               task.startTimeTaskPlan = mapValue["startTimeTaskPlan"];
               task.endTimeTaskPlan = mapValue["endTimeTaskPlan"];
               tasksList.add(task);
@@ -194,7 +194,7 @@ class DataBaseConnector {
       db.child("work-process").child(id).child("tasks")
           .child(task.taskName).child("lastStatusTime").set(task.lastStatusTime);
       db.child("work-process").child(id).child("tasks")
-          .child(task.taskName).child("assignedUser").set(task.assignedUser);
+          .child(task.taskName).child("assignedUser").set(task.assignedUserID);
       db.child("work-process").child(id).child("tasks")
           .child(task.taskName).child("parentNodeName").set(task.parentNodeName);
       db.child("work-process").child(id).child("tasks")
@@ -213,7 +213,7 @@ class DataBaseConnector {
   void setTaskAssignedUser(Task task, BuildNode node, Contract contract) async{
     getMainRef();
     await db.child("work-process").child(contract.id).child("tasks")
-        .child(task.taskName).child("assignedUser").set(task.assignedUser);
+        .child(task.taskName).child("assignedUser").set(task.assignedUserID);
   }
   void setStartTaskTime(Task task, BuildNode node, Contract contract) async{
     getMainRef();

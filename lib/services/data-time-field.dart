@@ -9,9 +9,15 @@ class BasicDateTimeField extends StatelessWidget {
   String currentDateAndTime;
   DateTime dateTimeValue;
   String hintText = 'Введите дату';
+  DateTime dateEnd = DateTime(2100);
 
   BasicDateTimeField(String newHintText){
     hintText = newHintText;
+  }
+
+  BasicDateTimeField.dd(String newHintText, DateTime dateEnd){
+    hintText = newHintText;
+    this.dateEnd = dateEnd;
   }
 
   int getDateTime(){
@@ -26,16 +32,18 @@ class BasicDateTimeField extends StatelessWidget {
         decoration: InputDecoration(
             hintText: hintText ),
         onShowPicker: (context, currentValue) async {
+          if(currentValue == null && DateTime.now().isBefore(dateEnd) ) currentValue = DateTime.now();
+          else if(currentValue == null)currentValue = dateEnd;
           final date = await showDatePicker(
               context: context,
               firstDate: DateTime(1900),
-              initialDate: currentValue ?? DateTime.now(),
-              lastDate: DateTime(2100));
+              initialDate: currentValue ,
+              lastDate: dateEnd);
           if (date != null) {
             final time = await showTimePicker(
               context: context,
               initialTime:
-              TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
+              TimeOfDay.fromDateTime(currentValue),
             );
             currentDateAndTime = date.toString() + time.toString();
             dateTimeValue = DateTimeField.combine(date, time);
