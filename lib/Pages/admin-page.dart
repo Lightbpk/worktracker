@@ -99,8 +99,18 @@ class _AdminPageState extends State<AdminPage> {
   void _nodeListWidget(){
     print('nodelist build');
     currentWidget = ListView.builder(itemBuilder: (context, i){
-      if(i < nodeList.length) return CheckboxListTile(
-        subtitle: nodeList[i].field = BasicDateTimeField('Введите дату Дэдлайна'),
+      if(i < nodeList.length) {
+        BasicDateTimeField field;
+        if(nodeList[i].field == null){
+          field = BasicDateTimeField('Введите дату Дэдлайна');
+        }
+        else
+        {
+          field = BasicDateTimeField('Введите дату Дэдлайна');
+          field.dateTimeValue = nodeList[i].field.dateTimeValue;
+        }
+        return CheckboxListTile(
+        subtitle: nodeList[i].field = field,
         title: Text(nodeList[i].nodeName),
         value: nodeList[i].checked,
         onChanged: (bool value){
@@ -113,6 +123,7 @@ class _AdminPageState extends State<AdminPage> {
         },
         controlAffinity: ListTileControlAffinity.leading,
       );
+      }
       else if(i == nodeList.length) return ListTile(title: Text("Назад"),
         onTap: (){
           setState(() {

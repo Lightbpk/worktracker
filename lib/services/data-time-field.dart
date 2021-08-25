@@ -47,7 +47,7 @@ class BasicDateTimeField extends StatelessWidget {
             );
             currentDateAndTime = date.toString() + time.toString();
             dateTimeValue = DateTimeField.combine(date, time);
-            return DateTimeField.combine(date, time);
+            return dateTimeValue;
           } else {
             return currentValue;
           }
