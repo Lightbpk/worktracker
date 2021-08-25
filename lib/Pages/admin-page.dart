@@ -97,10 +97,21 @@ class _AdminPageState extends State<AdminPage> {
   }
 
   void _nodeListWidget(){
+    print('nodelist build');
     currentWidget = ListView.builder(itemBuilder: (context, i){
-      if(i < nodeList.length) return ListTile(
+      if(i < nodeList.length) return CheckboxListTile(
         subtitle: nodeList[i].field = BasicDateTimeField('Введите дату Дэдлайна'),
-        title: Text(nodeList[i].nodeName,));
+        title: Text(nodeList[i].nodeName),
+        value: nodeList[i].checked,
+        onChanged: (bool value){
+          setState(() {
+            nodeList[i].checked = true;
+            _nodeListWidget();
+            //print('checked ' +checked.toString());
+          });
+        },
+        controlAffinity: ListTileControlAffinity.leading,
+      );
       else if(i == nodeList.length) return ListTile(title: Text("Назад"),
         onTap: (){
           setState(() {
@@ -158,9 +169,12 @@ class _AdminPageState extends State<AdminPage> {
   {
     List<Task> defaultTasksList= [];
     nodeList.forEach((node) {
-      defaultTasksList.add(new Task("Задача1_"+node.nodePosition,node.nodeName));
-      defaultTasksList.add(new Task("Задача2_"+node.nodePosition,node.nodeName));
-      defaultTasksList.add(new Task("Задача3_"+node.nodePosition,node.nodeName));
+      if(node.checked)
+      {
+        defaultTasksList.add(new Task("Задача1_"+node.nodePosition,node.nodeName));
+        defaultTasksList.add(new Task("Задача2_"+node.nodePosition,node.nodeName));
+        defaultTasksList.add(new Task("Задача3_"+node.nodePosition,node.nodeName));
+      }
     });
     return defaultTasksList;
   }

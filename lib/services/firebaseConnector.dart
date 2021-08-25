@@ -176,16 +176,18 @@ class DataBaseConnector {
     });
     //String string="nodeList[0].nodeName :nodeList[0].field.dateTimeValue.toString()";
     nodeList.forEach((node) {
-      db.child("work-process").child(id).child("nodes")
-          .child(node.nodePosition).child("nodeName").set(node.nodeName);
-      if(node.field.dateTimeValue != null) {
+      if(node.checked) {
         db.child("work-process").child(id).child("nodes")
-            .child(node.nodePosition).child("deadline").set(
-            node.field.dateTimeValue.microsecondsSinceEpoch);
-      }else{
-        db.child("work-process").child(id).child("nodes")
-            .child(node.nodePosition).child("deadline").set(
-            0);
+            .child(node.nodePosition).child("nodeName").set(node.nodeName);
+        if (node.field.dateTimeValue != null) {
+          db.child("work-process").child(id).child("nodes")
+              .child(node.nodePosition).child("deadline").set(
+              node.field.dateTimeValue.microsecondsSinceEpoch);
+        } else {
+          db.child("work-process").child(id).child("nodes")
+              .child(node.nodePosition).child("deadline").set(
+              0);
+        }
       }
     });
     tasksList.forEach((task) {

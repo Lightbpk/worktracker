@@ -4,6 +4,7 @@ class BuildNode {
   String nodePosition;
   String nodeName;
   int nodeDeadline = 0;
+  bool checked = false;
   BasicDateTimeField field;
 
   BuildNode(String nodeName,String nodePosition){
