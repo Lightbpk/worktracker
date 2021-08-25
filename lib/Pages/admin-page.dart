@@ -105,7 +105,8 @@ class _AdminPageState extends State<AdminPage> {
         value: nodeList[i].checked,
         onChanged: (bool value){
           setState(() {
-            nodeList[i].checked = true;
+            nodeList[i].checked = !nodeList[i].checked ;
+
             _nodeListWidget();
             //print('checked ' +checked.toString());
           });
