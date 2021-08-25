@@ -29,8 +29,23 @@ class _UserPageState extends State<UserPage> {
   String date = "date not set";
   Contract currentContract;
   BuildNode currentNode;
-
-
+  List<String> reworkTypes = [
+    'Ошибка КД',
+    'Ошибка ЭлектроКД',
+    'Ошибка Снабжение',
+    'Ошибка Производство',
+    'Ошибка Другое'];
+  List<String> pauseTypes = [
+    'Смена приоритета руководителем',
+    'Ожидание согласования',
+    'Ожидание комплектации внешн',
+    'Ожидание комплектации внутр',
+    'Ожидание инструмента',
+    'Ожидание доработки – Ошибка КД',
+    'Ожидание доработки – Ошибка ЭлектроКД',
+    'Ожидание доработки – Ошибка Снабжение',
+    'Ожидание доработки – Ошибка Исполнитель',
+    'Другое'];
 
   @override
   void initState() {
@@ -158,13 +173,39 @@ class _UserPageState extends State<UserPage> {
             label: Text('Пауза')),
         TextButton.icon(
             onPressed: () {
-              this.setState(() {
-                task.status = "доработка";
-                DateTime dateTime = DateTime.now();
-                task.lastStatusTime = dateTime.microsecondsSinceEpoch;
-                DataBaseConnector().setTaskStatus(task, currentContract);
-              });
-              makeToast(task.status, Colors.yellow);
+              showDialog(
+                  context: context, 
+                  builder: (BuildContext context) {
+                    String currentReworkType = reworkTypes.last;
+                    return StatefulBuilder(builder: (context, setState){
+                      return AlertDialog(
+                        title: new Text('Доработка:'),
+                        content: DropdownButton(
+                          value: currentReworkType,
+                          items: makeItems(reworkTypes),
+                          onChanged: (newValue){
+                            setState(() {
+                              currentReworkType = newValue;
+                            });
+                          },
+                        ),
+                        actions: <Widget>[
+                          TextButton(onPressed: (){
+                              task.status = "доработка";
+                              task.reworkType = currentReworkType;
+                              DateTime dateTime = DateTime.now();
+                              task.lastStatusTime = dateTime.microsecondsSinceEpoch;
+                              DataBaseConnector().setTaskStatus(task, currentContract);
+                            makeToast(task.status, Colors.yellow);
+                            Navigator.of(context).pop();
+                          }, child: Text('ok')),
+                          TextButton(onPressed: (){
+                            Navigator.of(context).pop();
+                          }, child: Text('отмена'))
+                        ],
+                      );
+                    });
+                  });
             },
             icon: Icon(Icons.edit),
             label: Text('Доработка')),
@@ -195,6 +236,16 @@ class _UserPageState extends State<UserPage> {
             label: Text("Назад"))
       ],
     );
+  }
+
+  List<DropdownMenuItem> makeItems(List<String> typeItems){
+    List<DropdownMenuItem> itemsList = List();
+    typeItems.forEach((String typeStr) {
+      itemsList.add(new DropdownMenuItem(
+          child: Text(typeStr),
+          value: typeStr,));
+    });
+    return itemsList;
   }
 
   void readContractsList() async {

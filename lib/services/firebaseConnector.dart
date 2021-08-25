@@ -211,6 +211,8 @@ class DataBaseConnector {
         .child(task.taskName).child("status").set(task.status);
     await db.child("work-process").child(contract.id).child("tasks")
         .child(task.taskName).child("lastStatusTime").set(task.lastStatusTime);
+    await db.child("work-process").child(contract.id).child("tasks")
+        .child(task.taskName).child("reworkType").set(task.reworkType);
   }
   void setTaskAssignedUser(Task task, BuildNode node, Contract contract) async{
     getMainRef();

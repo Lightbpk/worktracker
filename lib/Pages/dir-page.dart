@@ -252,7 +252,7 @@ class _DirectorPageState extends State<DirectorPage> {
       value: dropdownValue,
       onChanged: (newValue){
         setState(() {
-          dropdownValue= newValue;
+          dropdownValue = newValue;
           task.assignedUserID = newValue;
           DataBaseConnector().setTaskAssignedUser(task, node, currentContract);
           mainWidget = _buildTaskTail(task, currentNode);

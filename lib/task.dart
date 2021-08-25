@@ -6,6 +6,10 @@ class Task {
   String assignedUserID;
   int startTimeTaskPlan;
   int endTimeTaskPlan;
+  String reworkType;
+  String reworkComment;
+  String pauseType;
+  String pauseComment;
 
   Task(String taskName,String parentNodeName){
     this.taskName = taskName;
@@ -15,6 +19,7 @@ class Task {
     assignedUserID = "not set";
     startTimeTaskPlan = 0;
     endTimeTaskPlan = 0;
+
   }
 
   String getLastStatusTimeText(){
