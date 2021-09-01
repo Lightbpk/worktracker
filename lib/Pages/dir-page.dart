@@ -262,15 +262,15 @@ class _DirectorPageState extends State<DirectorPage> {
     Widget statusWidget;
     switch (task.status) {
       case 'inwork':
-        statusWidget = Text('В Работе');
+        statusWidget = Text('Статус: В Работе');
         break;
       case 'done':
-        statusWidget = Text('Законченно');
+        statusWidget = Text('Статус: Законченно');
         break;
       case 'rework':
         statusWidget = Column(
           children: [
-            Text('Доработка ' + task.reworkType),
+            Text('Статус: Доработка ' + task.reworkType),
             Text('Комментарий: '+task.reworkComment)
           ],
         );
@@ -278,7 +278,7 @@ class _DirectorPageState extends State<DirectorPage> {
       case 'pause':
         statusWidget = Column(
           children: [
-            Text('Простой ' + task.pauseType),
+            Text('Статус: Простой ' + task.pauseType),
             Text('Комментарий: '+task.pauseComment)
           ],
         );
