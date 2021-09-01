@@ -17,9 +17,12 @@ class Task {
     status = 'not set';
     lastStatusTime = 0;
     assignedUserID = "not set";
+    reworkType = '';
+    reworkComment = "";
+    pauseType = '';
+    pauseComment = "";
     startTimeTaskPlan = 0;
     endTimeTaskPlan = 0;
-
   }
 
   String getLastStatusTimeText(){

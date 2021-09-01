@@ -148,7 +148,7 @@ class _UserPageState extends State<UserPage> {
         Text(task.taskName),
         TextButton.icon(
             onPressed: () {
-              task.status = "В работе";
+              task.status = "inwork";
               this.setState(() {
                 print(status);
                 DateTime dateTime = DateTime.now();
@@ -161,19 +161,50 @@ class _UserPageState extends State<UserPage> {
             label: Text('Начать')),
         TextButton.icon(
             onPressed: () {
-              this.setState(() {
-                task.status = 'простой';
-                DateTime dateTime = DateTime.now();
-                task.lastStatusTime = dateTime.microsecondsSinceEpoch;
-                DataBaseConnector().setTaskStatus(task, currentContract);
-              });
-              makeToast(task.status, Colors.red);
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    String currentPauseType = pauseTypes.last;
+                    return StatefulBuilder(builder: (context, setState){
+                      return AlertDialog(
+                        title: new Text('Простой:'),
+                        content: DropdownButton(
+                          value: currentPauseType,
+                          items: makeItems(pauseTypes),
+                          onChanged: (newValue){
+                            setState(() {
+                              currentPauseType = newValue;
+                            });
+                          },
+                        ),
+                        actions: <Widget>[
+                          TextField(
+                            decoration: InputDecoration(hintText: "Комментарий"),
+                            onChanged: (text){
+                              task.pauseComment = text;
+                            },),
+                          TextButton(onPressed: (){
+                            task.status = "pause";
+                            task.pauseType = currentPauseType;
+                            DateTime dateTime = DateTime.now();
+                            task.lastStatusTime = dateTime.microsecondsSinceEpoch;
+                            DataBaseConnector().setTaskStatus(task, currentContract);
+                            makeToast(task.status, Colors.red);
+                            Navigator.of(context).pop();
+                          }, child: Text('ok')),
+                          TextButton(onPressed: (){
+                            Navigator.of(context).pop();
+                          }, child: Text('отмена'))
+                        ],
+                      );
+                    });
+                  });
             },
             icon: Icon(Icons.pause),
             label: Text('Пауза')),
         TextButton.icon(
             onPressed: () {
-              showDialog(
+                showDialog(
                   context: context, 
                   builder: (BuildContext context) {
                     String currentReworkType = reworkTypes.last;
@@ -190,8 +221,13 @@ class _UserPageState extends State<UserPage> {
                           },
                         ),
                         actions: <Widget>[
+                          TextField(
+                            decoration: InputDecoration(hintText: "Комментарий"),
+                            onChanged: (text){
+                              task.reworkComment = text;
+                          },),
                           TextButton(onPressed: (){
-                              task.status = "доработка";
+                              task.status = "rework";
                               task.reworkType = currentReworkType;
                               DateTime dateTime = DateTime.now();
                               task.lastStatusTime = dateTime.microsecondsSinceEpoch;
@@ -213,7 +249,7 @@ class _UserPageState extends State<UserPage> {
             onPressed: () {
               this.setState(() {
                 isLoaded = true;
-                task.status = "закончено";
+                task.status = "done";
                 DateTime dateTime = DateTime.now();
                 task.lastStatusTime = dateTime.microsecondsSinceEpoch;
                 DataBaseConnector().setTaskStatus(task, currentContract);

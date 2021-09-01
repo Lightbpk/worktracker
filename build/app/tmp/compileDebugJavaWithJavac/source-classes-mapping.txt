@@ -1,0 +1,4 @@
+io/flutter/plugins/GeneratedPluginRegistrant.java
+ io.flutter.plugins.GeneratedPluginRegistrant
+bpk/light/worktracker/BuildConfig.java
+ bpk.light.worktracker.BuildConfig

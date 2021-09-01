@@ -138,6 +138,10 @@ class DataBaseConnector {
               task.assignedUserID = mapValue["assignedUser"];
               task.startTimeTaskPlan = mapValue["startTimeTaskPlan"];
               task.endTimeTaskPlan = mapValue["endTimeTaskPlan"];
+              task.reworkType = mapValue["reworkType"];
+              task.pauseType = mapValue["pauseType"];
+              task.reworkComment = mapValue["reworkComment"];
+              task.pauseComment = mapValue["pauseComment"];
               tasksList.add(task);
               print("taskName = "+key);
               print("nodeName = "+node.nodeName);
@@ -161,6 +165,10 @@ class DataBaseConnector {
               task.assignedUserID = mapValue["assignedUser"];
               task.startTimeTaskPlan = mapValue["startTimeTaskPlan"];
               task.endTimeTaskPlan = mapValue["endTimeTaskPlan"];
+              task.reworkType = mapValue["reworkType"];
+              task.reworkComment = mapValue["reworkComment"];
+              task.pauseType = mapValue["pauseType"];
+              task.pauseComment = mapValue["pauseComment"];
               tasksList.add(task);
             }
           });
@@ -213,6 +221,13 @@ class DataBaseConnector {
         .child(task.taskName).child("lastStatusTime").set(task.lastStatusTime);
     await db.child("work-process").child(contract.id).child("tasks")
         .child(task.taskName).child("reworkType").set(task.reworkType);
+    await db.child("work-process").child(contract.id).child("tasks")
+        .child(task.taskName).child("reworkComment").set(task.reworkComment);
+    await db.child("work-process").child(contract.id).child("tasks")
+        .child(task.taskName).child("pauseType").set(task.pauseType);
+    await db.child("work-process").child(contract.id).child("tasks")
+        .child(task.taskName).child("pauseComment").set(task.pauseComment);
+
   }
   void setTaskAssignedUser(Task task, BuildNode node, Contract contract) async{
     getMainRef();

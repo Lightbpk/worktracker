@@ -13,7 +13,7 @@ import 'package:worktracker/user.dart';
 class DirectorPage extends StatefulWidget {
   WTUser userDir;
 
-  DirectorPage(WTUser userDir){
+  DirectorPage(WTUser userDir) {
     this.userDir = userDir;
   }
 
@@ -43,7 +43,6 @@ class _DirectorPageState extends State<DirectorPage> {
   BasicDateTimeField fieldStartTimeTaskPlan;
   BasicDateTimeField fieldEndTaskTimePlan;
 
-
   @override
   void initState() {
     super.initState();
@@ -53,8 +52,6 @@ class _DirectorPageState extends State<DirectorPage> {
     print('init');
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     if (!isLoaded) {
@@ -62,8 +59,7 @@ class _DirectorPageState extends State<DirectorPage> {
     } else {
       return Scaffold(
         appBar: AppBar(
-          title: new Text("Директор: "+widget.userDir.getFamalyIO()
-          ),
+          title: new Text("Директор: " + widget.userDir.getFamalyIO()),
           actions: <Widget>[
             TextButton.icon(
                 onPressed: () {
@@ -145,8 +141,9 @@ class _DirectorPageState extends State<DirectorPage> {
   Widget _buildTasksList(BuildNode node) {
     return ListView.builder(itemBuilder: (context, i) {
       if (i < tasksList.length) {
-        String subtitleText =
-            tasksList[i].status + " " + getUserFioByID(tasksList[i].assignedUserID);
+        String subtitleText = tasksList[i].status +
+            " " +
+            getUserFioByID(tasksList[i].assignedUserID);
         return ListTile(
           title: Text(tasksList[i].taskName),
           subtitle: Text(subtitleText),
@@ -176,81 +173,80 @@ class _DirectorPageState extends State<DirectorPage> {
   }
 
   Widget _buildTaskTail(Task task, BuildNode currentNode) {
-      print('status = ' + status);
-      String str = getUserFioByID(task.assignedUserID);
-      print('assigned = '+task.assignedUserID);
-      print('str = $str');
-      return Column(
-        children: [
-          Text('Задача: '+task.taskName),
-          Text('Ответственный: $str'),
-          Text('Статус: '+task.status),
-          Text('Изменение статуса: '+task.getLastStatusTimeText()),
-          Text('Начало по плану: '+task.getStartTimeText()),
-          Text('Завершение по плану: '+task.getEndTimeText()),
-          usersDropList(task,currentNode),
-          fieldStartTimeTaskPlan = BasicDateTimeField.dd('Время начала задания',
-              DateTime.fromMicrosecondsSinceEpoch(currentNode.nodeDeadline)),
-          fieldEndTaskTimePlan = BasicDateTimeField.dd('Запланированое время завершения',
-              DateTime.fromMicrosecondsSinceEpoch(currentNode.nodeDeadline)),
-          TextButton.icon(
-              onPressed: (){
-                if(fieldStartTimeTaskPlan != null && fieldEndTaskTimePlan.dateTimeValue != null) {
-                  task.startTimeTaskPlan = fieldStartTimeTaskPlan.getDateTime();
-                  task.endTimeTaskPlan = fieldEndTaskTimePlan.getDateTime();
-                  DataBaseConnector().setStartTaskTime(
-                      task, currentNode, currentContract);
-                  DataBaseConnector().setEndTaskTime(
-                      task, currentNode, currentContract);
-                  setState(() {
-                    timePassed = WorkTimer(task.lastStatusTime).hhMMssPassed();
-                    timeLeft = WorkTimer(task.endTimeTaskPlan).hhMMssLeft();
-                    mainWidget = _buildTaskTail(task, currentNode);
-                    isLoaded = true;
-                  });
-                }
-                else{
-                  makeToast('Укажите обе даты', Colors.red);
-                }
-              },
-              icon: Icon(Icons.set_meal),
-              label: Text('установить')),
-          Text('Пошло после Изменение статуса $timePassed'),
-          Text('Осталось $timeLeft'),
-          TextButton.icon(
-              onPressed: () async {
+    print('status = ' + status);
+    String str = getUserFioByID(task.assignedUserID);
+    print('assigned = ' + task.assignedUserID);
+    print('str = $str');
+    return Column(
+      children: [
+        Text('Задача: ' + task.taskName),
+        Text('Ответственный: $str'),
+        taskStatusWidget(task),
+        Text('Изменение статуса: ' + task.getLastStatusTimeText()),
+        Text('Начало по плану: ' + task.getStartTimeText()),
+        Text('Завершение по плану: ' + task.getEndTimeText()),
+        usersDropList(task, currentNode),
+        fieldStartTimeTaskPlan = BasicDateTimeField.dd('Время начала задания',
+            DateTime.fromMicrosecondsSinceEpoch(currentNode.nodeDeadline)),
+        fieldEndTaskTimePlan = BasicDateTimeField.dd(
+            'Запланированное время завершения',
+            DateTime.fromMicrosecondsSinceEpoch(currentNode.nodeDeadline)),
+        TextButton.icon(
+            onPressed: () {
+              if (fieldStartTimeTaskPlan != null &&
+                  fieldEndTaskTimePlan.dateTimeValue != null) {
+                task.startTimeTaskPlan = fieldStartTimeTaskPlan.getDateTime();
+                task.endTimeTaskPlan = fieldEndTaskTimePlan.getDateTime();
+                DataBaseConnector()
+                    .setStartTaskTime(task, currentNode, currentContract);
+                DataBaseConnector()
+                    .setEndTaskTime(task, currentNode, currentContract);
                 setState(() {
-                    timePassed = WorkTimer(task.lastStatusTime).hhMMssPassed();
-                    timeLeft = WorkTimer(task.endTimeTaskPlan).hhMMssLeft();
-                    mainWidget = _buildTaskTail(task, currentNode);
-                    isLoaded = true;
-                });
-              },
-              icon: Icon(Icons.refresh),
-              label: Text("Обновить")),
-          TextButton.icon(
-              onPressed: () async {
-
-                tasksList = await readTasks(currentNode);
-                setState(() {
-                  mainWidget = _buildTasksList(currentNode);
+                  timePassed = WorkTimer(task.lastStatusTime).hhMMssPassed();
+                  timeLeft = WorkTimer(task.endTimeTaskPlan).hhMMssLeft();
+                  mainWidget = _buildTaskTail(task, currentNode);
                   isLoaded = true;
                 });
-              },
-              icon: Icon(Icons.arrow_back),
-              label: Text("Назад"))
-        ],
-      );
+              } else {
+                makeToast('Укажите обе даты', Colors.red);
+              }
+            },
+            icon: Icon(Icons.set_meal),
+            label: Text('установить')),
+        Text('Пошло после Изменение статуса $timePassed'),
+        Text('Осталось $timeLeft'),
+        TextButton.icon(
+            onPressed: () async {
+              setState(() {
+                timePassed = WorkTimer(task.lastStatusTime).hhMMssPassed();
+                timeLeft = WorkTimer(task.endTimeTaskPlan).hhMMssLeft();
+                mainWidget = _buildTaskTail(task, currentNode);
+                isLoaded = true;
+              });
+            },
+            icon: Icon(Icons.refresh),
+            label: Text("Обновить")),
+        TextButton.icon(
+            onPressed: () async {
+              tasksList = await readTasks(currentNode);
+              setState(() {
+                mainWidget = _buildTasksList(currentNode);
+                isLoaded = true;
+              });
+            },
+            icon: Icon(Icons.arrow_back),
+            label: Text("Назад"))
+      ],
+    );
   }
 
-
-  Widget usersDropList(Task task,BuildNode node){
-    userDropMenuItems  = buildUsersDropMenuItems();
+  Widget usersDropList(Task task, BuildNode node) {
+    userDropMenuItems = buildUsersDropMenuItems();
     //print("-userDropMenuItems-");
     //print(userDropMenuItems);
     return DropdownButton(
       value: dropdownValue,
-      onChanged: (newValue){
+      onChanged: (newValue) {
         setState(() {
           dropdownValue = newValue;
           task.assignedUserID = newValue;
@@ -262,17 +258,49 @@ class _DirectorPageState extends State<DirectorPage> {
     );
   }
 
-  void readUsers() async{
+  Widget taskStatusWidget(Task task) {
+    Widget statusWidget;
+    switch (task.status) {
+      case 'inwork':
+        statusWidget = Text('В Работе');
+        break;
+      case 'done':
+        statusWidget = Text('Законченно');
+        break;
+      case 'rework':
+        statusWidget = Column(
+          children: [
+            Text('Доработка ' + task.reworkType),
+            Text('Комментарий: '+task.reworkComment)
+          ],
+        );
+        break;
+      case 'pause':
+        statusWidget = Column(
+          children: [
+            Text('Простой ' + task.pauseType),
+            Text('Комментарий: '+task.pauseComment)
+          ],
+        );
+        break;
+      default :
+        statusWidget = Text('not set');
+        break;
+    }
+    return statusWidget;
+  }
+
+  void readUsers() async {
     usersList = await DataBaseConnector().getAllUsers();
     usersList.forEach((WTUser user) {
-        usersIDList.add(user.id);
-    /* usersFIOList.add(user.surName+" "+user.name.substring(0,1)+
+      usersIDList.add(user.id);
+      /* usersFIOList.add(user.surName+" "+user.name.substring(0,1)+
          '.'+user.fatherName.substring(0,1)+'.');*/
     });
     dropdownMenuUsers = usersIDList;
     print(usersIDList);
     print('reading Users done');
-    dropdownValue= usersIDList.first;
+    dropdownValue = usersIDList.first;
   }
 
   void readContractsList() async {
@@ -308,14 +336,15 @@ class _DirectorPageState extends State<DirectorPage> {
 
   List<DropdownMenuItem> buildUsersDropMenuItems() {
     List<DropdownMenuItem> items = List();
-    if(usersList!=null) {
+    if (usersList != null) {
       usersList.forEach((user) {
         DropdownMenuItem item = new DropdownMenuItem(
           child: Text(user.getFamalyIO()),
-          value: user.id,);
-        if(!items.contains(item))items.add(item);
+          value: user.id,
+        );
+        if (!items.contains(item)) items.add(item);
       });
-      if(dropdownValue == null )dropdownValue = usersList.first.id;
+      if (dropdownValue == null) dropdownValue = usersList.first.id;
       print('---User List---');
       usersList.forEach((element) {
         print(element.getFamalyIO());
@@ -325,25 +354,24 @@ class _DirectorPageState extends State<DirectorPage> {
         print(element.child);
         print(element.value);
       });
-    }else {
-      items.add(
-          DropdownMenuItem(
-            child: Text('Загрузка пользоватлей...'),
-            value: '0',
-          )
-      );
+    } else {
+      items.add(DropdownMenuItem(
+        child: Text('Загрузка пользоватлей...'),
+        value: '0',
+      ));
       dropdownValue = '0';
       print("-items-");
       print(items);
     }
     return items;
   }
-  String getUserFioByID(String id){
-    String userFio='Не назначен';
+
+  String getUserFioByID(String id) {
+    String userFio = 'Не назначен';
     usersList.forEach((user) {
-      print("user id "+user.id);
-      if(user.id == id){
-        print ("get famalyio  " +user.getFamalyIO());
+      print("user id " + user.id);
+      if (user.id == id) {
+        print("get famalyio  " + user.getFamalyIO());
         userFio = user.getFamalyIO();
       }
     });
