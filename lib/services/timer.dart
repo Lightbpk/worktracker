@@ -21,6 +21,9 @@ class WorkTimer
 
   String hhMMssLeft(){
     String strLeft= "";
+    if(timePoint == 0){
+      return strLeft;
+    }
     int micSecNow = DateTime.now().microsecondsSinceEpoch;
     int micSecLeft = timePoint - micSecNow;
     DateTime leftTime = DateTime.fromMicrosecondsSinceEpoch(micSecLeft);
@@ -38,6 +41,9 @@ class WorkTimer
   }
   String hhMMssPassed(){
     String strPassed= "";
+    if(timePoint == 0){
+      return strPassed;
+    }
     int micSecNow = DateTime.now().microsecondsSinceEpoch;
     int micSecPassed = timePoint - micSecNow;
     DateTime passedTime = DateTime.fromMicrosecondsSinceEpoch(micSecPassed);

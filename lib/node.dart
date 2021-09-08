@@ -13,6 +13,7 @@ class BuildNode {
   }
 
   String getDeadlineText(){
-    return DateTime.fromMicrosecondsSinceEpoch(nodeDeadline).toString();
+    if(nodeDeadline == 0) return "null";
+    else return DateTime.fromMicrosecondsSinceEpoch(nodeDeadline).toString();
   }
 }

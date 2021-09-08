@@ -6,6 +6,7 @@ import 'package:worktracker/node.dart';
 import 'package:worktracker/services/auth_service.dart';
 import 'package:worktracker/services/data-time-field.dart';
 import 'package:worktracker/services/firebaseConnector.dart';
+import 'package:worktracker/services/functions.dart';
 import 'package:worktracker/services/timer.dart';
 import 'package:worktracker/task.dart';
 import 'package:worktracker/user.dart';
@@ -103,7 +104,7 @@ class _DirectorPageState extends State<DirectorPage> {
       if (i < nodesList.length) {
         String subTitleText = nodesList[i].getDeadlineText();
         if (subTitleText == 'null') {
-          subTitleText = ' not set deadline';
+          subTitleText = 'not set deadlin';
         }
         print("subTitle +" + subTitleText);
         return ListTile(
@@ -140,6 +141,7 @@ class _DirectorPageState extends State<DirectorPage> {
 
   Widget _buildTasksList(BuildNode node) {
     return ListView.builder(itemBuilder: (context, i) {
+
       if (i < tasksList.length) {
         String subtitleText = tasksList[i].status +
             " " +
@@ -147,6 +149,7 @@ class _DirectorPageState extends State<DirectorPage> {
         return ListTile(
           title: Text(tasksList[i].taskName),
           subtitle: Text(subtitleText),
+          tileColor: statusColor(tasksList[i].status),
           onTap: () {
             print('Taped ' + tasksList[i].taskName);
             setState(() {
