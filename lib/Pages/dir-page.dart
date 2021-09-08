@@ -182,9 +182,10 @@ class _DirectorPageState extends State<DirectorPage> {
         Text('Задача: ' + task.taskName),
         Text('Ответственный: $str'),
         taskStatusWidget(task),
-        Text('Изменение статуса: ' + task.getLastStatusTimeText()),
         Text('Начало по плану: ' + task.getStartTimeText()),
         Text('Завершение по плану: ' + task.getEndTimeText()),
+        Text('Осталось $timeLeft'),
+        Divider(),
         usersDropList(task, currentNode),
         fieldStartTimeTaskPlan = BasicDateTimeField.dd('Время начала задания',
             DateTime.fromMicrosecondsSinceEpoch(currentNode.nodeDeadline)),
@@ -213,8 +214,6 @@ class _DirectorPageState extends State<DirectorPage> {
             },
             icon: Icon(Icons.set_meal),
             label: Text('установить')),
-        Text('Пошло после Изменение статуса $timePassed'),
-        Text('Осталось $timeLeft'),
         TextButton.icon(
             onPressed: () async {
               setState(() {
@@ -260,17 +259,20 @@ class _DirectorPageState extends State<DirectorPage> {
 
   Widget taskStatusWidget(Task task) {
     Widget statusWidget;
+    WorkTimer workTimer = new WorkTimer(task.lastStatusTime);
     switch (task.status) {
-      case 'inwork':
-        statusWidget = Text('Статус: В Работе');
+      case 'inwork':{
+        statusWidget = Text('Статус: В Работе ' +workTimer.hhMMssPassed());
         break;
+      }
       case 'done':
-        statusWidget = Text('Статус: Законченно');
+        statusWidget = Text('Статус: Законченно ' + task.getLastStatusTimeText());
         break;
       case 'rework':
         statusWidget = Column(
           children: [
             Text('Статус: Доработка ' + task.reworkType),
+            Text(workTimer.hhMMssPassed()),
             Text('Комментарий: '+task.reworkComment)
           ],
         );
@@ -279,6 +281,7 @@ class _DirectorPageState extends State<DirectorPage> {
         statusWidget = Column(
           children: [
             Text('Статус: Простой ' + task.pauseType),
+            Text(workTimer.hhMMssPassed()),
             Text('Комментарий: '+task.pauseComment)
           ],
         );
@@ -356,7 +359,7 @@ class _DirectorPageState extends State<DirectorPage> {
       });
     } else {
       items.add(DropdownMenuItem(
-        child: Text('Загрузка пользоватлей...'),
+        child: Text('Загрузка пользователей...'),
         value: '0',
       ));
       dropdownValue = '0';
