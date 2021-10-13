@@ -12,7 +12,7 @@ class DataBaseConnector {
   FirebaseApp myFirebaseApp;
   DatabaseReference db;
   _DataBaseConnector(){}
-
+  int defaultDeadline= 1700000000000000;
 
 
   DataBaseConnector getConnection(FirebaseApp app){
@@ -194,7 +194,7 @@ class DataBaseConnector {
         } else {
           db.child("work-process").child(id).child("nodes")
               .child(node.nodePosition).child("deadline").set(
-              0);
+              defaultDeadline);
         }
       }
     });

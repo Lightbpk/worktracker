@@ -11,9 +11,11 @@ import '../user.dart';
 
 class AdminPage extends StatefulWidget {
   WTUser userAdmin;
-  AdminPage(WTUser userAdmin){
+
+  AdminPage(WTUser userAdmin) {
     this.userAdmin = userAdmin;
   }
+
   @override
   _AdminPageState createState() => _AdminPageState();
 }
@@ -24,26 +26,28 @@ class _AdminPageState extends State<AdminPage> {
   String currentContractID;
   String currentClientName;
   BasicDateTimeField firstNodeDeadLine;
+
+  // bool existEmptyDeadline = true;
   List<BuildNode> nodeList = [
-    new BuildNode("Оформление документов","01"),
-    new BuildNode("Разработка КД и электроКД","02"),
-    new BuildNode("Снабжение комплектующими","03"),
-    new BuildNode("Заготовительно изготовительные Операции","04"),
-    new BuildNode("Сборка оборудования согласно ТК","05"),
-    new BuildNode("Сборка Шкафа обвязка Электрикой","06"),
-    new BuildNode("Наладка оборудования","07"),
-    new BuildNode("Тестирование оборудования","08"),
-    new BuildNode("Демонтаж, упаковка и отгрузка оборудования","09"),
+    new BuildNode("Оформление документов", "01"),
+    new BuildNode("Разработка КД и электроКД", "02"),
+    new BuildNode("Снабжение комплектующими", "03"),
+    new BuildNode("Заготовительно изготовительные Операции", "04"),
+    new BuildNode("Сборка оборудования согласно ТК", "05"),
+    new BuildNode("Сборка Шкафа обвязка Электрикой", "06"),
+    new BuildNode("Наладка оборудования", "07"),
+    new BuildNode("Тестирование оборудования", "08"),
+    new BuildNode("Демонтаж, упаковка и отгрузка оборудования", "09"),
   ];
 
   @override
   Widget build(BuildContext context) {
-    if(loadStartWidget){
+    if (loadStartWidget) {
       currentWidget = _startWidget();
     }
     return Scaffold(
       appBar: AppBar(
-        title: new Text("Админ:"+widget.userAdmin.getFamalyIO()),
+        title: new Text("Админ:" + widget.userAdmin.getFamalyIO()),
         actions: <Widget>[
           TextButton.icon(
               onPressed: () {
@@ -57,10 +61,10 @@ class _AdminPageState extends State<AdminPage> {
         ],
       ),
       body: currentWidget,
-
     );
   }
-  Widget _startWidget(){
+
+  Widget _startWidget() {
     return Container(
       child: new Column(
         children: <Widget>[
@@ -80,114 +84,135 @@ class _AdminPageState extends State<AdminPage> {
           new Text("Заказчик"),
           new TextFormField(
             decoration:
-            InputDecoration(hintText: "Введите наименование заказчика"),
+                InputDecoration(hintText: "Введите наименование заказчика"),
             onChanged: (text) {
               currentClientName = text;
             },
           ),
-          new TextButton.icon(onPressed: (){
-            setState(() {
-              loadStartWidget = false;
-              _nodeListWidget();
-            });
-          }, icon: Icon(Icons.timeline), label: Text("Установить дэдлайны")),
+          new TextButton.icon(
+              onPressed: () {
+                setState(() {
+                  loadStartWidget = false;
+                  _nodeListWidget();
+                });
+              },
+              icon: Icon(Icons.timeline),
+              label: Text("Узлы и дэдлайны")),
         ],
       ),
     );
   }
 
-  void _nodeListWidget(){
+  void _nodeListWidget() {
     print('nodelist build');
-    currentWidget = ListView.builder(itemBuilder: (context, i){
-      if(i < nodeList.length) {
+    currentWidget = ListView.builder(itemBuilder: (context, i) {
+      if (i < nodeList.length) {
         BasicDateTimeField field;
-        if(nodeList[i].field == null){
+        if (nodeList[i].field == null) {
           field = BasicDateTimeField('Введите дату Дэдлайна');
-        }
-        else
-        {
+        } else {
           field = BasicDateTimeField('Введите дату Дэдлайна');
           field.dateTimeValue = nodeList[i].field.dateTimeValue;
         }
         return CheckboxListTile(
-        subtitle: nodeList[i].field = field,
-        title: Text(nodeList[i].nodeName),
-        value: nodeList[i].checked,
-        onChanged: (bool value){
-          setState(() {
-            nodeList[i].checked = !nodeList[i].checked ;
-
-            _nodeListWidget();
-            //print('checked ' +checked.toString());
-          });
-        },
-        controlAffinity: ListTileControlAffinity.leading,
-      );
-      }
-      else if(i == nodeList.length) return ListTile(title: Text("Назад"),
-        onTap: (){
-          setState(() {
-            loadStartWidget = true;
-          });
-        },);
-      else if(i == nodeList.length+1) return ListTile(trailing:           new TextButton.icon(
-          onPressed: () {
-            showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: new Text("Внесение проекта в БД"),
-                    content: new Text(
-                        'Вы уверены что хотите внести данные по проекту в БД?'),
-                    actions: <Widget>[
-                      OutlineButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: new Text("отмена")),
-                      FlatButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                            addContract();
-                            setState(() {
-                              loadStartWidget = true;
-                              Fluttertoast.showToast(msg: "Договор $currentContractID внесен в БД",
-                                  toastLength: Toast.LENGTH_SHORT,
-                                  gravity: ToastGravity.CENTER,
-                                  timeInSecForIosWeb: 1,
-                                  backgroundColor: Colors.green,
-                                  textColor: Colors.white,
-                                  fontSize: 16.0);
-                            });
-                          },
-                          child: new Text("ОК"))
-                    ],
-                  );
-                });
+          subtitle: nodeList[i].field = field,
+          title: Text(nodeList[i].nodeName),
+          value: nodeList[i].checked,
+          onChanged: (bool value) {
+            setState(() {
+              nodeList[i].checked = !nodeList[i].checked;
+              _nodeListWidget();
+              //print('checked ' +checked.toString());
+            });
           },
-          icon: Icon(Icons.add_road),
-          label: new Text('Добавить в БД')),);
-      else return ListTile(title: Text(''));
+          controlAffinity: ListTileControlAffinity.leading,
+        );
+      } else if (i == nodeList.length)
+        return ListTile(
+          title: Text("Назад"),
+          onTap: () {
+            setState(() {
+              loadStartWidget = true;
+            });
+          },
+        );
+      else if (i == nodeList.length + 1)
+        return ListTile(
+          trailing: new TextButton.icon(
+              onPressed: () {
+                nodeList.forEach((BuildNode node) {
+                  if (node.checked) {
+                    if (node.field.dateTimeValue == null) {
+                      makeToast("Указаны не все дэдлайны", Colors.red);
+                    }
+                  }
+                });
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: new Text("Внесение проекта в БД"),
+                        content: new Text(
+                            'Вы уверены что хотите внести данные по проекту в БД?'),
+                        actions: <Widget>[
+                          OutlineButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: new Text("отмена")),
+                          FlatButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                addContract();
+                                setState(() {
+                                  loadStartWidget = true;
+                                  String msg =
+                                      "Договор $currentContractID внесен в БД";
+                                  makeToast(msg, Colors.green);
+                                });
+                              },
+                              child: new Text("ОК"))
+                        ],
+                      );
+                    });
+              },
+              icon: Icon(Icons.add_road),
+              label: new Text('Добавить в БД')),
+        );
+      else
+        return ListTile(title: Text(''));
     });
   }
 
   void addContract() {
-    List<Task> defTaskList =  makeDefaultTaskList(nodeList);
+    List<Task> defTaskList = makeDefaultTaskList(nodeList);
     DataBaseConnector().addProject(
         currentContractID, currentClientName, nodeList, defTaskList);
   }
 
-  List<Task> makeDefaultTaskList(List<BuildNode> nodeList)
-  {
-    List<Task> defaultTasksList= [];
+  List<Task> makeDefaultTaskList(List<BuildNode> nodeList) {
+    List<Task> defaultTasksList = [];
     nodeList.forEach((node) {
-      if(node.checked)
-      {
-        defaultTasksList.add(new Task("Задача1_"+node.nodePosition,node.nodeName));
-        defaultTasksList.add(new Task("Задача2_"+node.nodePosition,node.nodeName));
-        defaultTasksList.add(new Task("Задача3_"+node.nodePosition,node.nodeName));
+      if (node.checked) {
+        defaultTasksList
+            .add(new Task("Задача1_" + node.nodePosition, node.nodeName));
+        defaultTasksList
+            .add(new Task("Задача2_" + node.nodePosition, node.nodeName));
+        defaultTasksList
+            .add(new Task("Задача3_" + node.nodePosition, node.nodeName));
       }
     });
     return defaultTasksList;
+  }
+
+  void makeToast(String status, Color color) {
+    Fluttertoast.showToast(
+        msg: "Установлен Статус " + status,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: color,
+        textColor: Colors.white,
+        fontSize: 16.0);
   }
 }
