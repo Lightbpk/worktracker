@@ -103,6 +103,12 @@ class DataBaseConnector {
     }
   }
 
+  Future <List<BuildNode>> getAllNodes() async{
+     await db.child("nodes").once().then((DataSnapshot snapshot) {
+
+     });
+  }
+
   Future <List<BuildNode>> getNodes(String contract) async{
     getMainRef();
     List<BuildNode> nodesList = [];

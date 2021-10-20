@@ -319,6 +319,7 @@ class _DirectorPageState extends State<DirectorPage> {
 
   void readNodes(String contract) async {
     nodesList = await DataBaseConnector().getNodes(contract);
+    nodesList.sort(sortNodes);
     setState(() {
       mainWidget = _buildNodesList();
       isLoaded = true;
@@ -327,6 +328,12 @@ class _DirectorPageState extends State<DirectorPage> {
 
   Future<List<Task>> readTasks(BuildNode node) async {
     return await DataBaseConnector().getTasks(currentContract.id, node);
+  }
+
+  int sortNodes(BuildNode a, BuildNode b){
+    if(int.parse(a.nodePosition) < int.parse(b.nodePosition)) return -1;
+    else if(int.parse(a.nodePosition) > int.parse(b.nodePosition)) return 1;
+    else return 0;
   }
 
   void makeToast(String status, Color color) {

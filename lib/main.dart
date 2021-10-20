@@ -1,8 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:worktracker/Pages/auth-page.dart';
-import 'package:worktracker/Pages/dir-page.dart';
 import 'package:worktracker/services/auth_service.dart';
 import 'package:worktracker/services/firebaseConnector.dart';
 import 'package:worktracker/start.dart';
