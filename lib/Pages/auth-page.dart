@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:worktracker/entities/user.dart';
 import 'package:worktracker/services/auth_service.dart';
 import 'package:worktracker/services/firebaseConnector.dart';
 
-import '../user.dart';
+
 
 class AuthPage extends StatefulWidget {
   final String title;

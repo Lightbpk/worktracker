@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:worktracker/contract.dart';
-import 'package:worktracker/node.dart';
+import 'package:worktracker/entities/contract.dart';
+import 'package:worktracker/entities/node.dart';
 import 'package:worktracker/services/auth_service.dart';
 import 'package:worktracker/services/firebaseConnector.dart';
-import 'package:worktracker/task.dart';
-import 'package:worktracker/user.dart';
+import 'package:worktracker/entities/task.dart';
+import 'package:worktracker/entities/user.dart';
 
 class UserPage extends StatefulWidget {
   WTUser currentUser;

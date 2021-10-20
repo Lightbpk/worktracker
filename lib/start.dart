@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:worktracker/Pages/dir-page.dart';
 import 'package:worktracker/Pages/user-page.dart';
 import 'package:worktracker/services/firebaseConnector.dart';
-import 'package:worktracker/user.dart';
+import 'package:worktracker/entities/user.dart';
 
 import 'Pages/auth-page.dart';
 import 'Pages/admin-page.dart';

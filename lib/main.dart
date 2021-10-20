@@ -7,7 +7,7 @@ import 'package:worktracker/services/auth_service.dart';
 import 'package:worktracker/services/firebaseConnector.dart';
 import 'package:worktracker/start.dart';
 
-import 'user.dart';
+import 'entities/user.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

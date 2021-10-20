@@ -2,10 +2,10 @@ import 'dart:collection';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:worktracker/contract.dart';
-import 'package:worktracker/node.dart';
-import 'package:worktracker/task.dart';
-import 'package:worktracker/user.dart';
+import 'package:worktracker/entities/contract.dart';
+import 'package:worktracker/entities/node.dart';
+import 'package:worktracker/entities/task.dart';
+import 'package:worktracker/entities/user.dart';
 
 class DataBaseConnector {
   DataBaseConnector _instance;
