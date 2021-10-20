@@ -26,10 +26,23 @@ class _AuthPageState extends State<AuthPage> {
       userName = "",
       userFatherName = "";
   bool isLoginPage = true;
+  Widget mainWidget;
 
   @override
   Widget build(BuildContext context) {
-    if (isLoginPage) {
+    if (isLoginPage){
+      mainWidget = loggerWidget();
+    }
+    else{
+      mainWidget = registerWidget();
+    }
+    return mainWidget;
+  }
+
+
+  Widget loggerWidget(){
+    {
+      print('logger widget start');
       return Scaffold(
         appBar: AppBar(
           title: new Text(widget.title),
@@ -70,7 +83,7 @@ class _AuthPageState extends State<AuthPage> {
                 ),
                 new TextButton.icon(
                     onPressed: () {
-                    _loginButtonAction();
+                      _loginButtonAction();
                     },
                     label: new Text("Погнали!"),
                     icon: Icon(Icons.arrow_circle_up)),
@@ -89,8 +102,6 @@ class _AuthPageState extends State<AuthPage> {
         ),
       );
     }
-    else
-      return registerWidget();
   }
 
   Widget registerWidget() {
@@ -161,10 +172,20 @@ class _AuthPageState extends State<AuthPage> {
               ),
               new TextButton.icon(
                   onPressed: () {
-                    _registerButtonAction();
+                    setState(() {
+                      _registerButtonAction();
+                    });
                   },
                   label: new Text("Регистрация"),
                   icon: Icon(Icons.app_registration)),
+              new TextButton.icon(onPressed: (){
+                setState(() {
+                  isLoginPage = true;
+                });
+                //Navigator.of(context).pop();
+              },
+                  icon: Icon(Icons.backspace),
+                  label: new Text("назад"))
             ],
           ),
         ),
