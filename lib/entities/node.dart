@@ -5,11 +5,15 @@ class BuildNode {
   String nodeName;
   int nodeDeadline = 0;
   bool checked = false;
+  bool aloneTask = false;
   BasicDateTimeField field;
 
-  BuildNode(String nodeName,String nodePosition){
+  BuildNode(String nodeName,String nodePosition, [bool aloneTask]){
     this.nodeName = nodeName;
     this.nodePosition = nodePosition;
+    if(aloneTask == true){
+      this.aloneTask = aloneTask;
+    }
   }
 
   String getDeadlineText(){

@@ -38,6 +38,9 @@ class _AdminPageState extends State<AdminPage> {
     new BuildNode("Наладка оборудования", "07"),
     new BuildNode("Тестирование оборудования", "08"),
     new BuildNode("Демонтаж, упаковка и отгрузка оборудования", "09"),
+    new BuildNode("Отдельная задача1 ", "10", true),
+    new BuildNode("Отдельная задача2 ", "11", true),
+    new BuildNode("Отдельная задача3 ", "12", true),
   ];
 
   @override
