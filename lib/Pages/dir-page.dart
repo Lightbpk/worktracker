@@ -182,12 +182,19 @@ class _DirectorPageState extends State<DirectorPage> {
     print('str = $str');
     return Column(
       children: [
-        Text('Задача: ' + task.taskName),
-        Text('Ответственный: $str'),
-        taskStatusWidget(task),
-        Text('Начало по плану: ' + task.getStartTimeText()),
-        Text('Завершение по плану: ' + task.getEndTimeText()),
-        Text('Осталось $timeLeft'),
+        Column(crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text('Задача: ' + task.taskName, style: TextStyle(fontSize: 20)),
+        ],),
+        Divider(),
+        Column(crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Ответственный: $str', textAlign: TextAlign.left,),
+            taskStatusWidget(task),
+            Text('Начало по плану: ' + task.getStartTimeText()),
+            Text('Завершение по плану: ' + task.getEndTimeText()),
+            Text('Осталось $timeLeft'),
+          ],),
         Divider(),
         usersDropList(task, currentNode),
         fieldStartTimeTaskPlan = BasicDateTimeField.dd('Время начала задания',
@@ -195,49 +202,53 @@ class _DirectorPageState extends State<DirectorPage> {
         fieldEndTaskTimePlan = BasicDateTimeField.dd(
             'Запланированное время завершения',
             DateTime.fromMicrosecondsSinceEpoch(currentNode.nodeDeadline)),
-        TextButton.icon(
-            onPressed: () {
-              if (fieldStartTimeTaskPlan != null &&
-                  fieldEndTaskTimePlan.dateTimeValue != null) {
-                task.startTimeTaskPlan = fieldStartTimeTaskPlan.getDateTime();
-                task.endTimeTaskPlan = fieldEndTaskTimePlan.getDateTime();
-                DataBaseConnector()
-                    .setStartTaskTime(task, currentNode, currentContract);
-                DataBaseConnector()
-                    .setEndTaskTime(task, currentNode, currentContract);
-                setState(() {
-                  timePassed = WorkTimer(task.lastStatusTime).hhMMssPassed();
-                  timeLeft = WorkTimer(task.endTimeTaskPlan).hhMMssLeft();
-                  mainWidget = _buildTaskTail(task, currentNode);
-                  isLoaded = true;
-                });
-              } else {
-                makeToast('Укажите обе даты', Colors.red);
-              }
-            },
-            icon: Icon(Icons.set_meal),
-            label: Text('установить')),
-        TextButton.icon(
-            onPressed: () async {
-              setState(() {
-                timePassed = WorkTimer(task.lastStatusTime).hhMMssPassed();
-                timeLeft = WorkTimer(task.endTimeTaskPlan).hhMMssLeft();
-                mainWidget = _buildTaskTail(task, currentNode);
-                isLoaded = true;
-              });
-            },
-            icon: Icon(Icons.refresh),
-            label: Text("Обновить")),
-        TextButton.icon(
-            onPressed: () async {
-              tasksList = await readTasks(currentNode);
-              setState(() {
-                mainWidget = _buildTasksList(currentNode);
-                isLoaded = true;
-              });
-            },
-            icon: Icon(Icons.arrow_back),
-            label: Text("Назад"))
+        Column(crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            TextButton.icon(
+                onPressed: () {
+                  if (fieldStartTimeTaskPlan != null &&
+                      fieldEndTaskTimePlan.dateTimeValue != null) {
+                    task.startTimeTaskPlan = fieldStartTimeTaskPlan.getDateTime();
+                    task.endTimeTaskPlan = fieldEndTaskTimePlan.getDateTime();
+                    DataBaseConnector()
+                        .setStartTaskTime(task, currentNode, currentContract);
+                    DataBaseConnector()
+                        .setEndTaskTime(task, currentNode, currentContract);
+                    setState(() {
+                      timePassed = WorkTimer(task.lastStatusTime).hhMMssPassed();
+                      timeLeft = WorkTimer(task.endTimeTaskPlan).hhMMssLeft();
+                      mainWidget = _buildTaskTail(task, currentNode);
+                      isLoaded = true;
+                    });
+                  } else {
+                    makeToast('Укажите обе даты', Colors.red);
+                  }
+                },
+                icon: Icon(Icons.set_meal),
+                label: Text('установить')),
+            TextButton.icon(
+                onPressed: () async {
+                  setState(() {
+                    timePassed = WorkTimer(task.lastStatusTime).hhMMssPassed();
+                    timeLeft = WorkTimer(task.endTimeTaskPlan).hhMMssLeft();
+                    mainWidget = _buildTaskTail(task, currentNode);
+                    isLoaded = true;
+                  });
+                },
+                icon: Icon(Icons.refresh),
+                label: Text("Обновить")),
+            TextButton.icon(
+                onPressed: () async {
+                  tasksList = await readTasks(currentNode);
+                  setState(() {
+                    mainWidget = _buildTasksList(currentNode);
+                    isLoaded = true;
+                  });
+                },
+                icon: Icon(Icons.arrow_back),
+                label: Text("Назад"))
+          ],),
+
       ],
     );
   }

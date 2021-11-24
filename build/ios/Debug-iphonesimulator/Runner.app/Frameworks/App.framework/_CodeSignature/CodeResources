@@ -16,9 +16,9 @@
 		<data>
 		vKJkVIcw+LGHFnKJGwrQwCREv68=
 		</data>
-		<key>flutter_assets/NOTICES</key>
+		<key>flutter_assets/NOTICES.Z</key>
 		<data>
-		OxUw1StEzxi34Xy5S2O8e+N54Lk=
+		cpOWFoPdv7gPMWe3vXpjoiDfHFc=
 		</data>
 		<key>flutter_assets/fonts/MaterialIcons-Regular.otf</key>
 		<data>
@@ -26,11 +26,11 @@
 		</data>
 		<key>flutter_assets/isolate_snapshot_data</key>
 		<data>
-		ELluN2aQ5lXx4NZnJlBUXyZEfGo=
+		j58ZaJgxEhtmGJxhHo73d32iYFI=
 		</data>
 		<key>flutter_assets/kernel_blob.bin</key>
 		<data>
-		n/i7nCN52nhg8I6GDfwNluskOdo=
+		8MrANz5FFlY1EV4AjwlrPAr3frw=
 		</data>
 		<key>flutter_assets/packages/cupertino_icons/assets/CupertinoIcons.ttf</key>
 		<data>
@@ -46,7 +46,7 @@
 		</data>
 		<key>flutter_assets/vm_snapshot_data</key>
 		<data>
-		BICKLyZmEDX0yMJrQwYDz3tKwt8=
+		GSdeSSVKlMZc4dGp6K8FmNf4taU=
 		</data>
 	</dict>
 	<key>files2</key>
@@ -73,15 +73,15 @@
 			zX4DZFvESy3Ue3y2JvUcTsv1Whl6t3JBYotHrBZfviE=
 			</data>
 		</dict>
-		<key>flutter_assets/NOTICES</key>
+		<key>flutter_assets/NOTICES.Z</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			OxUw1StEzxi34Xy5S2O8e+N54Lk=
+			cpOWFoPdv7gPMWe3vXpjoiDfHFc=
 			</data>
 			<key>hash2</key>
 			<data>
-			tbotcUnTyvBG/vbCnuEfOjcWZlWr5ZmaYnEaDUl2ktY=
+			GOR46cLC8jHA0dArgZlm1n45TONUFvVRF43dKRP/JtI=
 			</data>
 		</dict>
 		<key>flutter_assets/fonts/MaterialIcons-Regular.otf</key>
@@ -99,22 +99,22 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			ELluN2aQ5lXx4NZnJlBUXyZEfGo=
+			j58ZaJgxEhtmGJxhHo73d32iYFI=
 			</data>
 			<key>hash2</key>
 			<data>
-			d5Zhq5S+3ylGF8osqx2M/nYmzI/1w4FDUIjGiKWFaOc=
+			O2mgX/4QpiIaR3Relq6EGshnOo+RCjbxxYoqeo+kJuY=
 			</data>
 		</dict>
 		<key>flutter_assets/kernel_blob.bin</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			n/i7nCN52nhg8I6GDfwNluskOdo=
+			8MrANz5FFlY1EV4AjwlrPAr3frw=
 			</data>
 			<key>hash2</key>
 			<data>
-			2Nem/Tabe0JSU64eISD+DtfHhuIIZa0hhBJdwlMKU24=
+			ZMpm1fPLGrXeJy5rkgtwE3Ix9YBblxzw4zmF5J6/mH0=
 			</data>
 		</dict>
 		<key>flutter_assets/packages/cupertino_icons/assets/CupertinoIcons.ttf</key>
@@ -154,11 +154,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			BICKLyZmEDX0yMJrQwYDz3tKwt8=
+			GSdeSSVKlMZc4dGp6K8FmNf4taU=
 			</data>
 			<key>hash2</key>
 			<data>
-			dW/lW8/DGE7kqgVOIL22hio/M/WrH8+bodAoyvhyXsU=
+			w1vt9GEbbsxDdWG+Cns8O0OA28qaaHi/gkQ1bDZezNk=
 			</data>
 		</dict>
 	</dict>
