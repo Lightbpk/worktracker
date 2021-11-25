@@ -197,12 +197,19 @@ class _AdminPageState extends State<AdminPage> {
     List<Task> defaultTasksList = [];
     nodeList.forEach((node) {
       if (node.checked) {
-        defaultTasksList
-            .add(new Task("Задача1_" + node.nodePosition, node.nodeName));
-        defaultTasksList
-            .add(new Task("Задача2_" + node.nodePosition, node.nodeName));
-        defaultTasksList
-            .add(new Task("Задача3_" + node.nodePosition, node.nodeName));
+        if(node.aloneTask){
+            Task aloneTask1 = new Task(node.nodeName, node.nodeName);
+            aloneTask1.parentNodeName = currentContractID;
+            defaultTasksList.add(aloneTask1);
+        }else
+          {
+            defaultTasksList
+                .add(new Task("Задача1_" + node.nodePosition, node.nodeName));
+            defaultTasksList
+                .add(new Task("Задача2_" + node.nodePosition, node.nodeName));
+            defaultTasksList
+                .add(new Task("Задача3_" + node.nodePosition, node.nodeName));
+        }
       }
     });
     return defaultTasksList;

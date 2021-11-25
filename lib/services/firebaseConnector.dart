@@ -151,6 +151,20 @@ class DataBaseConnector {
               tasksList.add(task);
               print("taskName = "+key);
               print("nodeName = "+node.nodeName);
+            }else if (mapValue["parentNodeName"]==contract && key == node.nodeName){
+              Task task = new Task(key, contract);
+              task.status = mapValue["status"];
+              task.lastStatusTime = mapValue["lastStatusTime"];
+              task.assignedUserID = mapValue["assignedUser"];
+              task.startTimeTaskPlan = mapValue["startTimeTaskPlan"];
+              task.endTimeTaskPlan = mapValue["endTimeTaskPlan"];
+              task.reworkType = mapValue["reworkType"];
+              task.pauseType = mapValue["pauseType"];
+              task.reworkComment = mapValue["reworkComment"];
+              task.pauseComment = mapValue["pauseComment"];
+              tasksList.add(task);
+              print("taskName = "+key);
+              print("nodeName = "+node.nodeName);
             }
           });
     } );

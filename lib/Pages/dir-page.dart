@@ -116,8 +116,13 @@ class _DirectorPageState extends State<DirectorPage> {
             currentNode = nodesList[i];
             tasksList = await readTasks(currentNode);
             setState(() {
-              mainWidget = _buildTasksList(currentNode);
-              isLoaded = true;
+              if(tasksList[0].taskName == currentNode.nodeName){
+                mainWidget = _buildTaskTail(tasksList[0], currentNode);
+                isLoaded = true;
+              }else {
+                mainWidget = _buildTasksList(currentNode);
+                isLoaded = true;
+              }
             });
             print('Taped ' + nodesList[i].nodeName);
           },
@@ -241,8 +246,13 @@ class _DirectorPageState extends State<DirectorPage> {
                 onPressed: () async {
                   tasksList = await readTasks(currentNode);
                   setState(() {
-                    mainWidget = _buildTasksList(currentNode);
-                    isLoaded = true;
+                    if(task.parentNodeName == currentContract.id){
+                      mainWidget = _buildNodesList();
+                      isLoaded = true;
+                    }else{
+                      mainWidget = _buildTasksList(currentNode);
+                      isLoaded = true;
+                    }
                   });
                 },
                 icon: Icon(Icons.arrow_back),
