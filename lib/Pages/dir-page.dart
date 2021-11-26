@@ -182,6 +182,7 @@ class _DirectorPageState extends State<DirectorPage> {
 
   Widget _buildTaskTail(Task task, BuildNode currentNode) {
     print('status = ' + status);
+    //init blame
     String str = getUserFioByID(task.assignedUserID);
     print('assigned = ' + task.assignedUserID);
     print('str = $str');
