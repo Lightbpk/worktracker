@@ -8,8 +8,10 @@ class Task {
   int endTimeTaskPlan;
   String reworkType;
   String reworkComment;
+  String guiltyUserID;
   String pauseType;
   String pauseComment;
+  String dirComment;
 
   Task(String taskName,String parentNodeName){
     this.taskName = taskName;
@@ -19,6 +21,8 @@ class Task {
     assignedUserID = "not set";
     reworkType = '';
     reworkComment = "";
+    guiltyUserID = "";
+    dirComment = '';
     pauseType = '';
     pauseComment = "";
     startTimeTaskPlan = 0;

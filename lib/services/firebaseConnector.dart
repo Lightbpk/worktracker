@@ -120,11 +120,6 @@ class DataBaseConnector {
         BuildNode node = BuildNode(mapValue["nodeName"],key);
         node.nodeDeadline = mapValue["deadline"];
         nodesList.add(node);
-        /*
-        Map<dynamic,dynamic> mapValue = Map<dynamic,dynamic>.from(value);
-        print("value "+mapValue.toString());
-        node.nodeDeadline = mapValue["deadline"];
-        nodesList.add(node);*/
       });
     } );
     return nodesList;
@@ -148,6 +143,8 @@ class DataBaseConnector {
               task.pauseType = mapValue["pauseType"];
               task.reworkComment = mapValue["reworkComment"];
               task.pauseComment = mapValue["pauseComment"];
+              task.guiltyUserID = mapValue["reworkGuilty"];
+              task.dirComment = mapValue["dirComment"];
               tasksList.add(task);
               print("taskName = "+key);
               print("nodeName = "+node.nodeName);
@@ -162,6 +159,8 @@ class DataBaseConnector {
               task.pauseType = mapValue["pauseType"];
               task.reworkComment = mapValue["reworkComment"];
               task.pauseComment = mapValue["pauseComment"];
+              task.guiltyUserID = mapValue["reworkGuilty"];
+              task.dirComment = mapValue["dirComment"];
               tasksList.add(task);
               print("taskName = "+key);
               print("nodeName = "+node.nodeName);
@@ -189,6 +188,8 @@ class DataBaseConnector {
               task.reworkComment = mapValue["reworkComment"];
               task.pauseType = mapValue["pauseType"];
               task.pauseComment = mapValue["pauseComment"];
+              task.guiltyUserID = mapValue["reworkGuilty"];
+              task.dirComment = mapValue["dirComment"];
               tasksList.add(task);
             }
           });
@@ -253,6 +254,11 @@ class DataBaseConnector {
     getMainRef();
     await db.child("work-process").child(contract.id).child("tasks")
         .child(task.taskName).child("assignedUser").set(task.assignedUserID);
+  }
+  void setTaskGuiltyUser(Task task, BuildNode node, Contract contract) async{
+    getMainRef();
+    await db.child("work-process").child(contract.id).child("tasks")
+        .child(task.taskName).child("guiltyUser").set(task.guiltyUserID);
   }
   void setStartTaskTime(Task task, BuildNode node, Contract contract) async{
     getMainRef();
