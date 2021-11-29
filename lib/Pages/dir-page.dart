@@ -201,7 +201,10 @@ class _DirectorPageState extends State<DirectorPage> {
             Text('Осталось $timeLeft'),
           ],),
         Divider(),
+        Text("Выбор ответственного"),
         usersDropList(task, currentNode),
+        Text("указать виновного"),
+        guiltyDropList(task, currentNode),
         fieldStartTimeTaskPlan = BasicDateTimeField.dd('Время начала задания',
             DateTime.fromMicrosecondsSinceEpoch(currentNode.nodeDeadline)),
         fieldEndTaskTimePlan = BasicDateTimeField.dd(
@@ -272,15 +275,32 @@ class _DirectorPageState extends State<DirectorPage> {
       onChanged: (newValue) {
         setState(() {
           dropdownValue = newValue;
-          task.assignedUserID = newValue;
-          DataBaseConnector().setTaskAssignedUser(task, node, currentContract);
-          mainWidget = _buildTaskTail(task, currentNode);
+            task.assignedUserID = newValue;
+            DataBaseConnector().setTaskAssignedUser(
+                task, node, currentContract);
+            mainWidget = _buildTaskTail(task, currentNode);
         });
       },
       items: userDropMenuItems,
     );
   }
-
+  Widget guiltyDropList(Task task, BuildNode node) {
+    userDropMenuItems = buildUsersDropMenuItems();
+    //print("-userDropMenuItems-");
+    //print(userDropMenuItems);
+    return DropdownButton(
+      value: dropdownValue,
+      onChanged: (newValue) {
+        setState(() {
+          dropdownValue = newValue;
+            task.guiltyUserID = newValue;
+            DataBaseConnector().setTaskGuiltyUser(task, node, currentContract);
+            mainWidget= _buildTaskTail(task, currentNode);
+        });
+      },
+      items: userDropMenuItems,
+    );
+  }
   Widget taskStatusWidget(Task task) {
     Widget statusWidget;
     WorkTimer workTimer = new WorkTimer(task.lastStatusTime);
