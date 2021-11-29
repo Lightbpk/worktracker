@@ -37,7 +37,7 @@ class _DirectorPageState extends State<DirectorPage> {
   Contract currentContract;
   BuildNode currentNode;
   List<String> dropdownMenuUsers = ['0'];
-  String dropdownValue;
+  String dropdownAssignValue,dropDownGuiltyValue;
   int inc = 1;
   String timeLeft = '';
   String timePassed = '';
@@ -233,7 +233,7 @@ class _DirectorPageState extends State<DirectorPage> {
                   }
                 },
                 icon: Icon(Icons.set_meal),
-                label: Text('установить')),
+                label: Text('установить время')),
             TextButton.icon(
                 onPressed: () async {
                   setState(() {
@@ -271,10 +271,10 @@ class _DirectorPageState extends State<DirectorPage> {
     //print("-userDropMenuItems-");
     //print(userDropMenuItems);
     return DropdownButton(
-      value: dropdownValue,
+      value: dropdownAssignValue,
       onChanged: (newValue) {
         setState(() {
-          dropdownValue = newValue;
+          dropdownAssignValue = newValue;
             task.assignedUserID = newValue;
             DataBaseConnector().setTaskAssignedUser(
                 task, node, currentContract);
@@ -289,10 +289,10 @@ class _DirectorPageState extends State<DirectorPage> {
     //print("-userDropMenuItems-");
     //print(userDropMenuItems);
     return DropdownButton(
-      value: dropdownValue,
+      value: dropDownGuiltyValue,
       onChanged: (newValue) {
         setState(() {
-          dropdownValue = newValue;
+          dropDownGuiltyValue = newValue;
             task.guiltyUserID = newValue;
             DataBaseConnector().setTaskGuiltyUser(task, node, currentContract);
             mainWidget= _buildTaskTail(task, currentNode);
@@ -347,7 +347,7 @@ class _DirectorPageState extends State<DirectorPage> {
     dropdownMenuUsers = usersIDList;
     print(usersIDList);
     print('reading Users done');
-    dropdownValue = usersIDList.first;
+    dropdownAssignValue = usersIDList.first;
   }
 
   void readContractsList() async {
@@ -398,7 +398,7 @@ class _DirectorPageState extends State<DirectorPage> {
         );
         if (!items.contains(item)) items.add(item);
       });
-      if (dropdownValue == null) dropdownValue = usersList.first.id;
+      if (dropdownAssignValue == null) dropdownAssignValue = usersList.first.id;
       print('---User List---');
       usersList.forEach((element) {
         print(element.getFamalyIO());
@@ -413,7 +413,7 @@ class _DirectorPageState extends State<DirectorPage> {
         child: Text('Загрузка пользователей...'),
         value: '0',
       ));
-      dropdownValue = '0';
+      dropdownAssignValue = '0';
       print("-items-");
       print(items);
     }
