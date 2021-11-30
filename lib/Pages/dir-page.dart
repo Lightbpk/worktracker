@@ -146,11 +146,13 @@ class _DirectorPageState extends State<DirectorPage> {
 
   Widget _buildTasksList(BuildNode node) {
     return ListView.builder(itemBuilder: (context, i) {
-
+//  ------------------------------------------------------
+    //Tail bar status + user
       if (i < tasksList.length) {
         String subtitleText = tasksList[i].status +
             " " +
             getUserFioByID(tasksList[i].assignedUserID);
+        //==================================================
         return ListTile(
           title: Text(tasksList[i].taskName),
           subtitle: Text(subtitleText),
@@ -187,24 +189,23 @@ class _DirectorPageState extends State<DirectorPage> {
     print('str = $str');
     return Column(
       children: [
-        Column(crossAxisAlignment: CrossAxisAlignment.center,
+        Row(crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text('Задача: ' + task.taskName, style: TextStyle(fontSize: 20)),
+            Text('Задача: ' + task.taskName , style: TextStyle(fontSize: 20)),
+            Text(' Статус '+task.status),
         ],),
         Divider(),
-        Column(crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Ответственный: $str', textAlign: TextAlign.left,),
-            taskStatusWidget(task),
-            Text('Начало по плану: ' + task.getStartTimeText()),
-            Text('Завершение по плану: ' + task.getEndTimeText()),
-            Text('Осталось $timeLeft'),
-          ],),
+         taskStatusWidget(task),
+        // Column(crossAxisAlignment: CrossAxisAlignment.start,
+        //   children: [
+        //     Text('Ответственный: $str', textAlign: TextAlign.left,),
+        //     Text('Начало по плану: ' + task.getStartTimeText()),
+        //     Text('Завершение по плану: ' + task.getEndTimeText()),
+        //    Text('Осталось $timeLeft'),
+        //   ],),
         Divider(),
-        Text("Выбор ответственного"),
-        usersDropList(task, currentNode),
-        Text("указать виновного"),
-        guiltyDropList(task, currentNode),
+        //Text("указать виновного"),
+        //guiltyDropList(task, currentNode),
         fieldStartTimeTaskPlan = BasicDateTimeField.dd('Время начала задания',
             DateTime.fromMicrosecondsSinceEpoch(currentNode.nodeDeadline)),
         fieldEndTaskTimePlan = BasicDateTimeField.dd(
@@ -303,20 +304,55 @@ class _DirectorPageState extends State<DirectorPage> {
   }
   Widget taskStatusWidget(Task task) {
     Widget statusWidget;
-    WorkTimer workTimer = new WorkTimer(task.lastStatusTime);
+    WorkTimer workTimerPassedTime = new WorkTimer(task.lastStatusTime);
+    WorkTimer workTimerLeftTime = new WorkTimer(task.endTimeTaskPlan);
+    String userStr = getUserFioByID(task.assignedUserID);
     switch (task.status) {
       case 'inwork':{
-        statusWidget = Text('Статус: В Работе ' +workTimer.hhMMssPassed());
+        statusWidget = Column(
+          children: [
+            Row(children: [
+              Text("Исполнитель : "),
+              TextButton(onPressed: (){
+                setState(() {
+                  mainWidget = usersDropList(task, currentNode);
+                  isLoaded = true;
+                });
+              }, child: Text("$userStr", style: TextStyle(fontSize: 21, color: Colors.blue),))
+            ],),
+            Row(children: [
+              Text('в процессе '),
+              Text(' '+workTimerPassedTime.hhMMssPassed()),
+            ],),
+            Row(children: [
+              Text('Осталось '),
+              Text(''+workTimerLeftTime.hhMMssLeft()),
+            ],),
+            Row(children: [
+              Text('Завершение по плану: ' + task.getEndTimeText()),
+            ],),
+          ],
+        );
         break;
       }
       case 'done':
-        statusWidget = Text('Статус: Законченно ' + task.getLastStatusTimeText());
+        statusWidget = Column(children: [
+          Row(children: [
+            Text("Исполнитель : "),
+            TextButton(
+                onPressed: (){},
+                child: Text("$userStr", style: TextStyle(fontSize: 21),))
+          ],),
+            Text('Завершено: '+ task.getLastStatusTimeText()),
+            Text('Завершение по плану: ' + task.getEndTimeText()),
+        ],);
+            //Text('Статус: Законченно ' + task.getLastStatusTimeText());
         break;
       case 'rework':
         statusWidget = Column(
           children: [
             Text('Статус: Доработка ' + task.reworkType),
-            Text(workTimer.hhMMssPassed()),
+            Text(workTimerPassedTime.hhMMssPassed()),
             Text('Комментарий: '+task.reworkComment)
           ],
         );
@@ -325,7 +361,7 @@ class _DirectorPageState extends State<DirectorPage> {
         statusWidget = Column(
           children: [
             Text('Статус: Простой ' + task.pauseType),
-            Text(workTimer.hhMMssPassed()),
+            Text(workTimerPassedTime.hhMMssPassed()),
             Text('Комментарий: '+task.pauseComment)
           ],
         );
