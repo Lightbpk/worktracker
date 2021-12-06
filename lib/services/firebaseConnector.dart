@@ -143,7 +143,7 @@ class DataBaseConnector {
               task.pauseType = mapValue["pauseType"];
               task.reworkComment = mapValue["reworkComment"];
               task.pauseComment = mapValue["pauseComment"];
-              task.guiltyUserID = mapValue["reworkGuilty"];
+              task.guiltyUserID = mapValue["guiltyUser"];
               task.dirComment = mapValue["dirComment"];
               tasksList.add(task);
               print("taskName = "+key);
@@ -269,5 +269,10 @@ class DataBaseConnector {
     getMainRef();
     await db.child("work-process").child(contract.id).child("tasks")
         .child(task.taskName).child("endTimeTaskPlan").set(task.endTimeTaskPlan);
+  }
+  void setTaskDirComment(Task task, BuildNode node, Contract contract) async{
+    getMainRef();
+    await db.child("work-process").child(contract.id).child("tasks")
+        .child(task.taskName).child("dirComment").set(task.dirComment);
   }
 }

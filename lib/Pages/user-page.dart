@@ -224,7 +224,7 @@ class _UserPageState extends State<UserPage> {
                           TextField(
                             decoration: InputDecoration(hintText: "Комментарий"),
                             onChanged: (text){
-                              task.reworkComment = text;
+                              task.reworkComment = widget.currentUser.getFamalyIO()+": "+text;  // префикс Фио
                           },),
                           TextButton(onPressed: (){
                               task.status = "rework";

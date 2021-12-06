@@ -38,6 +38,7 @@ class _DirectorPageState extends State<DirectorPage> {
   BuildNode currentNode;
   List<String> dropdownMenuUsers = ['0'];
   String dropdownAssignValue,dropDownGuiltyValue;
+  String dirComment;
   int inc = 1;
   String timeLeft = '';
   String timePassed = '';
@@ -74,7 +75,8 @@ class _DirectorPageState extends State<DirectorPage> {
             Text('$inc'),
           ],
         ),
-        body: mainWidget,
+        body:
+          mainWidget,
       );
     }
   }
@@ -187,7 +189,11 @@ class _DirectorPageState extends State<DirectorPage> {
     String str = getUserFioByID(task.assignedUserID);
     print('assigned = ' + task.assignedUserID);
     print('str = $str');
-    return Column(
+    return new GestureDetector(
+        onTap: (){
+      FocusScope.of(context).requestFocus(new FocusNode());
+    },
+    child:Column(
       children: [
         Row(crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -195,57 +201,57 @@ class _DirectorPageState extends State<DirectorPage> {
             Text(' Статус '+task.status),
         ],),
         Divider(),
-         taskStatusWidget(task),
-        // Column(crossAxisAlignment: CrossAxisAlignment.start,
-        //   children: [
-        //     Text('Ответственный: $str', textAlign: TextAlign.left,),
-        //     Text('Начало по плану: ' + task.getStartTimeText()),
-        //     Text('Завершение по плану: ' + task.getEndTimeText()),
-        //    Text('Осталось $timeLeft'),
-        //   ],),
+         taskContentWidget(task),
         Divider(),
-        //Text("указать виновного"),
-        //guiltyDropList(task, currentNode),
-        fieldStartTimeTaskPlan = BasicDateTimeField.dd('Время начала задания',
-            DateTime.fromMicrosecondsSinceEpoch(currentNode.nodeDeadline)),
-        fieldEndTaskTimePlan = BasicDateTimeField.dd(
-            'Запланированное время завершения',
-            DateTime.fromMicrosecondsSinceEpoch(currentNode.nodeDeadline)),
         Column(crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            TextButton.icon(
-                onPressed: () {
-                  if (fieldStartTimeTaskPlan != null &&
-                      fieldEndTaskTimePlan.dateTimeValue != null) {
-                    task.startTimeTaskPlan = fieldStartTimeTaskPlan.getDateTime();
-                    task.endTimeTaskPlan = fieldEndTaskTimePlan.getDateTime();
-                    DataBaseConnector()
-                        .setStartTaskTime(task, currentNode, currentContract);
-                    DataBaseConnector()
-                        .setEndTaskTime(task, currentNode, currentContract);
+            Row(children: [
+              TextButton.icon(
+                  onPressed: () {
+                    mainWidget = Column(
+                      children: [
+                        fieldStartTimeTaskPlan = BasicDateTimeField.dd('Время начала задания',
+                            DateTime.fromMicrosecondsSinceEpoch(currentNode.nodeDeadline)),
+                        fieldEndTaskTimePlan = BasicDateTimeField.dd(
+                            'Запланированное время завершения',
+                            DateTime.fromMicrosecondsSinceEpoch(currentNode.nodeDeadline)),
+                        TextButton.icon(label: Text("Установить"), onPressed: (){
+                          isLoaded = true;
+                          if (fieldStartTimeTaskPlan != null &&
+                              fieldEndTaskTimePlan.dateTimeValue != null) {
+                            task.startTimeTaskPlan = fieldStartTimeTaskPlan.getDateTime();
+                            task.endTimeTaskPlan = fieldEndTaskTimePlan.getDateTime();
+                            DataBaseConnector()
+                                .setStartTaskTime(task, currentNode, currentContract);
+                            DataBaseConnector()
+                                .setEndTaskTime(task, currentNode, currentContract);
+                            setState(() {
+                              timePassed = WorkTimer(task.lastStatusTime).hhMMssPassed();
+                              timeLeft = WorkTimer(task.endTimeTaskPlan).hhMMssLeft();
+                              mainWidget = _buildTaskTail(task, currentNode);
+                              isLoaded = true;
+                            });
+                          } else {
+                            makeToast('Укажите обе даты', Colors.red);
+                          }
+                        }, icon: Icon(Icons.access_alarms))
+                      ],
+                    );
+                  },
+                  icon: Icon(Icons.set_meal),
+                  label: Text('Установки времени')),
+              TextButton.icon(
+                  onPressed: () async {
                     setState(() {
                       timePassed = WorkTimer(task.lastStatusTime).hhMMssPassed();
                       timeLeft = WorkTimer(task.endTimeTaskPlan).hhMMssLeft();
                       mainWidget = _buildTaskTail(task, currentNode);
                       isLoaded = true;
                     });
-                  } else {
-                    makeToast('Укажите обе даты', Colors.red);
-                  }
-                },
-                icon: Icon(Icons.set_meal),
-                label: Text('установить время')),
-            TextButton.icon(
-                onPressed: () async {
-                  setState(() {
-                    timePassed = WorkTimer(task.lastStatusTime).hhMMssPassed();
-                    timeLeft = WorkTimer(task.endTimeTaskPlan).hhMMssLeft();
-                    mainWidget = _buildTaskTail(task, currentNode);
-                    isLoaded = true;
-                  });
-                },
-                icon: Icon(Icons.refresh),
-                label: Text("Обновить")),
+                  },
+                  icon: Icon(Icons.refresh),
+                  label: Text("Обновить")),
+            ],),
             TextButton.icon(
                 onPressed: () async {
                   tasksList = await readTasks(currentNode);
@@ -264,7 +270,7 @@ class _DirectorPageState extends State<DirectorPage> {
           ],),
 
       ],
-    );
+    ),);
   }
 
   Widget usersDropList(Task task, BuildNode node) {
@@ -287,8 +293,6 @@ class _DirectorPageState extends State<DirectorPage> {
   }
   Widget guiltyDropList(Task task, BuildNode node) {
     userDropMenuItems = buildUsersDropMenuItems();
-    //print("-userDropMenuItems-");
-    //print(userDropMenuItems);
     return DropdownButton(
       value: dropDownGuiltyValue,
       onChanged: (newValue) {
@@ -297,82 +301,153 @@ class _DirectorPageState extends State<DirectorPage> {
             task.guiltyUserID = newValue;
             DataBaseConnector().setTaskGuiltyUser(task, node, currentContract);
             mainWidget= _buildTaskTail(task, currentNode);
+            isLoaded = true;
         });
       },
       items: userDropMenuItems,
     );
   }
-  Widget taskStatusWidget(Task task) {
+  Widget taskContentWidget(Task task) {
     Widget statusWidget;
-    WorkTimer workTimerPassedTime = new WorkTimer(task.lastStatusTime);
-    WorkTimer workTimerLeftTime = new WorkTimer(task.endTimeTaskPlan);
-    String userStr = getUserFioByID(task.assignedUserID);
+
     switch (task.status) {
       case 'inwork':{
-        statusWidget = Column(
-          children: [
-            Row(children: [
-              Text("Исполнитель : "),
-              TextButton(onPressed: (){
-                setState(() {
-                  mainWidget = usersDropList(task, currentNode);
-                  isLoaded = true;
-                });
-              }, child: Text("$userStr", style: TextStyle(fontSize: 21, color: Colors.blue),))
-            ],),
-            Row(children: [
-              Text('в процессе '),
-              Text(' '+workTimerPassedTime.hhMMssPassed()),
-            ],),
-            Row(children: [
-              Text('Осталось '),
-              Text(''+workTimerLeftTime.hhMMssLeft()),
-            ],),
-            Row(children: [
-              Text('Завершение по плану: ' + task.getEndTimeText()),
-            ],),
-          ],
-        );
+        statusWidget = inWorkWidget(task);
         break;
       }
       case 'done':
-        statusWidget = Column(children: [
-          Row(children: [
-            Text("Исполнитель : "),
-            TextButton(
-                onPressed: (){},
-                child: Text("$userStr", style: TextStyle(fontSize: 21),))
-          ],),
-            Text('Завершено: '+ task.getLastStatusTimeText()),
-            Text('Завершение по плану: ' + task.getEndTimeText()),
-        ],);
-            //Text('Статус: Законченно ' + task.getLastStatusTimeText());
+        statusWidget = doneWidget(task);
         break;
       case 'rework':
-        statusWidget = Column(
-          children: [
-            Text('Статус: Доработка ' + task.reworkType),
-            Text(workTimerPassedTime.hhMMssPassed()),
-            Text('Комментарий: '+task.reworkComment)
-          ],
-        );
+        print(task.taskFullInfo());
+        statusWidget = reWorkWidget(task);
         break;
       case 'pause':
-        statusWidget = Column(
-          children: [
-            Text('Статус: Простой ' + task.pauseType),
-            Text(workTimerPassedTime.hhMMssPassed()),
-            Text('Комментарий: '+task.pauseComment)
-          ],
-        );
+        statusWidget = pauseWidget();
         break;
       default :
-        statusWidget = Text('not set');
+        statusWidget =  Text('Статус не казан');
         break;
     }
     return statusWidget;
   }
-
+  Widget inWorkWidget(Task task){
+    WorkTimer workTimerPassedTime = new WorkTimer(task.lastStatusTime);
+    WorkTimer workTimerLeftTime = new WorkTimer(task.endTimeTaskPlan);
+    String userFamalyIO = getUserFioByID(task.assignedUserID);
+    return Column(
+      children: [
+        Row(children: [
+          Text("Исполнитель : "),
+          TextButton(onPressed: (){
+            setState(() {
+              mainWidget = usersDropList(task, currentNode);
+              isLoaded = true;
+            });
+          }, child: Text("$userFamalyIO", style: TextStyle(fontSize: 21, color: Colors.blue),))
+        ],),
+        Row(children: [
+          Text('В процессе '),
+          Text(' '+workTimerPassedTime.hhMMssPassed()),
+        ],),
+        Row(children: [
+          Text('Осталось '),
+          Text(''+workTimerLeftTime.hhMMssLeft()),
+        ],),
+        Row(children: [
+          Text('Завершение по плану: ' + task.getEndTimeText()),
+        ],),
+      ],
+    );
+  }
+  Widget doneWidget(Task task){
+    String userFamalyIO = getUserFioByID(task.assignedUserID);
+    return Column(children: [
+      Row(children: [
+        Text("Исполнитель : "),
+        TextButton(
+            onPressed: (){},
+            child: Text("$userFamalyIO", style: TextStyle(fontSize: 21),))
+      ],),
+      Text('Завершено: '+ task.getLastStatusTimeText()),
+      Text('Завершение по плану: ' + task.getEndTimeText()),
+    ],);
+    //Text('Статус: Законченно ' + task.getLastStatusTimeText());
+  }
+  Widget reWorkWidget(Task task){
+    FocusNode reworkFocus = FocusNode();
+    WorkTimer workTimerPassedTime = new WorkTimer(task.lastStatusTime);
+    WorkTimer workTimerLeftTime = new WorkTimer(task.endTimeTaskPlan);
+    String userFamalyIO = getUserFioByID(task.assignedUserID);
+    String guiltyFamaliIO = getUserFioByID(task.guiltyUserID);
+    return Column(
+      children: [
+        Row(children: [
+          Text("Исполнитель : "),
+          TextButton(onPressed: (){
+            setState(() {
+              mainWidget = usersDropList(task, currentNode);
+              isLoaded = true;
+            });
+          }, child: Text("$userFamalyIO", style: TextStyle(fontSize: 21, color: Colors.blue),))
+        ],),
+        Row(children: [
+          Text('в доработке '),
+          Text(' '+workTimerPassedTime.hhMMssPassed()),
+        ],),
+        Row(children: [
+          Text('Осталось '),
+          Text(''+workTimerLeftTime.hhMMssLeft()),
+        ],),
+        Row(children: [
+          Text('Завершение по плану: ' + task.getEndTimeText()),
+        ],),
+        Divider(),
+        Text('Комментарий: '),
+        Row(children: [
+          Flexible(child: Text(""+task.reworkComment)),
+          Icon(Icons.mode_comment_outlined),
+        ],
+        ),
+        Row(children: [
+          Icon(Icons.mode_comment_outlined),
+          Flexible(child:Text('Ваш комментарий: '+ task.dirComment) ),
+        ],),
+        Divider(),
+        Row(children: [
+          Text("Виновыный"),
+          TextButton(onPressed: (){
+            setState(() {
+              mainWidget = guiltyDropList(task, currentNode);
+              isLoaded = true;
+            });
+          }, child: Text('$guiltyFamaliIO',style: TextStyle(color: Colors.red ,fontSize: 21),))
+        ],),
+        Divider(),
+        Text("Ваш комментарий"),
+        TextField(focusNode: reworkFocus,
+          maxLines: 3,
+          maxLength: 255,
+          decoration: InputDecoration(icon: Icon(Icons.mode_comment_outlined) ,fillColor: Colors.blueGrey),
+          onChanged: (text){
+            dirComment = text;
+          },
+          onSubmitted: (text){
+            dirComment = text;
+            task.dirComment = dirComment;
+            DataBaseConnector().setTaskDirComment(task, currentNode, currentContract);
+            reworkFocus.unfocus();
+          },
+        ),
+        IconButton(onPressed: (){
+          task.dirComment = dirComment;
+          DataBaseConnector().setTaskDirComment(task, currentNode, currentContract);
+        }, icon: Icon(Icons.send))
+      ],);
+  }
+  Widget pauseWidget(){
+    return Text('в переработке');
+  }
   void readUsers() async {
     usersList = await DataBaseConnector().getAllUsers();
     usersList.forEach((WTUser user) {
