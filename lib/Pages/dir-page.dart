@@ -191,18 +191,17 @@ class _DirectorPageState extends State<DirectorPage> {
     print('str = $str');
     return new GestureDetector(
         onTap: (){
-      FocusScope.of(context).requestFocus(new FocusNode());
-    },
+          FocusScope.of(context).requestFocus(new FocusNode());
+        },
     child:Column(
       children: [
         Row(crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text('Задача: ' + task.taskName , style: TextStyle(fontSize: 20)),
-            Text(' Статус '+task.status),
+            Text(' Статус '+task.statusText()),
         ],),
         Divider(),
          taskContentWidget(task),
-        Divider(),
         Column(crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Row(children: [
@@ -319,14 +318,14 @@ class _DirectorPageState extends State<DirectorPage> {
         statusWidget = doneWidget(task);
         break;
       case 'rework':
-        print(task.taskFullInfo());
-        statusWidget = reWorkWidget(task);
+        //print(task.taskFullInfo());
+        statusWidget = reWorkPauseWidget(task,false);
         break;
       case 'pause':
-        statusWidget = pauseWidget();
+        statusWidget = reWorkPauseWidget(task,true);
         break;
       default :
-        statusWidget =  Text('Статус не казан');
+        statusWidget =  Text('Статус не указан');
         break;
     }
     return statusWidget;
@@ -374,8 +373,16 @@ class _DirectorPageState extends State<DirectorPage> {
     ],);
     //Text('Статус: Законченно ' + task.getLastStatusTimeText());
   }
-  Widget reWorkWidget(Task task){
-    FocusNode reworkFocus = FocusNode();
+  Widget reWorkPauseWidget(Task task, bool pause){
+    String strStatus;
+    String strType;
+    if(pause){
+      strStatus = 'Простой с ';
+      strType = task.pauseType;
+    }else{
+        strStatus = 'В дороботке ';
+        strType = task.reworkType;
+      }
     WorkTimer workTimerPassedTime = new WorkTimer(task.lastStatusTime);
     WorkTimer workTimerLeftTime = new WorkTimer(task.endTimeTaskPlan);
     String userFamalyIO = getUserFioByID(task.assignedUserID);
@@ -392,7 +399,7 @@ class _DirectorPageState extends State<DirectorPage> {
           }, child: Text("$userFamalyIO", style: TextStyle(fontSize: 21, color: Colors.blue),))
         ],),
         Row(children: [
-          Text('в доработке '),
+          Text(strStatus),
           Text(' '+workTimerPassedTime.hhMMssPassed()),
         ],),
         Row(children: [
@@ -403,19 +410,20 @@ class _DirectorPageState extends State<DirectorPage> {
           Text('Завершение по плану: ' + task.getEndTimeText()),
         ],),
         Divider(),
+        Text(strType),
         Text('Комментарий: '),
         Row(children: [
-          Flexible(child: Text(""+task.reworkComment)),
+          Flexible(child: Text(""+task.taskComment)),
           Icon(Icons.mode_comment_outlined),
         ],
         ),
         Row(children: [
           Icon(Icons.mode_comment_outlined),
-          Flexible(child:Text('Ваш комментарий: '+ task.dirComment) ),
+          Flexible(child:Text('Директор: '+ task.dirComment) ),
         ],),
         Divider(),
         Row(children: [
-          Text("Виновыный"),
+          Text("Виновный"),
           TextButton(onPressed: (){
             setState(() {
               mainWidget = guiltyDropList(task, currentNode);
@@ -423,31 +431,26 @@ class _DirectorPageState extends State<DirectorPage> {
             });
           }, child: Text('$guiltyFamaliIO',style: TextStyle(color: Colors.red ,fontSize: 21),))
         ],),
-        Divider(),
         Text("Ваш комментарий"),
-        TextField(focusNode: reworkFocus,
+        TextField(
           maxLines: 3,
           maxLength: 255,
           decoration: InputDecoration(icon: Icon(Icons.mode_comment_outlined) ,fillColor: Colors.blueGrey),
           onChanged: (text){
             dirComment = text;
+            task.dirComment = dirComment;
+            DataBaseConnector().setTaskDirComment(task, currentNode, currentContract);
           },
           onSubmitted: (text){
             dirComment = text;
             task.dirComment = dirComment;
             DataBaseConnector().setTaskDirComment(task, currentNode, currentContract);
-            reworkFocus.unfocus();
+
           },
         ),
-        IconButton(onPressed: (){
-          task.dirComment = dirComment;
-          DataBaseConnector().setTaskDirComment(task, currentNode, currentContract);
-        }, icon: Icon(Icons.send))
       ],);
   }
-  Widget pauseWidget(){
-    return Text('в переработке');
-  }
+
   void readUsers() async {
     usersList = await DataBaseConnector().getAllUsers();
     usersList.forEach((WTUser user) {

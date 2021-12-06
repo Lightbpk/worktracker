@@ -145,121 +145,128 @@ class _UserPageState extends State<UserPage> {
     print('status = ' + status);
     return Column(
       children: [
-        Text(task.taskName),
-        TextButton.icon(
-            onPressed: () {
-              task.status = "inwork";
-              this.setState(() {
-                print(status);
-                DateTime dateTime = DateTime.now();
-                task.lastStatusTime = dateTime.microsecondsSinceEpoch;
-                DataBaseConnector().setTaskStatus(task,  currentContract);
-              });
-              makeToast(task.status, Colors.green);
-            },
-            icon: Icon(Icons.play_arrow),
-            label: Text('Начать')),
-        TextButton.icon(
-            onPressed: () {
-              showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    String currentPauseType = pauseTypes.last;
-                    return StatefulBuilder(builder: (context, setState){
-                      return AlertDialog(
-                        title: new Text('Простой:'),
-                        content: DropdownButton(
-                          value: currentPauseType,
-                          items: makeItems(pauseTypes),
-                          onChanged: (newValue){
-                            setState(() {
-                              currentPauseType = newValue;
-                            });
-                          },
-                        ),
-                        actions: <Widget>[
-                          TextField(
-                            decoration: InputDecoration(hintText: "Комментарий"),
-                            onChanged: (text){
-                              task.pauseComment = text;
-                            },),
-                          TextButton(onPressed: (){
-                            task.status = "pause";
-                            task.pauseType = currentPauseType;
-                            DateTime dateTime = DateTime.now();
-                            task.lastStatusTime = dateTime.microsecondsSinceEpoch;
-                            DataBaseConnector().setTaskStatus(task, currentContract);
-                            makeToast(task.status, Colors.red);
-                            Navigator.of(context).pop();
-                          }, child: Text('ok')),
-                          TextButton(onPressed: (){
-                            Navigator.of(context).pop();
-                          }, child: Text('отмена'))
-                        ],
-                      );
-                    });
-                  });
-            },
-            icon: Icon(Icons.pause),
-            label: Text('Пауза')),
-        TextButton.icon(
-            onPressed: () {
+        Text(task.taskName, style: TextStyle(fontSize: 21),),
+        Text(task.statusText()),
+        Text(task.getLastStatusTimeText()),
+        Text("Комментарии: "),
+        Flexible(child: Text(task.taskComment),),
+        Flexible(child: Text("Директор: "+task.dirComment),),
+        Row(children: [
+          TextButton.icon(
+              onPressed: () {
+                task.status = "inwork";
+                this.setState(() {
+                  print(status);
+                  DateTime dateTime = DateTime.now();
+                  task.lastStatusTime = dateTime.microsecondsSinceEpoch;
+                  DataBaseConnector().setTaskStatus(task,  currentContract);
+                });
+                makeToast(task.status, Colors.green);
+              },
+              icon: Icon(Icons.play_arrow),
+              label: Text('Начать')),
+          TextButton.icon(
+              onPressed: () {
                 showDialog(
-                  context: context, 
-                  builder: (BuildContext context) {
-                    String currentReworkType = reworkTypes.last;
-                    return StatefulBuilder(builder: (context, setState){
-                      return AlertDialog(
-                        title: new Text('Доработка:'),
-                        content: DropdownButton(
-                          value: currentReworkType,
-                          items: makeItems(reworkTypes),
-                          onChanged: (newValue){
-                            setState(() {
-                              currentReworkType = newValue;
-                            });
-                          },
-                        ),
-                        actions: <Widget>[
-                          TextField(
-                            decoration: InputDecoration(hintText: "Комментарий"),
-                            onChanged: (text){
-                              task.reworkComment = widget.currentUser.getFamalyIO()+": "+text;  // префикс Фио
-                          },),
-                          TextButton(onPressed: (){
+                    context: context,
+                    builder: (BuildContext context) {
+                      String currentPauseType = pauseTypes.last;
+                      return StatefulBuilder(builder: (context, setState){
+                        return AlertDialog(
+                          title: new Text('Приостановка:'),
+                          content: DropdownButton(
+                            value: currentPauseType,
+                            items: makeItems(pauseTypes),
+                            onChanged: (newValue){
+                              setState(() {
+                                currentPauseType = newValue;
+                              });
+                            },
+                          ),
+                          actions: <Widget>[
+                            TextField(
+                              decoration: InputDecoration(hintText: "Комментарий"),
+                              onChanged: (text){
+                                task.taskComment =  widget.currentUser.getFamalyIO()+": "+text;
+                              },),
+                            TextButton(onPressed: (){
+                              task.status = "pause";
+                              task.pauseType = currentPauseType;
+                              DateTime dateTime = DateTime.now();
+                              task.lastStatusTime = dateTime.microsecondsSinceEpoch;
+                              DataBaseConnector().setTaskStatus(task, currentContract);
+                              makeToast(task.status, Colors.red);
+                              Navigator.of(context).pop();
+                            }, child: Text('ok')),
+                            TextButton(onPressed: (){
+                              Navigator.of(context).pop();
+                            }, child: Text('отмена'))
+                          ],
+                        );
+                      });
+                    });
+              },
+              icon: Icon(Icons.pause),
+              label: Text('Пауза')),
+        ],),
+        Row(children: [
+          TextButton.icon(
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      String currentReworkType = reworkTypes.last;
+                      return StatefulBuilder(builder: (context, setState){
+                        return AlertDialog(
+                          title: new Text('Доработка:'),
+                          content: DropdownButton(
+                            value: currentReworkType,
+                            items: makeItems(reworkTypes),
+                            onChanged: (newValue){
+                              setState(() {
+                                currentReworkType = newValue;
+                              });
+                            },
+                          ),
+                          actions: <Widget>[
+                            TextField(
+                              decoration: InputDecoration(hintText: "Комментарий"),
+                              onChanged: (text){
+                                task.taskComment = widget.currentUser.getFamalyIO()+": "+text;  // префикс Фио
+                              },),
+                            TextButton(onPressed: (){
                               task.status = "rework";
                               task.reworkType = currentReworkType;
                               DateTime dateTime = DateTime.now();
                               task.lastStatusTime = dateTime.microsecondsSinceEpoch;
                               DataBaseConnector().setTaskStatus(task, currentContract);
-                            makeToast(task.status, Colors.yellow);
-                            Navigator.of(context).pop();
-                          }, child: Text('ok')),
-                          TextButton(onPressed: (){
-                            Navigator.of(context).pop();
-                          }, child: Text('отмена'))
-                        ],
-                      );
+                              makeToast(task.status, Colors.yellow);
+                              Navigator.of(context).pop();
+                            }, child: Text('ok')),
+                            TextButton(onPressed: (){
+                              Navigator.of(context).pop();
+                            }, child: Text('отмена'))
+                          ],
+                        );
+                      });
                     });
-                  });
-            },
-            icon: Icon(Icons.edit),
-            label: Text('Доработка')),
-        TextButton.icon(
-            onPressed: () {
-              this.setState(() {
-                isLoaded = true;
-                task.status = "done";
-                DateTime dateTime = DateTime.now();
-                task.lastStatusTime = dateTime.microsecondsSinceEpoch;
-                DataBaseConnector().setTaskStatus(task, currentContract);
-              });
-              makeToast(task.status, Colors.lightBlue);
-            },
-            icon: Icon(Icons.stop),
-            label: Text('Стоп')),
-        Text(task.status),
-        Text(task.getLastStatusTimeText()),
+              },
+              icon: Icon(Icons.edit),
+              label: Text('Доработка')),
+          TextButton.icon(
+              onPressed: () {
+                this.setState(() {
+                  isLoaded = true;
+                  task.status = "done";
+                  DateTime dateTime = DateTime.now();
+                  task.lastStatusTime = dateTime.microsecondsSinceEpoch;
+                  DataBaseConnector().setTaskStatus(task, currentContract);
+                });
+                makeToast(task.status, Colors.lightBlue);
+              },
+              icon: Icon(Icons.stop),
+              label: Text('Стоп')),
+        ],),
         TextButton.icon(
             onPressed: () async{
               tasksList = await readUserTasks(widget.currentUser.id);

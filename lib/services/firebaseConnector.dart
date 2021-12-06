@@ -141,8 +141,7 @@ class DataBaseConnector {
               task.endTimeTaskPlan = mapValue["endTimeTaskPlan"];
               task.reworkType = mapValue["reworkType"];
               task.pauseType = mapValue["pauseType"];
-              task.reworkComment = mapValue["reworkComment"];
-              task.pauseComment = mapValue["pauseComment"];
+              task.taskComment = mapValue["taskComment"];
               task.guiltyUserID = mapValue["guiltyUser"];
               task.dirComment = mapValue["dirComment"];
               tasksList.add(task);
@@ -157,8 +156,7 @@ class DataBaseConnector {
               task.endTimeTaskPlan = mapValue["endTimeTaskPlan"];
               task.reworkType = mapValue["reworkType"];
               task.pauseType = mapValue["pauseType"];
-              task.reworkComment = mapValue["reworkComment"];
-              task.pauseComment = mapValue["pauseComment"];
+              task.taskComment = mapValue["reworkComment"];
               task.guiltyUserID = mapValue["reworkGuilty"];
               task.dirComment = mapValue["dirComment"];
               tasksList.add(task);
@@ -185,9 +183,8 @@ class DataBaseConnector {
               task.startTimeTaskPlan = mapValue["startTimeTaskPlan"];
               task.endTimeTaskPlan = mapValue["endTimeTaskPlan"];
               task.reworkType = mapValue["reworkType"];
-              task.reworkComment = mapValue["reworkComment"];
+              task.taskComment = mapValue["taskComment"];
               task.pauseType = mapValue["pauseType"];
-              task.pauseComment = mapValue["pauseComment"];
               task.guiltyUserID = mapValue["reworkGuilty"];
               task.dirComment = mapValue["dirComment"];
               tasksList.add(task);
@@ -243,12 +240,9 @@ class DataBaseConnector {
     await db.child("work-process").child(contract.id).child("tasks")
         .child(task.taskName).child("reworkType").set(task.reworkType);
     await db.child("work-process").child(contract.id).child("tasks")
-        .child(task.taskName).child("reworkComment").set(task.reworkComment);
+        .child(task.taskName).child("taskComment").set(task.taskComment);
     await db.child("work-process").child(contract.id).child("tasks")
         .child(task.taskName).child("pauseType").set(task.pauseType);
-    await db.child("work-process").child(contract.id).child("tasks")
-        .child(task.taskName).child("pauseComment").set(task.pauseComment);
-
   }
   void setTaskAssignedUser(Task task, BuildNode node, Contract contract) async{
     getMainRef();

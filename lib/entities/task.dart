@@ -7,10 +7,9 @@ class Task {
   int startTimeTaskPlan;
   int endTimeTaskPlan;
   String _reworkType;
-  String _reworkComment;
+  String _taskComment;
   String guiltyUserID;
   String _pauseType;
-  String _pauseComment;
   String _dirComment;
 
   Task(String taskName,String parentNodeName){
@@ -20,11 +19,10 @@ class Task {
     lastStatusTime = 0;
     assignedUserID = "Ответственный не указанн";
     _reworkType = 'тип доработки не указан';
-    _reworkComment = "коммент доработки отсутствует";
+    _taskComment = "коммент отсутствует";
     guiltyUserID = "Виновынй не указан";
     _dirComment = 'коммент директора отсутствует';
     _pauseType = 'тип паузы не указан';
-    _pauseComment = "коммент паузы не указан";
     startTimeTaskPlan = 0;
     endTimeTaskPlan = 0;
   }
@@ -37,9 +35,29 @@ class Task {
 
   String taskFullInfo(){
     return taskName +" "+status+" "+assignedUserID+" "+assignedUserID+" "+ _reworkType+ " "+
-        _reworkComment+ ' '+guiltyUserID +" "+ _dirComment+" "+_pauseType+" "+_pauseComment+" "+
+        _taskComment+ ' '+guiltyUserID +" "+ _dirComment+" "+_pauseType+" "+_taskComment+" "+
         "lastStatusTime $lastStatusTime startTimeTaskPlan $startTimeTaskPlan  endTimeTaskPlan $endTimeTaskPlan"
     ;
+  }
+
+  String statusText(){
+    switch(status) {
+      case 'inwork':
+        return "В работе";
+        break;
+      case 'done' :
+        return 'Завершено';
+        break;
+      case 'rework' :
+        return 'Доработка';
+        break;
+      case 'pause' :
+        return 'Пауза';
+        break;
+      default :
+        return 'Не  установлен';
+        break;
+    }
   }
 
   String get reworkType => _reworkType;
@@ -61,9 +79,8 @@ class Task {
     else return "Не задано";
   }
 
-  String get reworkComment => _reworkComment;
+  String get taskComment => _taskComment;
 
-  String get pauseComment => _pauseComment;
 
   set reworkType(String value) {
     if(value!=null) _reworkType = value;
@@ -71,12 +88,8 @@ class Task {
 
   String get pauseType => _pauseType;
 
-  set reworkComment(String value) {
-    if(value!=null) _reworkComment = value;
-  }
-
-  set pauseComment(String value) {
-    if(value!=null) _pauseComment = value;
+  set taskComment(String value) {
+    if(value!=null) _taskComment = value;
   }
 
   set pauseType(String value) {
