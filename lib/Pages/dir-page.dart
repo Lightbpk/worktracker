@@ -64,17 +64,21 @@ class _DirectorPageState extends State<DirectorPage> {
       return Scaffold(
         appBar: AppBar(
           leading:
-          TextButton.icon(
-              onPressed: () {
-                AuthService().logOut();
+            TextButton.icon(
+              onPressed: (){
+                back();
               },
-              icon: Icon(
-                Icons.exit_to_app,
-                color: Colors.white,
-              ),
-              label: SizedBox.shrink()),
+              icon: Icon(Icons.arrow_back,color: Colors.white,),
+              label: SizedBox.shrink(),
+            ),
           title: new Text("Директор: " + widget.userDir.getFamalyIO(), style: TextStyle(fontSize: 13),),
           actions: <Widget>[
+            TextButton.icon(
+              onPressed: () {
+                AuthService().logOut();
+                },
+              icon: Icon(Icons.exit_to_app,color: Colors.white,),
+              label: SizedBox.shrink()),
             TextButton.icon(
                 onPressed: (){
                   refresh();
@@ -256,33 +260,7 @@ class _DirectorPageState extends State<DirectorPage> {
                   },
                   icon: Icon(Icons.set_meal),
                   label: Text('Установки времени')),
-              TextButton.icon(
-                  onPressed: () async {
-                    setState(() {
-                      timePassed = WorkTimer(task.lastStatusTime).hhMMssPassed();
-                      timeLeft = WorkTimer(task.endTimeTaskPlan).hhMMssLeft();
-                      mainWidget = _buildTaskTail(task, currentNode);
-                      isLoaded = true;
-                    });
-                  },
-                  icon: Icon(Icons.refresh),
-                  label: Text("Обновить")),
             ],),
-            TextButton.icon(
-                onPressed: () async {
-                  tasksList = await readTasks(currentNode);
-                  setState(() {
-                    if(task.parentNodeName == currentContract.id){
-                      mainWidget = _buildNodesList();
-                      isLoaded = true;
-                    }else{
-                      mainWidget = _buildTasksList(currentNode);
-                      isLoaded = true;
-                    }
-                  });
-                },
-                icon: Icon(Icons.arrow_back),
-                label: Text("Назад"))
           ],),
 
       ],
@@ -571,6 +549,39 @@ class _DirectorPageState extends State<DirectorPage> {
         mainWidget = _buildTaskTail(currentTask, currentNode);
         isLoaded = true;
       });
+    }
+  }
+
+  void back() async{
+    switch(deeplevel){
+      case 'taskContent': {
+        tasksList = await readTasks(currentNode);
+        setState(() {
+          if(currentTask.parentNodeName == currentContract.id){
+            mainWidget = _buildNodesList();
+            isLoaded = true;
+          }else{
+            mainWidget = _buildTasksList(currentNode);
+            isLoaded = true;
+          }
+        });
+        break;
+      }
+      case 'taskList': {
+        setState(() {
+          mainWidget = _buildNodesList();
+          isLoaded = true;
+        });
+        break;
+      }
+      case 'nodeList': {
+        setState(() {
+          mainWidget = _buildContractsList();
+          isLoaded = true;
+        });
+        break;
+      }
+      default :{}
     }
   }
 }
