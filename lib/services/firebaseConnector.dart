@@ -156,7 +156,7 @@ class DataBaseConnector {
               task.endTimeTaskPlan = mapValue["endTimeTaskPlan"];
               task.reworkType = mapValue["reworkType"];
               task.pauseType = mapValue["pauseType"];
-              task.taskComment = mapValue["reworkComment"];
+              task.taskComment = mapValue["taskComment"];
               task.guiltyUserID = mapValue["reworkGuilty"];
               task.dirComment = mapValue["dirComment"];
               tasksList.add(task);

@@ -23,6 +23,7 @@ class DirectorPage extends StatefulWidget {
 }
 
 class _DirectorPageState extends State<DirectorPage> {
+  String deeplevel = '';
   bool isLoaded = false;
   bool isLoadedUserList = false;
   Widget mainWidget = CircularProgressIndicator();
@@ -32,6 +33,7 @@ class _DirectorPageState extends State<DirectorPage> {
   List<WTUser> usersList;
   List<String> usersIDList = [];
   List<DropdownMenuItem> userDropMenuItems;
+  Task currentTask;
   String status = "status not set";
   String date = "date not set";
   Contract currentContract;
@@ -61,18 +63,28 @@ class _DirectorPageState extends State<DirectorPage> {
     } else {
       return Scaffold(
         appBar: AppBar(
-          title: new Text("Директор: " + widget.userDir.getFamalyIO()),
+          leading:
+          TextButton.icon(
+              onPressed: () {
+                AuthService().logOut();
+              },
+              icon: Icon(
+                Icons.exit_to_app,
+                color: Colors.white,
+              ),
+              label: SizedBox.shrink()),
+          title: new Text("Директор: " + widget.userDir.getFamalyIO(), style: TextStyle(fontSize: 13),),
           actions: <Widget>[
             TextButton.icon(
-                onPressed: () {
-                  AuthService().logOut();
+                onPressed: (){
+                  refresh();
                 },
                 icon: Icon(
-                  Icons.exit_to_app,
+                  Icons.refresh,
                   color: Colors.white,
                 ),
-                label: SizedBox.shrink()),
-            Text('$inc'),
+                label: SizedBox.shrink(),
+            )
           ],
         ),
         body:
@@ -82,6 +94,7 @@ class _DirectorPageState extends State<DirectorPage> {
   }
 
   Widget _buildContractsList() {
+    deeplevel ='contractList';
     return ListView.builder(itemBuilder: (context, i) {
       if (i < contractsList.length)
         return ListTile(
@@ -102,6 +115,7 @@ class _DirectorPageState extends State<DirectorPage> {
   }
 
   Widget _buildNodesList() {
+    deeplevel = 'nodeList';
     return ListView.builder(itemBuilder: (context, i) {
       if (i < nodesList.length) {
         String subTitleText = nodesList[i].getDeadlineText();
@@ -147,6 +161,7 @@ class _DirectorPageState extends State<DirectorPage> {
   }
 
   Widget _buildTasksList(BuildNode node) {
+    deeplevel = 'taskList';
     return ListView.builder(itemBuilder: (context, i) {
 //  ------------------------------------------------------
     //Tail bar status + user
@@ -185,10 +200,12 @@ class _DirectorPageState extends State<DirectorPage> {
   }
 
   Widget _buildTaskTail(Task task, BuildNode currentNode) {
+    currentTask = task;
     print('status = ' + status);
     String str = getUserFioByID(task.assignedUserID);
     print('assigned = ' + task.assignedUserID);
-    print('str = $str');
+    deeplevel = "taskContent";
+    print(deeplevel);
     return new GestureDetector(
         onTap: (){
           FocusScope.of(context).requestFocus(new FocusNode());
@@ -544,5 +561,16 @@ class _DirectorPageState extends State<DirectorPage> {
       }
     });
     return userFio;
+  }
+
+  void refresh(){
+    if(deeplevel == 'taskContent'){
+      setState(() {
+        timePassed = WorkTimer(currentTask.lastStatusTime).hhMMssPassed();
+        timeLeft = WorkTimer(currentTask.endTimeTaskPlan).hhMMssLeft();
+        mainWidget = _buildTaskTail(currentTask, currentNode);
+        isLoaded = true;
+      });
+    }
   }
 }
