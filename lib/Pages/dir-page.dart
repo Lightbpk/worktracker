@@ -320,7 +320,7 @@ class _DirectorPageState extends State<DirectorPage> {
         statusWidget = reWorkPauseWidget(task,true);
         break;
       default :
-        statusWidget =  Text('Статус не указан');
+        statusWidget =  notSetWidget(task);
         break;
     }
     return statusWidget;
@@ -444,6 +444,34 @@ class _DirectorPageState extends State<DirectorPage> {
           },
         ),
       ],);
+  }
+
+  Widget notSetWidget(Task task) {
+    String userFamalyIO = getUserFioByID(task.assignedUserID);
+    return Column(
+      children: [
+        Row(children: [
+          Text("Исполнитель : "),
+          TextButton(onPressed: (){
+            setState(() {
+              mainWidget = usersDropList(task, currentNode);
+              isLoaded = true;
+            });
+          }, child: Text("$userFamalyIO", style: TextStyle(fontSize: 21, color: Colors.blue),))
+        ],),
+        Row(children: [
+          Text('В процессе '),
+          //Text(' '+workTimerPassedTime.hhMMssPassed()),
+        ],),
+        Row(children: [
+          Text('Осталось '),
+          //Text(''+workTimerLeftTime.hhMMssLeft()),
+        ],),
+        Row(children: [
+          Text('Завершение по плану: ' + task.getEndTimeText()),
+        ],),
+      ],
+    );
   }
 
   void readUsers() async {
