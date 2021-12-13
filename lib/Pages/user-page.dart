@@ -23,11 +23,13 @@ class _UserPageState extends State<UserPage> {
   bool isLoaded = false;
   Widget mainWidget = CircularProgressIndicator();
   List<Contract> contractsList;
+  Task currentTask;
   List<BuildNode> nodesList;
   List<Task> tasksList=[];
   String status = "status not set";
   String date = "date not set";
   Contract currentContract;
+  String deeplevel = '';
   BuildNode currentNode;
   List<String> reworkTypes = [
     'Ошибка КД',
@@ -61,6 +63,14 @@ class _UserPageState extends State<UserPage> {
     } else {
       return Scaffold(
         appBar: AppBar(
+          leading:
+          TextButton.icon(
+            onPressed: (){
+              back();
+            },
+            icon: Icon(Icons.arrow_back,color: Colors.white,),
+            label: SizedBox.shrink(),
+          ),
           title: new Text("Юзер: "+widget.currentUser.getFamalyIO()),
           actions: <Widget>[
             TextButton.icon(
@@ -71,7 +81,17 @@ class _UserPageState extends State<UserPage> {
                   Icons.exit_to_app,
                   color: Colors.white,
                 ),
-                label: SizedBox.shrink())
+                label: SizedBox.shrink()),
+            TextButton.icon(
+              onPressed: (){
+                refresh();
+              },
+              icon: Icon(
+                Icons.refresh,
+                color: Colors.white,
+              ),
+              label: SizedBox.shrink(),
+            )
           ],
         ),
         body: mainWidget,
@@ -108,6 +128,7 @@ class _UserPageState extends State<UserPage> {
 
 
   Widget _buildTasksList() {
+    deeplevel = 'taskList';
     return ListView.builder(itemBuilder: (context, i) {
       if (i < tasksList.length) {
         String subtitleText =
@@ -143,11 +164,13 @@ class _UserPageState extends State<UserPage> {
 
   Widget _buildTaskTail(Task task) {
     print('status = ' + status);
+    deeplevel = 'taskContent';
+    currentTask = task;
     return Column(
       children: [
         Text(task.taskName, style: TextStyle(fontSize: 21),),
         Text(task.statusText()),
-        Text(task.getLastStatusTimeText()),
+        Text('c '+task.getLastStatusTimeText()),
         Text("Комментарии: "),
         Flexible(child: Text(task.taskComment),),
         Flexible(child: Text("Директор: "+task.dirComment),),
@@ -305,7 +328,29 @@ class _UserPageState extends State<UserPage> {
         await DataBaseConnector().getUserTasks(currentContract.id, userID);
   }
 
+  void refresh() async{
+    if(deeplevel == 'taskContent'){
+      setState(() {
+        mainWidget = _buildTaskTail(currentTask);
+        isLoaded = true;
+      });
+    }
+  }
 
+  void back() async{
+    if(deeplevel == 'taskContent'){
+      tasksList = await readUserTasks(widget.currentUser.id);
+      setState(() {
+        mainWidget = _buildTasksList();
+        isLoaded = true;
+      });
+    }else if(deeplevel == 'taskList'){
+      setState(() {
+        mainWidget = _buildContractsList();
+        isLoaded = true;
+      });
+    }
+  }
 
   void makeToast(String status, Color color) {
     Fluttertoast.showToast(
