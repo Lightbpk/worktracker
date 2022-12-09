@@ -158,12 +158,12 @@ class _AdminPageState extends State<AdminPage> {
                         content: new Text(
                             'Вы уверены что хотите внести данные по проекту в БД?'),
                         actions: <Widget>[
-                          OutlineButton(
+                          TextButton(
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
                               child: new Text("отмена")),
-                          FlatButton(
+                          TextButton(
                               onPressed: () {
                                 Navigator.of(context).pop();
                                 addContract();
