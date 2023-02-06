@@ -21,7 +21,7 @@ class UserPage extends StatefulWidget {
 
 class _UserPageState extends State<UserPage> {
   bool isLoaded = false;
-  Widget mainWidget = CircularProgressIndicator();
+  Widget mainWidget = Center(child: CircularProgressIndicator(),);
   List<Contract> contractsList;
   Task currentTask;
   List<BuildNode> nodesList;
@@ -59,7 +59,7 @@ class _UserPageState extends State<UserPage> {
   @override
   Widget build(BuildContext context) {
     if (!isLoaded) {
-      return CircularProgressIndicator();
+      return Center(child: CircularProgressIndicator(),);
     } else {
       return Scaffold(
         appBar: AppBar(

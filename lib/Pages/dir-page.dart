@@ -26,7 +26,7 @@ class _DirectorPageState extends State<DirectorPage> {
   String deeplevel = '';
   bool isLoaded = false;
   bool isLoadedUserList = false;
-  Widget mainWidget = CircularProgressIndicator();
+  Widget mainWidget = Center(child: CircularProgressIndicator(),);
   List<Contract> contractsList;
   List<BuildNode> nodesList;
   List<Task> tasksList = [];
@@ -59,7 +59,7 @@ class _DirectorPageState extends State<DirectorPage> {
   @override
   Widget build(BuildContext context) {
     if (!isLoaded) {
-      return CircularProgressIndicator();
+      return Center(child: CircularProgressIndicator(),);
     } else {
       return Scaffold(
         appBar: AppBar(

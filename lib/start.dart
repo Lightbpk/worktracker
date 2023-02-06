@@ -32,7 +32,7 @@ class _StartPageState extends State<StartPage> {
       //print('user not null');
       if(roleReading){
         print('reading Roles...');
-        return CircularProgressIndicator();
+        return Center(child: CircularProgressIndicator(),);
       }else{
         if(currentRole == 'admin'){
           //print('admin logged');
