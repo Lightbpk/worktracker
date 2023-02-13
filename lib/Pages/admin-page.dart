@@ -29,8 +29,8 @@ class _AdminPageState extends State<AdminPage> {
   String currentClientName;
   BasicDateTimeField firstNodeDeadLine;
   List<Contract> contractsList;
-  Widget contractsWidget = Center(child: CircularProgressIndicator(),);
-  bool isLoaded = false;
+  Widget loadingWidget = Center(child: CircularProgressIndicator(),);
+  //bool isLoaded = false;
   // bool existEmptyDeadline = true;
   List<BuildNode> nodeList = [
     new BuildNode("Оформление документов", "01"),
@@ -53,9 +53,17 @@ class _AdminPageState extends State<AdminPage> {
     if (loadStartWidget) {
       currentWidget = _startWidget();
     }
-    readContractsList();
+    //readContractsList();
     return Scaffold(
       appBar: AppBar(
+        leading:
+        TextButton.icon(
+          onPressed: (){
+            back();
+          },
+          icon: Icon(Icons.arrow_back,color: Colors.white,),
+          label: SizedBox.shrink(),
+        ),
         title: new Text("Админ:" + widget.userAdmin.getFamalyIO()),
         actions: <Widget>[
           TextButton.icon(
@@ -240,11 +248,18 @@ class _AdminPageState extends State<AdminPage> {
         fontSize: 16.0);
   }
   void readContractsList() async {
+    loadStartWidget = false;
     contractsList = await DataBaseConnector().getContracts();
     setState(() {
       currentWidget = _buildContractsList();
-      isLoaded = true;
+      //loadStartWidget = true;
     });
+  }
+
+  void back(){
+    loadStartWidget = false;
+    currentWidget = _startWidget();
+    loadStartWidget = true;
   }
   Widget _buildContractsList() {
     //deeplevel ='contractList';
