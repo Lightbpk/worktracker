@@ -231,6 +231,11 @@ class DataBaseConnector {
           .child(task.taskName).child("endTimeTaskPlan").set(task.endTimeTaskPlan);
     });
   }
+  void delProject(String id){
+    getMainRef();
+    db.child("work-process").child(id).remove();
+  }
+
   void setTaskStatus(Task task, Contract contract) async{
     getMainRef();
     await db.child("work-process").child(contract.id).child("tasks")

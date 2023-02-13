@@ -8,6 +8,8 @@ import 'package:worktracker/services/data-time-field.dart';
 import 'package:worktracker/services/firebaseConnector.dart';
 import 'package:worktracker/entities/task.dart';
 
+import '../entities/contract.dart';
+
 
 class AdminPage extends StatefulWidget {
   WTUser userAdmin;
@@ -26,7 +28,9 @@ class _AdminPageState extends State<AdminPage> {
   String currentContractID;
   String currentClientName;
   BasicDateTimeField firstNodeDeadLine;
-
+  List<Contract> contractsList;
+  Widget contractsWidget = Center(child: CircularProgressIndicator(),);
+  bool isLoaded = false;
   // bool existEmptyDeadline = true;
   List<BuildNode> nodeList = [
     new BuildNode("Оформление документов", "01"),
@@ -43,11 +47,13 @@ class _AdminPageState extends State<AdminPage> {
     new BuildNode("Отдельная задача3 ", "12", true),
   ];
 
+
   @override
   Widget build(BuildContext context) {
     if (loadStartWidget) {
       currentWidget = _startWidget();
     }
+    readContractsList();
     return Scaffold(
       appBar: AppBar(
         title: new Text("Админ:" + widget.userAdmin.getFamalyIO()),
@@ -101,6 +107,14 @@ class _AdminPageState extends State<AdminPage> {
               },
               icon: Icon(Icons.timeline),
               label: Text("Узлы и дэдлайны")),
+          new TextButton.icon(onPressed: (){
+            setState(() {
+              loadStartWidget = false;
+              readContractsList();
+            });
+          },
+              icon: Icon(Icons.contact_page),
+              label: Text("Контракты"))
         ],
       ),
     );
@@ -225,4 +239,40 @@ class _AdminPageState extends State<AdminPage> {
         textColor: Colors.white,
         fontSize: 16.0);
   }
+  void readContractsList() async {
+    contractsList = await DataBaseConnector().getContracts();
+    setState(() {
+      currentWidget = _buildContractsList();
+      isLoaded = true;
+    });
+  }
+  Widget _buildContractsList() {
+    //deeplevel ='contractList';
+    return ListView.builder(itemBuilder: (context, i) {
+      if (i < contractsList.length)
+        return ListTile(
+          title: Row(
+            children: [
+              Text(contractsList[i].id),
+              TextButton.icon(
+                  onPressed: (){
+                    DataBaseConnector().delProject(contractsList[i].id);
+                    print('del '+contractsList[i].name);
+                  },
+                  icon:Icon(Icons.delete),
+                  label: Text("Удалить"))
+            ] ,) ,
+          subtitle: Text(contractsList[i].name),
+          onTap: () {
+            print('Taped ' + contractsList[i].id);
+          },
+        );
+      else
+        return ListTile(
+          title: Text("-----------"),
+        );
+    });
+  }
 }
+
+
